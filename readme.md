@@ -11,5 +11,6 @@ Pour lancer l'image docker permettant de mocker l'API de production :
 * Lancer la commande `docker-compose -f docker/meteo-du-numerique.yml up -d`
 
 Dans le fichier `envs/local.json` changer l'adresse IP par la votre pour que l'émulateur ai accès à l'API json-server.
+Lancer la commande `git update-index --skip-worktree envs/local.json` pour ne pas tracker les modifications de l'adresse IP sur ce fichier.
 
-Ensuite, lancer la commande `yarn install` ou `npm install` pour installer les dépendances dans le dossier `node_modules`. Puis lancer la commande `yarn android` ou `npm run android` qui va démarrer votre émulateur en installant l'application sur ce dernier et lancer la commande `yarn start-dev`.
+Ensuite, lancer la commande `yarn install` ou `npm install` pour installer les dépendances dans le dossier `node_modules`. Puis lancer la commande `yarn android` ou `npm run android` qui va démarrer votre émulateur en installant l'application sur ce dernier et enfin, lancer la commande `yarn start-dev`.
