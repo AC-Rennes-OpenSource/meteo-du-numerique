@@ -3,6 +3,14 @@
   "version": "1.1.0",
   "private": true,
   "license": "MIT",
+  "homepage": "https://github.com/AC-Rennes-OpenSource/meteo-du-numerique#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AC-Rennes-OpenSource/meteo-du-numerique"
+  },
+  "bugs": {
+    "url": "https://github.com/AC-Rennes-OpenSource/meteo-du-numerique/issues"
+  },
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
