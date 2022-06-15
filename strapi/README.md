@@ -20,10 +20,10 @@ __Qualite de service__
 * key (Number)
 * services (Relation avec _Service_)
 
-![Les types de données](../images/strapi-contenttype-service.png "Les types de données")
+![Les types de données](/images/strapi-contenttype-service.png "Les types de données")
 
 
 ## Le peuplement
 Dans la partie Collection Types, vous devrez saisir les informations qui seront alors disponibles via API.
 strapi-collection-services.png
-![Les collections](../images/strapi-collection-services.png "Les collections")
+![Les collections](/images/strapi-collection-services.png "Les collections")
