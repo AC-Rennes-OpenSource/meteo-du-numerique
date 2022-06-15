@@ -10,6 +10,7 @@ Vous trouverez la documentation d'installation sur leur site web : https://strap
 ## Le modèle de données
 Nous n'avons besoin que de deux types de données : les services numériques et leur qualité de service.
 Dans la partie Content Types Builder il faut créer les types suivants : 
+
 __Service__
 * libelle (Texte)
 * description (Texte enrichi)
