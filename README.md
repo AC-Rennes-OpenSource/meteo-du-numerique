@@ -6,7 +6,7 @@ Ce projet a été initié par l'académie de Rennes et vise à répondre aux bes
 * disposer d'un outil pour informer en temps réel nos usagers sur l'état de nos services,
 * réduire le nombre de tickets auprès de la plateforme d'assistance.
 
-# Principe général
+## Principe général
 Le produit comprend deux développements (web javascript et mobile React Native) clients d'un Headless CMS léger Strapi.
 
 ![Architecture simplifiée](images/meteo-github.png "Architecture simplifiée")
