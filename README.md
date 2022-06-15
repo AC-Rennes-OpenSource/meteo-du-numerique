@@ -1,5 +1,7 @@
 # La météo du numérique
+
 ![La météo du numérique](images/meteo-icon.png "La météo du numérique")
+
 Ce projet a été initié par l'académie de Rennes et vise à répondre aux besoins suivants :
 * disposer d'un outil pour informer en temps réel nos usagers sur l'état de nos services,
 * réduire le nombre de tickets auprès de la plateforme d'assistance.
