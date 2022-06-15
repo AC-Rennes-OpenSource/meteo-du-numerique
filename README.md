@@ -4,6 +4,7 @@
 
 Ce projet a été initié par l'académie de Rennes et vise à répondre aux besoins suivants :
 * disposer d'un outil pour informer en temps réel nos usagers sur l'état de nos services,
+* disposer d'un outil simple, dissocier du SI pour pouvoir communiquer quelque soient les pannes,
 * réduire le nombre de tickets auprès de la plateforme d'assistance.
 
 ## Principe général
