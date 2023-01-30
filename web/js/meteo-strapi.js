@@ -47,11 +47,11 @@ function md2html(md) {
 }
 
 function triLibelleASC( a, b ) {
-  return a.libelle.localeCompare(b.libelle)
+  return a.attributes.libelle.localeCompare(b.attributes.libelle)
 }
 
 function triQosDESC( a, b ) {
-  return ( b.qualiteDeService.key - a.qualiteDeService.key)
+  return ( b.attributes.qualiteDeService.data.attributes.key - a.attributes.qualiteDeService.data.attributes.key)
 }
 
 
@@ -86,16 +86,16 @@ meteoPromesse
 
 
 
-fetch('https://www.toutatice.fr/strapi/services')
+fetch('http://localhost:1337/api/services?populate=*')
   .then(response => response.json())
-  .then(data => 
+  .then(jsonResponse => 
           {
             //console.log(data)
-            const tableau = data
-            const tabdate = data
+            const tableau = jsonResponse.data
+            const tabdate = jsonResponse.data
 
             document.querySelector("#modification").innerHTML += "Dernière mise à jour : "
-            const lastUpdatedDate = new Date(Math.max(...tabdate.map((e) => new Date(e.updated_at).getTime())))
+            const lastUpdatedDate = new Date(Math.max(...tabdate.map((e) => new Date(e.attributes.updatedAt).getTime())))
             document.querySelector("#modification").innerHTML += lastUpdatedDate.toLocaleString('fr-fr')
 
             // Tri
@@ -103,35 +103,36 @@ fetch('https://www.toutatice.fr/strapi/services')
             tableau.sort( triQosDESC );
 
             tableau.forEach((service) => {
+                  const qualiteDeService = service.attributes.qualiteDeService.data.attributes.key
                   document.querySelector("#meteo-inner").innerHTML+=`
             <div class="col-lg-3">
               <!-- Tuile -->
-              <div class="tuile tuile-${service["qualiteDeService"].key} h-100">
+              <div class="tuile tuile-${qualiteDeService} h-100">
               
-                <div class="tuile-inner-${service["qualiteDeService"].key} h-100">
+                <div class="tuile-inner-${qualiteDeService} h-100">
 
                   <div class="row">
 
                     <div class="col-md-12 text-center">
-                      ${buildSvg(service["qualiteDeService"].key)} 
+                      ${buildSvg(qualiteDeService)} 
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-12 text-center">
-                      <h3>${service["libelle"]}</h3>
+                      <h3>${service.attributes["libelle"]}</h3>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-md-12 text-center tuile-qos-${service["qualiteDeService"].key}">
-                      <span>${service["qualiteDeService"].libelle}</span>
+                    <div class="col-md-12 text-center tuile-qos-${qualiteDeService}">
+                      <span>${service.attributes.qualiteDeService.data.attributes.libelle}</span>
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-12">
-                      <div class="card-text">${md2html(service["description"])}</div>
+                      <div class="card-text">${md2html(service.attributes["description"])}</div>
                     </div>
                   </div>
 
