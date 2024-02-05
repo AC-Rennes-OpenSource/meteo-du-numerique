@@ -97,10 +97,9 @@ class PrevisionA {
       categorieLibelle: '',
       couleur: '',
       dateDebut:
-      json['attributes']['date_debut'] != null ? DateTime.parse(json['attributes']['date_debut']) : DateTime.now(),
+          json['attributes']['date_debut'] != null ? DateTime.parse(json['attributes']['date_debut']) : DateTime.now(),
     );
   }
-
 
   dynamic getField(String field) {
     switch (field) {
@@ -110,6 +109,8 @@ class PrevisionA {
         return description;
       case 'dateDebut':
         return dateDebut;
+      case 'categorieLibelle':
+        return categorieLibelle;
       default:
         return null;
     }
@@ -117,7 +118,7 @@ class PrevisionA {
 
   @override
   String toString() {
-    return 'PrevisionA{id: $id, libelle: $libelle, description: $description, dateDebut: $dateDebut}';
+    return 'PrevisionA{id: $id, libelle: $libelle, description: $description, dateDebut: $dateDebut, categorieLibelle: $categorieLibelle, couleur: $couleur}';
   }
 }
 
@@ -140,9 +141,7 @@ class ActualiteA {
 
   factory ActualiteA.fromJson(Map<String, dynamic> json) {
     var qualiteDeServiceJson = json['attributes']['qualite_de_service']['data'];
-    var qualiteDeService = qualiteDeServiceJson != null
-        ? QualiteDeService.fromJson(qualiteDeServiceJson)
-        : null;
+    var qualiteDeService = qualiteDeServiceJson != null ? QualiteDeService.fromJson(qualiteDeServiceJson) : null;
 
     return ActualiteA(
       id: json['id']?.toString() ?? '',
@@ -150,7 +149,7 @@ class ActualiteA {
       description: json['attributes']['description'] ?? '',
       qualiteDeService: qualiteDeService,
       lastUpdate:
-      json['attributes']['updatedAt'] != null ? DateTime.parse(json['attributes']['updatedAt']) : DateTime.now(),
+          json['attributes']['updatedAt'] != null ? DateTime.parse(json['attributes']['updatedAt']) : DateTime.now(),
     );
   }
 
@@ -182,5 +181,3 @@ class ActualiteA {
     return 'ActualiteA{id: $id, libelle: $libelle, description: $description, lastUpdate: $lastUpdate, qualiteDeService: $qualiteDeService}';
   }
 }
-
-

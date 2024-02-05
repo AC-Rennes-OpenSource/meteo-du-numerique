@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:diacritic/diacritic.dart';
 
-import '../../models/prevision_model.dart';
 import '../../models/service_num_model.dart';
 import '../../services/api_service.dart';
 import 'previsions_event.dart';
@@ -15,7 +14,8 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
 
   String? currentSortCriteria = 'qualiteDeServiceId';
   String? currentSortOrder = 'desc';
-  List<String>? currentFilterCriteria;
+  List<String> currentFilterCriteria = [];
+  String currentPeriode = 'all';
   String? currentSearchQuery;
 
   late DateTime? lastUpdate = DateTime.now();
@@ -80,8 +80,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   void _onAddCategoryEvent(AddCategoryEvent event, Emitter<PrevisionsState> emit) {
     final currentState = state;
     if (currentState is PrevisionsLoaded) {
-      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)
-        ..updateAll((key, value) => true);
+      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)..updateAll((key, value) => true);
 
       emit(PrevisionsLoaded(
           previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
@@ -108,8 +107,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   void _onOpenAllGroups(OpenAllGroupsEvent event, Emitter<PrevisionsState> emit) {
     final currentState = state;
     if (currentState is PrevisionsLoaded) {
-      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)
-        ..updateAll((key, value) => true);
+      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)..updateAll((key, value) => true);
 
       emit(PrevisionsLoaded(
           previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
@@ -151,12 +149,14 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   }
 
   void _onFilterPrevisions(FilterPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    if (event.filterBy == []) {
+    if (event.categories == []) {
       resetCriteria();
       currentFilters = [];
+      currentPeriode = 'all';
     } else {
-      currentFilterCriteria = event.filterBy;
+      currentFilterCriteria = event.categories;
       currentFilters = currentFilterCriteria!;
+      currentPeriode = event.periode;
     }
     add(FetchPrevisionsEvent());
   }
@@ -177,6 +177,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   void resetCriteria() {
     currentSortCriteria = null;
     currentFilterCriteria = [];
+    currentPeriode = 'all';
     currentSearchQuery = null;
     add(FetchPrevisionsEvent());
   }
@@ -189,51 +190,45 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     // Apply search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
       previsions = previsions
-          .where((prevision) =>
-          removeDiacritics(prevision.libelle.toLowerCase())
+          .where((prevision) => removeDiacritics(prevision.libelle.toLowerCase())
               .contains(removeDiacritics(currentSearchQuery!.toLowerCase())))
           .toList();
     }
 
-    // // Apply category filter
-    // if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
-    //
-    //   List<Prevision> previsionupdate = [];
-    //   currentFilterCriteria?.forEach((element) {
-    //     previsionupdate.addAll(previsions
-    //         .where((prevision) =>
-    //             prevision.qualiteDeService.toLowerCase() == element)
-    //         .toList());
-    //   });
-    //   previsions = previsionupdate;
-    // }
+    // Apply category filter
+    if (currentFilterCriteria.isNotEmpty) {
+      print(currentFilterCriteria.toString());
+      List<PrevisionA> previsionsupdate = [];
+      currentFilterCriteria.forEach((element) {
+        previsionsupdate.addAll(previsions
+            .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
+            .toList());
+      });
+      previsions = previsionsupdate;
+    }
 
-    // // Apply sorting
-    // if (currentSortCriteria != null) {
-    //   if (currentSortCriteria == "qualiteDeServiceId") {
-    //     if (currentSortOrder == 'asc') {
-    //       previsions.sort((a, b) => a
-    //           .getField(currentSortCriteria!)
-    //           .compareTo(b.getField(currentSortCriteria!)));
-    //     } else {
-    //       previsions.sort((a, b) => b
-    //           .getField(currentSortCriteria!)
-    //           .compareTo(a.getField(currentSortCriteria!)));
-    //     }
-    //   } else {
-    //     if (currentSortOrder == 'asc') {
-    //       previsions.sort((a, b) => a
-    //           .getField(currentSortCriteria!)
-    //           .compareTo(b.getField(currentSortCriteria!)));
-    //     } else {
-    //       previsions.sort((a, b) => b
-    //           .getField(currentSortCriteria!)
-    //           .compareTo(a.getField(currentSortCriteria!)));
-    //     }
-    //   }
-    // }
+    // Apply perio filter
+    if (currentPeriode != 'all') {
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day - 1);
 
-    return previsions ?? [];
+      if (currentPeriode == 'semaine') {
+        previsions = previsions.where((prevision) {
+          return prevision.dateDebut.isAfter(today) &&
+              prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
+        }).toList();
+      } else if (currentPeriode == 'mois') {
+        previsions = previsions.where((prevision) {
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 1));
+        }).toList();
+      } else if (currentPeriode == 'semestre') {
+        previsions = previsions.where((prevision) {
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 6));
+        }).toList();
+      }
+    }
+
+    return previsions;
   }
 
   bool estMemeJour(DateTime date1, DateTime date2) {

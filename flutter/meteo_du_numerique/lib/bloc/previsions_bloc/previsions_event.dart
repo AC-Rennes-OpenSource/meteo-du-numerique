@@ -7,9 +7,10 @@ class FetchPrevisionsEvent extends PrevisionsEvent {
 }
 
 class FilterPrevisionsEvent extends PrevisionsEvent {
-  final List<String>? filterBy;
+  final List<String> categories;
+  final String periode;
 
-  FilterPrevisionsEvent(this.filterBy);
+  FilterPrevisionsEvent(this.categories, this.periode);
 }
 
 class SortPrevisionsEvent extends PrevisionsEvent {

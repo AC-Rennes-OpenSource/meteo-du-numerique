@@ -6,12 +6,13 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/previsions_bloc/previsions_bloc.dart';
 
 class FilterPrevisionsBottomSheet extends StatefulWidget {
-  final List<String> selectedFilter; // Modifié pour stocker un seul filtre
-  // final List<String> selectedCategories;
+  final String selectedFilter; // Modifié pour stocker un seul filtre
+  final List<String> selectedCategories;
 
   final int tab;
 
-  const FilterPrevisionsBottomSheet({super.key, required this.selectedFilter, required this.tab});
+  const FilterPrevisionsBottomSheet(
+      {super.key, required this.selectedFilter, required this.tab, required this.selectedCategories});
 
   @override
   State<FilterPrevisionsBottomSheet> createState() => _FilterBottomSheetState();
@@ -27,7 +28,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _selectedFilter = widget.selectedFilter.isNotEmpty ? widget.selectedFilter[0] : 'all';
+    _selectedFilter = widget.selectedFilter;
+    _selectedCategories = widget.selectedCategories;
 
     _currentTab = widget.tab;
   }
@@ -46,7 +48,9 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
       'Inclusion',
       'Pédagogie',
       'Santé et social',
-      'Scolarité',
+      // 'Scolarité',
+
+      'categorie2'
     ]; // Exemple de catégories
 
     return Container(
@@ -57,28 +61,28 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
           RadioListTile<String>(
             title: const Text('La semaine prochaine'),
             value: 'semaine',
-            selected: _selectedFilter == ('semaine'),
+            selected: _selectedFilter == 'semaine',
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
           RadioListTile<String>(
             title: const Text('Le mois prochain'),
             value: 'mois',
-            selected: _selectedFilter == ('mois'),
+            selected: _selectedFilter == 'mois',
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
           RadioListTile<String>(
             title: const Text("Les 6 prochains mois"),
-            value: 'trimestre',
-            selected: _selectedFilter == ('trimestre'),
+            value: 'semestre',
+            selected: _selectedFilter == 'semestre',
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
           RadioListTile<String>(
             title: const Text('Tout'),
             value: 'all',
-            selected: _selectedFilter == ('all'),
+            selected: _selectedFilter == 'all',
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
@@ -91,8 +95,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
             runSpacing: 4.0, // Espacement vertical entre les chips
             children: categoryOptions
                 .asMap()
-                .map((index, category) =>
-                MapEntry(
+                .map((index, category) => MapEntry(
                     index,
                     ChoiceChip(
                       selectedColor: _getChipColor(index),
@@ -107,10 +110,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                             fontSize: 11,
                             color: _selectedCategories.contains(category)
                                 ? Colors.white
-                                : Theme
-                                .of(context)
-                                .colorScheme
-                                .onSurface),
+                                : Theme.of(context).colorScheme.onSurface),
                       ),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: _getChipColor(index), width: 2),
@@ -121,6 +121,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                         setState(() {
                           if (selected) {
                             _selectedCategories.add(category);
+                            print(_selectedCategories.toString());
                           } else {
                             _selectedCategories.remove(category);
                           }
@@ -144,10 +145,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                       side: const BorderSide(width: 1.0, color: Colors.grey),
                       foregroundColor: _selectedFilter == 'all' && _selectedCategories.isEmpty
                           ? Colors.grey
-                          : Theme
-                          .of(context)
-                          .colorScheme
-                          .onSurface),
+                          : Theme.of(context).colorScheme.onSurface),
                   icon: const Icon(Icons.close),
                   label: const Text("Réinitialiser"),
                   onPressed: () {
@@ -164,7 +162,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                     side: const BorderSide(width: 1.0, color: Colors.grey),
                   ),
                   onPressed: () {
-                    previsionsBloc.add(FilterPrevisionsEvent([_selectedFilter])); // Envoyer un seul filtre
+                    previsionsBloc
+                        .add(FilterPrevisionsEvent(_selectedCategories, _selectedFilter)); // Envoyer un seul filtre
                     Navigator.pop(context);
                   },
                   child: const Text("Appliquer"),

@@ -18,7 +18,7 @@
                 "createdAt": "2024-01-15T08:19:01.680Z",
                 "updatedAt": "2024-01-29T14:05:53.565Z",
                 "publishedAt": "2024-01-15T08:19:05.017Z",
-                "date_debut": "2024-01-29",
+                "date_debut": "2024-02-05",
                 "date_fin": "2024-06-15"
               }
             }
@@ -54,7 +54,7 @@
           "data": {
             "id": 1,
             "attributes": {
-              "libelle": "categorie 1",
+              "libelle": "categorie1",
               "createdAt": "2024-01-15T08:19:58.942Z",
               "updatedAt": "2024-01-29T14:05:47.198Z",
               "publishedAt": "2024-01-15T08:19:59.823Z",
@@ -82,7 +82,7 @@
                 "createdAt": "2024-01-15T13:17:52.528Z",
                 "updatedAt": "2024-01-29T14:05:59.128Z",
                 "publishedAt": "2024-01-15T13:35:10.514Z",
-                "date_debut": "2024-02-15",
+                "date_debut": "2024-04-17",
                 "date_fin": "2024-05-15"
               }
             }
@@ -140,7 +140,7 @@
           "data": {
             "id": 2,
             "attributes": {
-              "libelle": "categorie 2",
+              "libelle": "categorie2",
               "createdAt": "2024-01-15T13:18:25.331Z",
               "updatedAt": "2024-01-15T13:19:08.465Z",
               "publishedAt": "2024-01-15T13:19:08.463Z",

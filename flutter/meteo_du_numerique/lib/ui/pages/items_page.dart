@@ -45,24 +45,15 @@ class ItemsPage extends StatelessWidget {
                   tabBar: TabBar(
                     overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
                     splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
-                    unselectedLabelColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .onSurface,
-                    labelColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .onSecondary,
+                    unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
+                    labelColor: Theme.of(context).colorScheme.onSecondary,
                     onTap: (index) {
                       tabIndexNotifier.value = index;
                     },
                     enableFeedback: true,
                     indicatorPadding: const EdgeInsets.all(3),
                     indicator: RoundedRectTabIndicator(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .primary,
+                        color: Theme.of(context).colorScheme.primary,
                         radius: 40,
                         borderColor: Colors.transparent,
                         borderWidth: 1),
@@ -92,24 +83,13 @@ class ItemsPage extends StatelessWidget {
                           return <Widget>[
                             BlocBuilder<ThemeBloc, ThemeState>(
                               builder: (context, state) {
-                                DefaultTabController
-                                    .of(context)
-                                    .animation
-                                    ?.addListener(() =>
-                                {
-                                  if (tabIndexNotifier.value !=
-                                      DefaultTabController
-                                          .of(context)
-                                          .animation!
-                                          .value
-                                          .round())
-                                    {
-                                      tabIndexNotifier.value = DefaultTabController
-                                          .of(context)
-                                          .index
-                                          .round(),
-                                    }
-                                });
+                                DefaultTabController.of(context).animation?.addListener(() => {
+                                      if (tabIndexNotifier.value !=
+                                          DefaultTabController.of(context).animation!.value.round())
+                                        {
+                                          tabIndexNotifier.value = DefaultTabController.of(context).index.round(),
+                                        }
+                                    });
 
                                 return SliverAppBar(
                                   shape: const RoundedRectangleBorder(
@@ -127,8 +107,8 @@ class ItemsPage extends StatelessWidget {
                                           padding: const EdgeInsets.only(bottom: 5.0),
                                           child: Text(
                                             style: const TextStyle(fontSize: 9
-                                              // todo rst
-                                            ),
+                                                // todo rst
+                                                ),
                                             lastUpdateString(itemsBloc.lastUpdate!),
                                           )),
                                       Row(
@@ -141,17 +121,13 @@ class ItemsPage extends StatelessWidget {
                                                 child: OutlinedButton.icon(
                                                   icon: const Icon(Icons.filter_list),
                                                   label: const Text('Filtres'),
-                                                  onPressed: () =>
-                                                      _showFilterBottomSheet(
-                                                          context, itemsBloc, previsionsBloc, tabIndexNotifier.value),
+                                                  onPressed: () => _showFilterBottomSheet(
+                                                      context, itemsBloc, previsionsBloc, tabIndexNotifier.value),
                                                   style: OutlinedButton.styleFrom(
                                                       side: const BorderSide(width: 1.0, color: Colors.grey),
                                                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                                                       minimumSize: const Size(110, 30),
-                                                      foregroundColor: Theme
-                                                          .of(context)
-                                                          .colorScheme
-                                                          .onSurface),
+                                                      foregroundColor: Theme.of(context).colorScheme.onSurface),
                                                 ),
                                               ),
                                               const SizedBox(
@@ -159,21 +135,18 @@ class ItemsPage extends StatelessWidget {
                                               ),
                                               tabIndex == 0
                                                   ? OutlinedButton.icon(
-                                                icon: const Icon(Icons.sort),
-                                                label: const Text('Tri'),
-                                                onPressed: () => _showSortBottomSheet(context, itemsBloc),
-                                                style: OutlinedButton.styleFrom(
-                                                    side: const BorderSide(width: 1.0, color: Colors.grey),
-                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                                    minimumSize: const Size(90, 30),
-                                                    foregroundColor: Theme
-                                                        .of(context)
-                                                        .colorScheme
-                                                        .onSurface),
-                                              )
+                                                      icon: const Icon(Icons.sort),
+                                                      label: const Text('Tri'),
+                                                      onPressed: () => _showSortBottomSheet(context, itemsBloc),
+                                                      style: OutlinedButton.styleFrom(
+                                                          side: const BorderSide(width: 1.0, color: Colors.grey),
+                                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                          minimumSize: const Size(90, 30),
+                                                          foregroundColor: Theme.of(context).colorScheme.onSurface),
+                                                    )
                                                   : const SizedBox(
-                                                width: 90,
-                                              ),
+                                                      width: 90,
+                                                    ),
                                             ],
                                           ),
                                           const ThemeSwitch(),
@@ -190,58 +163,58 @@ class ItemsPage extends StatelessWidget {
                           children: [
                             Platform.isIOS
                                 ? CustomScrollView(
-                              slivers: [
-                                CupertinoSliverRefreshControl(
-                                  onRefresh: () async {
-                                    itemsBloc.add(FetchItemsEvent(showIndicator: false));
-                                    // Ajoutez un délai si nécessaire pour simuler le temps de chargement
-                                    await Future.delayed(const Duration(milliseconds: 250));
-                                  },
-                                ),
-                                const ExpansionList(dayPrevison: true),
-                                const ItemsList(),
-                              ],
-                            )
+                                    slivers: [
+                                      CupertinoSliverRefreshControl(
+                                        onRefresh: () async {
+                                          itemsBloc.add(FetchItemsEvent(showIndicator: false));
+                                          // Ajoutez un délai si nécessaire pour simuler le temps de chargement
+                                          await Future.delayed(const Duration(milliseconds: 250));
+                                        },
+                                      ),
+                                      const ExpansionList(dayPrevison: true),
+                                      const ItemsList(),
+                                    ],
+                                  )
                                 : RefreshIndicator(
-                              onRefresh: () async {
-                                itemsBloc.add(FetchItemsEvent(showIndicator: false));
-                                await Future.delayed(const Duration(milliseconds: 250));
-                              },
-                              child: const CustomScrollView(
-                                slivers: [
-                                  ExpansionList(dayPrevison: true),
-                                  ItemsList(),
-                                ],
-                              ),
-                            ),
+                                    onRefresh: () async {
+                                      itemsBloc.add(FetchItemsEvent(showIndicator: false));
+                                      await Future.delayed(const Duration(milliseconds: 250));
+                                    },
+                                    child: const CustomScrollView(
+                                      slivers: [
+                                        ExpansionList(dayPrevison: true),
+                                        ItemsList(),
+                                      ],
+                                    ),
+                                  ),
                             Platform.isIOS
                                 ? CustomScrollView(
-                              slivers: [
-                                CupertinoSliverRefreshControl(
-                                  onRefresh: () async {
-                                    // todo rst ouvrir l'accordéon à chaque refresh?
-                                    previsionsBloc.add(OpenAllGroupsEvent());
-                                    // délai pour simuler le temps de chargement
-                                    await Future.delayed(const Duration(milliseconds: 250));
-                                  },
-                                ),
-                                const ExpansionList(
-                                  dayPrevison: false,
-                                ),
-                              ],
-                            )
+                                    slivers: [
+                                      CupertinoSliverRefreshControl(
+                                        onRefresh: () async {
+                                          // todo rst ouvrir l'accordéon à chaque refresh?
+                                          previsionsBloc.add(OpenAllGroupsEvent());
+                                          // délai pour simuler le temps de chargement
+                                          await Future.delayed(const Duration(milliseconds: 250));
+                                        },
+                                      ),
+                                      const ExpansionList(
+                                        dayPrevison: false,
+                                      ),
+                                    ],
+                                  )
                                 : RefreshIndicator(
-                              onRefresh: () async {
-                                previsionsBloc.add(OpenAllGroupsEvent());
-                              },
-                              child: const CustomScrollView(
-                                slivers: [
-                                  ExpansionList(
-                                    dayPrevison: false,
+                                    onRefresh: () async {
+                                      previsionsBloc.add(OpenAllGroupsEvent());
+                                    },
+                                    child: const CustomScrollView(
+                                      slivers: [
+                                        ExpansionList(
+                                          dayPrevison: false,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       );
@@ -280,22 +253,21 @@ class ItemsPage extends StatelessWidget {
   void _showFilterBottomSheet(BuildContext context, ItemsBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
     FocusScope.of(context).unfocus();
 
-    List<String> currentFilters = itemsBloc.currentFilters;
-    List<String> currentPrevFilters = previsionsBloc.currentFilters;
-
     showModalBottomSheet(
       scrollControlDisabledMaxHeightRatio: 0.75,
       context: context,
       builder: (BuildContext bc) {
         return tab == 0
             ? FilterBottomSheet(
-          selectedFilters: currentPrevFilters,
-          tab: tab,
-        )
+                selectedFilters: itemsBloc.currentFilters,
+                tab: tab,
+              )
             : FilterPrevisionsBottomSheet(
-          selectedFilter: currentFilters,
-          tab: tab,
-        );
+                selectedFilter: previsionsBloc.currentPeriode,
+                tab: tab,
+                // todo rst
+                selectedCategories: previsionsBloc.currentFilterCriteria,
+              );
       },
     ).then((_) {
       context.read<SearchBarBloc>().add(CloseSearchBar());
