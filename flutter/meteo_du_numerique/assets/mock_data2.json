@@ -1,0 +1,978 @@
+[
+  {
+    "id": 1,
+    "libelle": "Moodle",
+    "description": "Espaces pédagogiques 2nd degré\n- ---\nPlus d'informations : [Enseigner avec Moodle dans l'académie de Rennes](https://magistere.education.fr/ac-rennes/course/view.php?id=8377&section=1)",
+    "qualiteDeService": {
+      "id": 3,
+      "libelle": "Dysfonctionnement bloquant",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-09T14:56:40.000Z",
+    "created_at": "2021-06-09T14:56:14.000Z",
+    "updated_at": "2023-10-12T12:56:17.000Z"
+  },
+  {
+    "id": 2,
+    "libelle": "Évaluations 2D",
+    "description": "Les évaluations nationales des élèves de 6ème et de 4ème se dérouleront du **lundi 11 septembre** au **vendredi 29 septembre 2023**\n\nLes épreuves expérimentales se dérouleront elles du **lundi 11 septembre** au **vendredi 20 octobre 2023**",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-09-05T08:35:12.000Z",
+    "created_at": "2021-06-09T15:00:48.000Z",
+    "updated_at": "2023-09-06T13:01:02.000Z"
+  },
+  {
+    "id": 4,
+    "libelle": "Espaces Modulo",
+    "description": "Espace numérique des écoles dans Toutatice.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-10T08:52:38.000Z",
+    "created_at": "2021-06-10T08:52:36.000Z",
+    "updated_at": "2023-09-29T07:27:05.000Z"
+  },
+  {
+    "id": 6,
+    "libelle": "Convergence",
+    "description": "Webmail et agenda académiques.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-16T13:03:55.000Z",
+    "created_at": "2021-06-16T13:03:35.000Z",
+    "updated_at": "2023-01-18T07:28:30.000Z"
+  },
+  {
+    "id": 7,
+    "libelle": "Triskell",
+    "description": "Espaces de travail collaboratifs.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T13:41:20.000Z",
+    "created_at": "2021-06-25T13:41:16.000Z",
+    "updated_at": "2023-01-18T07:35:38.000Z"
+  },
+  {
+    "id": 8,
+    "libelle": "ARENA",
+    "description": "Portail d'accès aux applications métier.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T13:48:23.000Z",
+    "created_at": "2021-06-25T13:48:19.000Z",
+    "updated_at": "2023-01-18T07:27:08.000Z"
+  },
+  {
+    "id": 10,
+    "libelle": "EduConnect",
+    "description": "Compte unique pour les accès aux services numériques des élèves et représentants légaux dans les écoles et des établissements\n\n-----\n\nPlus d'informations : [EduConnect](https://www.toutatice.fr/portail/share/yj4nCu)",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:33:55.000Z",
+    "created_at": "2021-06-25T14:33:53.000Z",
+    "updated_at": "2023-12-14T07:17:07.000Z"
+  },
+  {
+    "id": 11,
+    "libelle": "GAR",
+    "description": "Gestionnaire d'accès aux ressources pédagogiques.\n\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-08-30T07:56:07.000Z",
+    "created_at": "2021-06-25T14:36:43.000Z",
+    "updated_at": "2023-09-12T10:14:32.000Z"
+  },
+  {
+    "id": 12,
+    "libelle": "I-Prof",
+    "description": "Gestion de carrière des enseignant(e)s",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:37:00.000Z",
+    "created_at": "2021-06-25T14:36:58.000Z",
+    "updated_at": "2023-01-18T07:30:02.000Z"
+  },
+  {
+    "id": 14,
+    "libelle": "Le Chat",
+    "description": "Messagerie instantanée pour les agents.\n\n----\n\n[https://lechat.toutatice.fr](https://lechat.toutatice.fr)",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-09-13T12:41:45.000Z",
+    "created_at": "2021-06-25T14:38:35.000Z",
+    "updated_at": "2023-11-14T11:21:06.000Z"
+  },
+  {
+    "id": 15,
+    "libelle": "ONDE",
+    "description": "**ONDE** : Outil de gestion des élèves du premier degré.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-08-27T07:47:42.000Z",
+    "created_at": "2021-06-25T14:39:43.000Z",
+    "updated_at": "2023-12-11T09:59:31.000Z"
+  },
+  {
+    "id": 16,
+    "libelle": "PMB",
+    "description": "Gestion du fonds documentaire du CDI.\n\n----\n\n**Mardi 5 décembre 14h00** /  le point sur les dernières difficultés consécutives à la montée de version :\n- accès authentifié à l'OPAC : **OK** ; l'authentification est à nouveau possible comme avant, en cliquant sur le lien \"Se connecter\" en haut à gauche de la page d'accueil du portail.\n- affichage des vignettes / couvertures : **OK** **mais** il faut paramétrer en gestion : Vignettes > Sources de vignettes > Liens externes, et avec les flèches à droite, monter pictures.abebooks en premier > Enregistrer. **Attention** : les vignettes enregistrées sous forme de liens pointant vers un site extérieur ne s'affichent pas actuellement.\n\nPour les autres problèmes non listés ci-dessus, vous pouvez faire une demande AMIGO. Merci pour votre patience et votre compréhension.",
+    "qualiteDeService": {
+      "id": 2,
+      "libelle": "Perturbations",
+      "published_at": "2021-06-09T14:49:00.000Z",
+      "created_at": "2021-06-09T14:48:58.000Z",
+      "updated_at": "2021-06-09T14:49:00.000Z",
+      "key": 2
+    },
+    "published_at": "2021-06-25T14:39:56.000Z",
+    "created_at": "2021-06-25T14:39:54.000Z",
+    "updated_at": "2023-12-05T13:11:33.000Z"
+  },
+  {
+    "id": 17,
+    "libelle": "Pronote",
+    "description": "Service de vie scolaire des établissements\n\nLes accès à Pronote depuis Toutatice seront réouverts le vendredi 1er septembre. ",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:40:14.000Z",
+    "created_at": "2021-06-25T14:40:04.000Z",
+    "updated_at": "2023-08-30T13:06:26.000Z"
+  },
+  {
+    "id": 18,
+    "libelle": "Siècle",
+    "description": "Outil de gestion des élèves du second degré.\n\n---\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:41:12.000Z",
+    "created_at": "2021-06-25T14:41:09.000Z",
+    "updated_at": "2023-11-14T10:03:59.000Z"
+  },
+  {
+    "id": 19,
+    "libelle": "Sites web écoles et établissements",
+    "description": "Sites web fournis et hébergés par l'académie pour les établissements et écoles.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:41:54.000Z",
+    "created_at": "2021-06-25T14:41:52.000Z",
+    "updated_at": "2023-04-18T15:29:14.000Z"
+  },
+  {
+    "id": 21,
+    "libelle": "SUIMI",
+    "description": "Outil de suivi des missions individuelles en établissement.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-09-12T14:34:06.000Z",
+    "created_at": "2021-06-25T14:42:46.000Z",
+    "updated_at": "2023-01-18T07:34:46.000Z"
+  },
+  {
+    "id": 22,
+    "libelle": "Téléphonie",
+    "description": "Service de téléphonie au Rectorat et en DSDEN.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:43:05.000Z",
+    "created_at": "2021-06-25T14:43:03.000Z",
+    "updated_at": "2023-01-18T07:35:03.000Z"
+  },
+  {
+    "id": 23,
+    "libelle": "Portail Toutatice",
+    "description": "Le point d'accès unique à toute votre offre de service",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:43:31.000Z",
+    "created_at": "2021-06-25T14:43:29.000Z",
+    "updated_at": "2023-09-11T12:47:01.000Z"
+  },
+  {
+    "id": 25,
+    "libelle": "ToutaPod",
+    "description": "Service de stockage et de partage de vidéos.\n\n[ToutaPod](https://video.toutatice.fr)\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-06-25T14:44:02.000Z",
+    "created_at": "2021-06-25T14:44:00.000Z",
+    "updated_at": "2023-01-20T09:16:52.000Z"
+  },
+  {
+    "id": 26,
+    "libelle": "Interview",
+    "description": "L'outil d'enquêtes en ligne permettant de réaliser des formulaires à destinations d'utilisateurs.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-08-26T14:18:05.000Z",
+    "created_at": "2021-08-26T14:17:45.000Z",
+    "updated_at": "2023-03-08T10:32:16.000Z"
+  },
+  {
+    "id": 27,
+    "libelle": "AMIGO",
+    "description": "**Assistance Mutualisée Interacadémique du Grand-Ouest**\n\n---\n\n**Situation du mardi 19/12 :**\n\n**46 demandes en attente de traitement sur les 3 académies dont 35 % pour Rennes** (16 demandes) :\n-  la plus ancienne datant du 18/12 à 15h40.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-08-27T07:19:32.000Z",
+    "created_at": "2021-08-27T07:19:17.000Z",
+    "updated_at": "2023-12-19T08:27:23.000Z"
+  },
+  {
+    "id": 29,
+    "libelle": "Folios",
+    "description": "Application de suivi des parcours éducatifs dans les établissements (ONISEP)",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-09T15:42:18.000Z",
+    "created_at": "2021-09-03T08:17:50.000Z",
+    "updated_at": "2023-01-18T07:29:12.000Z"
+  },
+  {
+    "id": 30,
+    "libelle": "Gestion des PPMS, sorties scolaires",
+    "description": "L'application de dépôt des documents sécurité/sûreté dans les établissements/écoles.\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-09-03T08:33:10.000Z",
+    "created_at": "2021-09-03T08:32:12.000Z",
+    "updated_at": "2023-10-12T11:41:26.000Z"
+  },
+  {
+    "id": 31,
+    "libelle": "Scolarité services",
+    "description": "Portail national des démarches parents (téléservices, bourses, inscriptions, orientation, ...)\n\n----\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-09-03T09:15:05.000Z",
+    "created_at": "2021-09-03T09:15:01.000Z",
+    "updated_at": "2023-11-14T10:04:10.000Z"
+  },
+  {
+    "id": 32,
+    "libelle": "COLIBRIS",
+    "description": "Portail de démarches pour les agents.\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-11-25T14:34:23.000Z",
+    "created_at": "2021-11-25T14:34:02.000Z",
+    "updated_at": "2023-12-13T14:19:57.000Z"
+  },
+  {
+    "id": 33,
+    "libelle": "Capytale",
+    "description": "Plateforme de codage en ligne.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2021-12-13T09:00:58.000Z",
+    "created_at": "2021-12-13T09:00:48.000Z",
+    "updated_at": "2022-12-07T16:02:38.000Z"
+  },
+  {
+    "id": 34,
+    "libelle": "m@gistère",
+    "description": "Service opérationnel",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-07-12T08:19:07.000Z",
+    "created_at": "2021-12-21T11:31:24.000Z",
+    "updated_at": "2023-11-23T15:57:35.000Z"
+  },
+  {
+    "id": 35,
+    "libelle": "Messagerie académique",
+    "description": "-",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-02-23T08:00:04.000Z",
+    "created_at": "2022-02-23T07:57:35.000Z",
+    "updated_at": "2023-05-26T12:21:11.000Z"
+  },
+  {
+    "id": 37,
+    "libelle": "MyToutatice",
+    "description": "**Espace numérique personnel de l'agent** : stockage en ligne, partage de fichiers, coffre fort de mots de passe. [MyToutatice](https://www.toutatice.fr/portail/share/4gZ0hy)",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-06-30T14:06:35.000Z",
+    "created_at": "2022-03-21T12:09:18.000Z",
+    "updated_at": "2023-08-23T06:51:27.000Z"
+  },
+  {
+    "id": 38,
+    "libelle": "RSST ",
+    "description": "Registre santé et sécurité au travail\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-12-05T16:57:52.000Z",
+    "created_at": "2022-05-06T10:29:03.000Z",
+    "updated_at": "2023-12-06T15:40:27.000Z"
+  },
+  {
+    "id": 39,
+    "libelle": "Bureau Numérique du Directeur (BND)",
+    "description": "Sorties scolaires, PPMS, Projet d'école sont disponibles pour l'année scolaire 23-24.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-09-13T12:42:10.000Z",
+    "created_at": "2022-09-06T08:15:22.000Z",
+    "updated_at": "2023-09-15T07:06:55.000Z"
+  },
+  {
+    "id": 40,
+    "libelle": "AGESH",
+    "description": "**AGESH : Application de Gestion pour les Élèves en Situation de Handicap**",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-09-06T13:42:19.000Z",
+    "created_at": "2022-09-06T13:41:53.000Z",
+    "updated_at": "2023-11-06T09:42:41.000Z"
+  },
+  {
+    "id": 43,
+    "libelle": "Démarches Simplifiées",
+    "description": "\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-06-08T13:01:27.000Z",
+    "created_at": "2022-11-07T15:54:18.000Z",
+    "updated_at": "2023-06-12T06:56:32.000Z"
+  },
+  {
+    "id": 44,
+    "libelle": "Visio-agents",
+    "description": "Service national de visioconférence pour les agents.\n- ---\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-11-21T08:06:31.000Z",
+    "created_at": "2022-11-21T08:06:28.000Z",
+    "updated_at": "2023-11-20T10:49:18.000Z"
+  },
+  {
+    "id": 45,
+    "libelle": "Cartoun",
+    "description": "Cartographie des activités pédagogiques. [https://cartoun.education.fr](https://cartoun.education.fr)",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-11-25T13:26:18.000Z",
+    "created_at": "2022-11-25T13:26:13.000Z",
+    "updated_at": "2023-07-17T07:09:47.000Z"
+  },
+  {
+    "id": 46,
+    "libelle": "Outil de pilotage académique (BO)",
+    "description": "Outil de restitution de données.\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-07T16:37:21.000Z",
+    "created_at": "2022-12-07T15:05:21.000Z",
+    "updated_at": "2022-12-21T15:13:54.000Z"
+  },
+  {
+    "id": 47,
+    "libelle": "Mouvement des enseignants du 2nd degré (SIAM2)",
+    "description": "Gestion du mouvement des enseignants du second degré\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-08T08:31:52.000Z",
+    "created_at": "2022-12-08T08:31:50.000Z",
+    "updated_at": "2023-05-15T09:09:41.000Z"
+  },
+  {
+    "id": 48,
+    "libelle": "SIIPRIEN",
+    "description": "Système d'Information des IPR et IEN",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-08T10:51:50.000Z",
+    "created_at": "2022-12-08T10:51:47.000Z",
+    "updated_at": "2023-01-18T07:34:02.000Z"
+  },
+  {
+    "id": 49,
+    "libelle": "REMPR1D",
+    "description": "Application de gestion des remplacements dans le premier degré privé.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-08T10:58:24.000Z",
+    "created_at": "2022-12-08T10:58:09.000Z",
+    "updated_at": "2023-01-18T07:33:14.000Z"
+  },
+  {
+    "id": 50,
+    "libelle": "EVRIGO",
+    "description": "**EVRIGO** : Application de gestion et d'organisation d'événements.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-09T10:54:57.000Z",
+    "created_at": "2022-12-08T13:24:39.000Z",
+    "updated_at": "2023-06-20T11:51:30.000Z"
+  },
+  {
+    "id": 51,
+    "libelle": "OGRH",
+    "description": "Outil de Gestion des Ressources Humaines pour les GRETA et GIPFAR.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-08T13:30:13.000Z",
+    "created_at": "2022-12-08T13:30:11.000Z",
+    "updated_at": "2023-01-18T07:31:52.000Z"
+  },
+  {
+    "id": 52,
+    "libelle": "ASCOM",
+    "description": "Application de gestion des congés longs.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2022-12-08T13:31:34.000Z",
+    "created_at": "2022-12-08T13:31:31.000Z",
+    "updated_at": "2023-03-10T15:24:00.000Z"
+  },
+  {
+    "id": 54,
+    "libelle": "RenoiRH et ses satellites",
+    "description": "Application de gestion RH des personnels Techniques Sociaux et de Santé.\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-01-10T07:47:22.000Z",
+    "created_at": "2023-01-10T07:27:28.000Z",
+    "updated_at": "2023-01-16T17:22:58.000Z"
+  },
+  {
+    "id": 55,
+    "libelle": "AFFELNET 6e",
+    "description": "**Affectation des élèves en classe de 6e**",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-01-16T17:21:39.000Z",
+    "created_at": "2023-01-16T17:21:37.000Z",
+    "updated_at": "2023-05-16T06:48:25.000Z"
+  },
+  {
+    "id": 56,
+    "libelle": "LSU",
+    "description": "**LSU** : Livret Scolaire Unique",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-02-13T13:49:55.000Z",
+    "created_at": "2023-02-13T13:49:50.000Z",
+    "updated_at": "2023-11-08T10:52:48.000Z"
+  },
+  {
+    "id": 57,
+    "libelle": "Olympie",
+    "description": "Création et évaluation de sections sportives scolaires.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-03-08T10:37:33.000Z",
+    "created_at": "2023-03-08T10:37:31.000Z",
+    "updated_at": "2023-03-13T13:26:22.000Z"
+  },
+  {
+    "id": 58,
+    "libelle": "Cyclades",
+    "description": "Gestion des examens et concours",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-03-22T15:46:39.000Z",
+    "created_at": "2023-03-22T15:46:33.000Z",
+    "updated_at": "2023-03-23T08:00:15.000Z"
+  },
+  {
+    "id": 60,
+    "libelle": "ASSED",
+    "description": "**ASSED** : Recrutement des Assistants d’Éducation, des Accompagnants d’Élèves en Situation de Handicap et des Assistants Pédagogiques\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-03-31T06:32:54.000Z",
+    "created_at": "2023-03-31T06:32:47.000Z",
+    "updated_at": "2023-04-17T15:45:08.000Z"
+  },
+  {
+    "id": 61,
+    "libelle": "INCLUSCOL",
+    "description": "**Incluscol : demande d'aménagement d'examen**",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-05T12:46:06.000Z",
+    "created_at": "2023-05-05T12:45:57.000Z",
+    "updated_at": "2023-09-04T07:20:44.000Z"
+  },
+  {
+    "id": 62,
+    "libelle": "TRIBU",
+    "description": "Espaces collaboratifs inter-académiques\n\n----\n**Vendredi 8 décembre 20h** : Les accès à TRIBU ont été rétablis.\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-09T08:51:06.000Z",
+    "created_at": "2023-05-09T08:49:18.000Z",
+    "updated_at": "2023-12-11T07:17:51.000Z"
+  },
+  {
+    "id": 63,
+    "libelle": "DEM'ACT",
+    "description": "La plateforme de signature DEM'ACT\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-16T09:26:04.000Z",
+    "created_at": "2023-05-16T09:25:55.000Z",
+    "updated_at": "2023-12-18T14:08:44.000Z"
+  },
+  {
+    "id": 64,
+    "libelle": "OP@LE",
+    "description": "**OP@LE** : Outil de Pilotage et d'administration financiers en EPLE\n\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-16T09:49:59.000Z",
+    "created_at": "2023-05-16T09:49:56.000Z",
+    "updated_at": "2023-12-11T07:38:13.000Z"
+  },
+  {
+    "id": 66,
+    "libelle": "LPI",
+    "description": "**LPI** : Livret de Parcours Inclusif",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-22T09:48:22.000Z",
+    "created_at": "2023-05-22T09:48:20.000Z",
+    "updated_at": "2023-12-07T08:13:41.000Z"
+  },
+  {
+    "id": 67,
+    "libelle": "LSL",
+    "description": "**LSL** : Livret Scolaire du Lycéen",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-05-23T11:46:54.000Z",
+    "created_at": "2023-05-23T11:46:47.000Z",
+    "updated_at": "2023-05-23T11:46:54.000Z"
+  },
+  {
+    "id": 68,
+    "libelle": "IMAGIN",
+    "description": "**IMAGIN** : Système d’Information Mission Affectation pour la Gestion des Intervenants examens",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-06-19T07:19:56.000Z",
+    "created_at": "2023-06-19T07:19:29.000Z",
+    "updated_at": "2023-06-19T10:16:39.000Z"
+  },
+  {
+    "id": 69,
+    "libelle": "Interactik",
+    "description": "",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-06-20T12:35:03.000Z",
+    "created_at": "2023-06-20T12:35:00.000Z",
+    "updated_at": "2023-06-22T15:23:03.000Z"
+  },
+  {
+    "id": 71,
+    "libelle": "Moodle Éléa",
+    "description": "Espace pédagogique\n- ---\nLes plateformes Éléa sont opérationnelles.\n- ---\nVoir l'espace m@gistère [Enseigner avec Moodle Éléa](https://magistere.education.fr/ac-rennes/course/view.php?id=8377) \n- ---\nLes **plateformes Éléa seront indisponibles** dans toutes les académies où Éléa est proposée la 2ème semaine des vacances de Noël **entre le 2 et le 5 janvier 2024** pour permettre le **passage à Moodle 4** et la **refonte visuelle** de l'application. \n![Logo ELEA.png](https://www.toutatice.fr/strapi/uploads/Logo_ELEA_632fa5866c.png)\n",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-09-04T06:27:18.000Z",
+    "created_at": "2023-09-04T06:26:54.000Z",
+    "updated_at": "2023-12-01T07:14:46.000Z"
+  },
+  {
+    "id": 72,
+    "libelle": "Evaluations 1D",
+    "description": "La période de passation des épreuves des évaluations nationales dans les écoles pour les élèves de CP, CE1 et CM1 est prévue du **lundi 11 septembre** au **vendredi 22 septembre 2023**.",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-09-06T13:03:31.000Z",
+    "created_at": "2023-09-05T07:34:02.000Z",
+    "updated_at": "2023-09-06T13:03:31.000Z"
+  },
+  {
+    "id": 73,
+    "libelle": "Sofia FMO",
+    "description": "Suivi des formations proposées dans le cadre du PAF (abonnement, inscription, participation, organisation) - 2nd degré et services académiques\n\n----\n\n**lundi 9 octobre** : Des utilisateurs rencontrent des problèmes d’accès à l’application. Si le problème persiste, merci de faire une demande AMIGO pour un traitement individuel de votre situation, en précisant bien la nature du dysfonctionnement (capture d'écran, message d'erreur) en attendant une résolution plus globale. Si vous avez déjà fait une demande AMIGO et que vous constatez que votre accès est rétabli, nous vous remercions de fermer vous-même votre demande. ",
+    "qualiteDeService": {
+      "id": 2,
+      "libelle": "Perturbations",
+      "published_at": "2021-06-09T14:49:00.000Z",
+      "created_at": "2021-06-09T14:48:58.000Z",
+      "updated_at": "2021-06-09T14:49:00.000Z",
+      "key": 2
+    },
+    "published_at": "2023-09-22T12:18:25.000Z",
+    "created_at": "2023-09-22T12:18:22.000Z",
+    "updated_at": "2023-10-09T08:19:18.000Z"
+  },
+  {
+    "id": 74,
+    "libelle": "PIX",
+    "description": "**Cultivez vos compétences numériques**",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-10-09T08:46:38.000Z",
+    "created_at": "2023-10-09T08:43:35.000Z",
+    "updated_at": "2023-10-10T08:52:46.000Z"
+  },
+  {
+    "id": 75,
+    "libelle": "APLyPro",
+    "description": "**APLyPro : Allocation Pour les Lycéens Professionnels**\n\nInformations : https://eduscol.education.fr/3860/allocation-de-stage-au-lycee-professionnel\n\n---\n**Mercredi 15 novembre 2023** : Ouverture du service à l'ensemble des lycées professionnels",
+    "qualiteDeService": {
+      "id": 1,
+      "libelle": "Fonctionnement habituel",
+      "published_at": "2021-06-09T14:48:35.000Z",
+      "created_at": "2021-06-09T14:48:29.000Z",
+      "updated_at": "2021-06-09T14:48:35.000Z",
+      "key": 1
+    },
+    "published_at": "2023-11-15T12:35:33.000Z",
+    "created_at": "2023-11-15T12:33:47.000Z",
+    "updated_at": "2023-11-22T09:51:59.000Z"
+  }
+]

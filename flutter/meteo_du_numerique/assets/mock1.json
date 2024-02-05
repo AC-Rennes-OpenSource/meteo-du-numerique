@@ -1,0 +1,201 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "libelle": "Toutatice",
+        "description": "description service 1",
+        "createdAt": "2024-01-12T08:44:21.988Z",
+        "updatedAt": "2024-01-15T13:37:53.820Z",
+        "publishedAt": "2024-01-15T13:14:49.878Z",
+        "actualites": {
+          "data": [
+            {
+              "id": 2,
+              "attributes": {
+                "libelle": "actualite 1",
+                "description": "description actu 1",
+                "createdAt": "2024-01-15T13:07:26.537Z",
+                "updatedAt": "2024-01-15T13:14:36.677Z",
+                "publishedAt": "2024-01-15T13:14:36.675Z"
+              }
+            }
+          ]
+        },
+        "public": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "public1",
+              "createdAt": "2024-01-15T08:20:09.867Z",
+              "updatedAt": "2024-01-15T13:08:25.811Z",
+              "publishedAt": "2024-01-15T08:20:10.815Z"
+            }
+          }
+        },
+        "previsions": {
+          "data": [
+            {
+              "id": 1,
+              "attributes": {
+                "libelle": "Prévision #1",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in  description prevision 1",
+                "createdAt": "2024-01-15T08:19:01.680Z",
+                "updatedAt": "2024-01-15T13:08:12.479Z",
+                "publishedAt": "2024-01-15T08:19:05.017Z",
+                "date_debut": "2024-01-29",
+                "date_fin": "2025-06-15"
+              }
+            }
+          ]
+        },
+        "categorie": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "Examens et concours",
+              "createdAt": "2024-01-15T08:19:58.942Z",
+              "updatedAt": "2024-01-15T13:36:11.158Z",
+              "publishedAt": "2024-01-15T08:19:59.823Z",
+              "couleur": "vert"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "attributes": {
+        "libelle": "Application 2",
+        "description": "description Application 2",
+        "createdAt": "2024-01-15T13:38:25.210Z",
+        "updatedAt": "2024-01-15T13:38:27.620Z",
+        "publishedAt": "2024-01-15T13:38:27.619Z",
+        "actualites": {
+          "data": [
+            {
+              "id": 3,
+              "attributes": {
+                "libelle": "actualite 2",
+                "description": "description actualite 2",
+                "createdAt": "2024-01-15T13:35:33.563Z",
+                "updatedAt": "2024-01-15T13:36:00.326Z",
+                "publishedAt": "2024-01-15T13:36:00.325Z"
+              }
+            }
+          ]
+        },
+        "public": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "public1",
+              "createdAt": "2024-01-15T08:20:09.867Z",
+              "updatedAt": "2024-01-15T13:08:25.811Z",
+              "publishedAt": "2024-01-15T08:20:10.815Z"
+            }
+          }
+        },
+        "previsions": {
+          "data": [
+            {
+              "id": 2,
+              "attributes": {
+                "libelle": "Prévision #2",
+                "description": " Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in description prevision 2",
+                "createdAt": "2024-01-15T13:17:52.528Z",
+                "updatedAt": "2024-01-15T13:35:10.516Z",
+                "publishedAt": "2024-01-15T13:35:10.514Z",
+                "date_debut": "2025-01-01",
+                "date_fin": "2025-10-01"
+              }
+            }
+          ]
+        },
+        "categorie": {
+          "data": {
+            "id": 2,
+            "attributes": {
+              "libelle": "Communication",
+              "createdAt": "2024-01-15T13:18:25.331Z",
+              "updatedAt": "2024-01-15T13:19:08.465Z",
+              "publishedAt": "2024-01-15T13:19:08.463Z",
+              "couleur": "bleu"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "attributes": {
+        "libelle": "Service 3",
+        "description": "description service 3",
+        "createdAt": "2024-01-12T08:44:21.988Z",
+        "updatedAt": "2024-01-15T13:37:53.820Z",
+        "publishedAt": "2024-01-15T13:14:49.878Z",
+        "actualites": {
+          "data": [
+            {
+              "id": 2,
+              "attributes": {
+                "libelle": "Actualité 3",
+                "description": "Description Actualité 3",
+                "createdAt": "2024-01-15T13:07:26.537Z",
+                "updatedAt": "2024-01-15T13:14:36.677Z",
+                "publishedAt": "2024-01-15T13:14:36.675Z"
+              }
+            }
+          ]
+        },
+        "public": {
+          "data": {
+            "id": 3,
+            "attributes": {
+              "libelle": "public3",
+              "createdAt": "2024-01-15T08:20:09.867Z",
+              "updatedAt": "2024-01-15T13:08:25.811Z",
+              "publishedAt": "2024-01-15T08:20:10.815Z"
+            }
+          }
+        },
+        "previsions": {
+          "data": [
+            {
+              "id": 3,
+              "attributes": {
+                "libelle": "Prévision #3",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in  description prevision 1",
+                "createdAt": "2024-01-15T08:19:01.680Z",
+                "updatedAt": "2024-01-15T13:08:12.479Z",
+                "publishedAt": "2024-01-15T08:19:05.017Z",
+                "date_debut": "2024-02-27",
+                "date_fin": "2024-06-15"
+              }
+            }
+          ]
+        },
+        "categorie": {
+          "data": {
+            "id": 3,
+            "attributes": {
+              "libelle": "Pédagogie",
+              "createdAt": "2024-01-15T08:19:58.942Z",
+              "updatedAt": "2024-01-15T13:36:11.158Z",
+              "publishedAt": "2024-01-15T08:19:59.823Z",
+              "couleur": "rose"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 25,
+      "pageCount": 1,
+      "total": 2
+    }
+  }
+}

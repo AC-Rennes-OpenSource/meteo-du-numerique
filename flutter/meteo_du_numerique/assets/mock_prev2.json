@@ -1,0 +1,62 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "libelle": "prevision1",
+        "description": "description",
+        "createdAt": "2024-01-15T08:19:01.680Z",
+        "updatedAt": "2024-01-15T08:19:05.018Z",
+        "publishedAt": "2024-01-15T08:19:05.017Z",
+        "actualites": {
+          "data": []
+        },
+        "public": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "public1",
+              "createdAt": "2024-01-15T08:20:09.867Z",
+              "updatedAt": "2024-01-15T08:20:10.817Z",
+              "publishedAt": "2024-01-15T08:20:10.815Z"
+            }
+          }
+        },
+        "categorie": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "categorie1",
+              "description": "description1",
+              "createdAt": "2024-01-15T08:19:58.942Z",
+              "updatedAt": "2024-01-15T08:19:59.824Z",
+              "publishedAt": "2024-01-15T08:19:59.823Z"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "attributes": {
+        "libelle": "prevision2",
+        "categorie": {
+          "data": {
+            "id": 1,
+            "attributes": {
+              "libelle": "categorie1"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 25,
+      "pageCount": 1,
+      "total": 1
+    }
+  }
+}
