@@ -14,7 +14,7 @@ class ThemePreferences {
     final String themeModeString = prefs.getString(_themeKey) ?? 'system';
 
     return ThemeModePreference.values.firstWhere(
-          (element) => element.toString().split('.').last == themeModeString,
+      (element) => element.toString().split('.').last == themeModeString,
       orElse: () => ThemeModePreference.system,
     );
   }

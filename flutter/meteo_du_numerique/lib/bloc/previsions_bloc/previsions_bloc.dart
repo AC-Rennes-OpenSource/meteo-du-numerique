@@ -42,7 +42,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     }
 
     // todo rst : délai pour test
-    await Future.delayed(const Duration(milliseconds: 250));
+    // await Future.delayed(const Duration(milliseconds: 250));
 
     try {
       final previsions = await _getPrevisions();

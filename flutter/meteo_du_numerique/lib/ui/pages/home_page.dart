@@ -254,8 +254,8 @@ class HomePage extends StatelessWidget {
                                         onRefresh: () async {
                                           previsionsBloc.add(FetchPrevisionsEvent());
                                           servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                          // Ajoutez un délai si nécessaire pour simuler le temps de chargement
-                                          await Future.delayed(const Duration(milliseconds: 250));
+                                          // todo rst : délai pour test
+                                          // await Future.delayed(const Duration(milliseconds: 250));
                                         },
                                       ),
                                       const ExpansionList(dayPrevison: true),
@@ -266,7 +266,8 @@ class HomePage extends StatelessWidget {
                                     onRefresh: () async {
                                       previsionsBloc.add(FetchPrevisionsEvent());
                                       servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                      await Future.delayed(const Duration(milliseconds: 250));
+                                      // todo rst : délai pour test
+                                      // await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
                                       slivers: [
@@ -283,8 +284,8 @@ class HomePage extends StatelessWidget {
                                           // todo rst ouvrir l'accordéon à chaque refresh?
                                           previsionsBloc.add(FetchPrevisionsEvent());
                                           previsionsBloc.add(OpenAllGroupsEvent());
-                                          // délai pour simuler le temps de chargement
-                                          await Future.delayed(const Duration(milliseconds: 250));
+                                          // todo rst : délai pour test
+                                          //  await Future.delayed(const Duration(milliseconds: 250));
                                         },
                                       ),
                                       const ExpansionList(
@@ -296,8 +297,8 @@ class HomePage extends StatelessWidget {
                                     onRefresh: () async {
                                       previsionsBloc.add(FetchPrevisionsEvent());
                                       previsionsBloc.add(OpenAllGroupsEvent());
-                                      // délai pour simuler le temps de chargement
-                                      await Future.delayed(const Duration(milliseconds: 250));
+                                      // todo rst : délai pour test
+                                      // await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
                                       slivers: [

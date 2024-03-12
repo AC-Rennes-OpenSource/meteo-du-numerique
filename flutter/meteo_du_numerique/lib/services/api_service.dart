@@ -1,24 +1,21 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:meteo_du_numerique/config.dart';
 
 import '../models/prevision_model.dart';
 import '../models/service_num_model.dart';
 import '../models/service_num_model_old.dart';
 
 class ApiService {
-  final String baseUrl = "https://www.toutatice.fr/strapi";
+  //  todo rst mémo
+  //  final String v3url = "https://www.toutatice.fr/strapi/services";
+  //  final v4url = "https://www.toutatice.fr/strapi/api/services?populate=*";
+  final String baseUrl = Config.baseUrl;
 
-  final String v3url = "https://www.toutatice.fr/strapi/services";
-  final v4url = "https://www.toutatice.fr/strapi/api/services?populate=*";
-  final qtV4Url = "https://qt.toutatice.fr/strapi/api/services?populate=*";
-  final localV4 = "http://10.0.2.2:1337/api";
-
-  final String urlAttributes =
-      '/services?populate[previsions]=*&populate[actualites][populate]=qualite_de_service&populate=categorie';
-
-  Future<List<ServiceNumOld>> fetchItems({String? category, String? sortBy, String? query}) async {
+  Future<List<ServiceNumOld>> fetchItems_v3({String? category, String? sortBy, String? query}) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/services'));
       return _processResponse(response.body, category, sortBy, query);
@@ -29,16 +26,25 @@ class ApiService {
 
   Future<List<ActualiteA>> fetchMockItems() async {
     try {
-      // String data = await rootBundle.loadString('assets/mock2.json');
-      // return getActu(_processResponseServiceNum(data));
+      String data = await rootBundle.loadString('assets/mock2.json');
+      return getActu(_processResponseServiceNum(data));
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw Exception('Failed to load mock data: $e');
+    }
+  }
 
-      final response = await http.get(Uri.parse('$localV4$urlAttributes'));
+  Future<List<ActualiteA>> fetchItems() async {
+    try {
+      final response = await http.get(Uri.parse(baseUrl + Config.urlAttributes));
       return getActu(_processResponseServiceNum(response.body));
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
-      throw Exception('Failed to load mock previsions: $e');
+      throw Exception('Failed to load data: $e');
     }
   }
 
@@ -74,7 +80,7 @@ class ApiService {
           servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
           break;
         default:
-        // Gérer le cas où 'sortBy' n'est pas un attribut valide
+          // Gérer le cas où 'sortBy' n'est pas un attribut valide
           break;
       }
     }
@@ -95,7 +101,7 @@ class ApiService {
       // String data = await rootBundle.loadString('assets/mock2.json');
       // return getSortedPrev(_processResponseServiceNum(data));
 
-      final response = await http.get(Uri.parse('$localV4$urlAttributes'));
+      final response = await http.get(Uri.parse(baseUrl + Config.urlAttributes));
       return getSortedPrev(_processResponseServiceNum(response.body));
 
       // todo old method

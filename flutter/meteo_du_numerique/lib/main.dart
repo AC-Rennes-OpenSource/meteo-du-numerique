@@ -23,15 +23,27 @@ import 'firebase_options.dart';
 final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _initLocalNotifications() async {
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_notification');
-  const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-  await localNotificationsPlugin.initialize(initializationSettings);
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
+
+  // Configuration pour iOS
+  const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await localNotificationsPlugin.initialize(
+    initializationSettings,
+  );
 }
 
 Future<void> main() async {
-  await dotenv.load(fileName: "assets/.env"); // Charge les variables d'environnement
-  String apiKey = dotenv.env['API_KEY'] ?? "Clé API non trouvée";
-  print("----------------------$apiKey");
+  await dotenv.load(fileName: ".env"); // Charge les variables d'environnement
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await _initLocalNotifications();

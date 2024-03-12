@@ -42,7 +42,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     }
 
     // todo rst : délai pour test
-    await Future.delayed(const Duration(milliseconds: 250));
+    // await Future.delayed(const Duration(milliseconds: 250));
 
     try {
       final servicesList = await _getItems();
@@ -91,14 +91,10 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     add(FetchServicesNumEvent());
   }
 
-  Future<List<ServiceNumOld>> _getItemsOld() async {
+  Future<List<ServiceNumOld>> _getItems_v3() async {
     List<ServiceNumOld> servicesList;
 
-    servicesList = await apiService.fetchItems();
-    // await (useMockData
-    //     ? apiService.fetchMockItems()
-    //     : apiService.fetchItems();
-    // );
+    servicesList = await apiService.fetchItems_v3();
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
@@ -142,11 +138,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   Future<List<ActualiteA>> _getItems() async {
     List<ActualiteA> servicesList;
 
-    servicesList = await apiService.fetchMockItems();
-    // await (useMockData
-    //     ? apiService.fetchMockItems()
-    //     : apiService.fetchItems();
-    // );
+    servicesList = await apiService.fetchItems();
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
@@ -165,7 +157,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
       servicesList = itemupdate;
     }
 
-    // Apply sorting
+    // sorting
     if (currentSortCriteria != null) {
       if (currentSortCriteria == "qualiteDeServiceId") {
         if (currentSortOrder == 'asc') {

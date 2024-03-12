@@ -198,7 +198,7 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
                         child: isSmallScreen
                             ? const SizedBox.shrink()
                             : Padding(
-                          padding: const EdgeInsets.only(left: 0, top: 40, bottom: 30, right: 50),
+                                padding: const EdgeInsets.only(left: 0, top: 40, bottom: 30, right: 50),
                                 child: Image.asset('assets/logo_academie.jpg'),
                               ),
                       ),
