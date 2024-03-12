@@ -5,7 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
-import 'data_model.dart';
+import '../web-ui/data_model.dart';
 import 'repository.dart';
 import 'service_card_widget.dart';
 
@@ -184,7 +184,7 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
           titlePadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
           centerTitle: true,
           collapseMode: CollapseMode.parallax,
-          title: isCollapsed ? Image.asset('images/icon-meteo-modified-large2.png') : null,
+          title: isCollapsed ? Image.asset('assets/icon-meteo-round.png') : null,
           background: Padding(
             padding: const EdgeInsets.only(top: 20.0),
             child: Column(
@@ -198,8 +198,8 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
                         child: isSmallScreen
                             ? const SizedBox.shrink()
                             : Padding(
-                                padding: const EdgeInsets.only(left: 0, top: 40, bottom: 30, right: 50),
-                                child: Image.asset('images/logo_academie.jpg'),
+                          padding: const EdgeInsets.only(left: 0, top: 40, bottom: 30, right: 50),
+                                child: Image.asset('assets/logo_academie.jpg'),
                               ),
                       ),
                       Expanded(
@@ -208,7 +208,7 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset('images/icon-meteo-modified-large2.png', height: 90),
+                            Image.asset('assets/icon-meteo-round.png', height: 90),
                             const SizedBox(height: 8),
                             Text('Météo du numérique',
                                 textAlign: TextAlign.center,
@@ -242,7 +242,7 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
                                         style: TextStyle(fontSize: 14, color: Colors.black54)),
                                     const SizedBox(height: 10),
                                     Expanded(
-                                      child: Image.asset('images/qrcode.png'),
+                                      child: Image.asset('assets/qrcode.png'),
                                     ),
                                   ],
                                 ),

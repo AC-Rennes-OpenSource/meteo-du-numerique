@@ -16,7 +16,7 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
-import 'package:meteo_du_numerique/web/home_page_web.dart';
+import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
 import 'firebase_options.dart';
 
@@ -29,7 +29,7 @@ Future<void> _initLocalNotifications() async {
 }
 
 Future<void> main() async {
-  await dotenv.load(fileName: ".env.development"); // Charge les variables d'environnement
+  await dotenv.load(fileName: "assets/.env.development"); // Charge les variables d'environnement
   String apiKey = dotenv.env['API_KEY'] ?? "Clé API non trouvée";
   print("----------------------$apiKey");
   WidgetsFlutterBinding.ensureInitialized();
