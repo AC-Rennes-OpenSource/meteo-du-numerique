@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/items_bloc/items_bloc.dart';
-import '../../bloc/items_bloc/items_event.dart';
-import '../../bloc/previsions_bloc/previsions_bloc.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_event.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
@@ -16,8 +13,6 @@ class SettingsBottomSheet extends StatefulWidget {
 }
 
 class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
-
-
   @override
   Widget build(BuildContext context) {
     final themeBloc = BlocProvider.of<ThemeBloc>(context);

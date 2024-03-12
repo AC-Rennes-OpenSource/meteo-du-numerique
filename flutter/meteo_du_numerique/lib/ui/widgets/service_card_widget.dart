@@ -8,11 +8,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/theme_bloc/theme_bloc.dart';
 
-class ServiceCardWidget extends StatelessWidget {
+class ServiceCardWidget extends StatefulWidget {
   final ActualiteA service;
 
   const ServiceCardWidget({super.key, required this.service});
 
+  @override
+  State<StatefulWidget> createState() => _ServiceCardWidgetState();
+}
+
+class _ServiceCardWidgetState extends State<ServiceCardWidget> {
   @override
   Widget build(BuildContext context) {
     final themeBloc = BlocProvider.of<ThemeBloc>(context);
@@ -22,14 +27,13 @@ class ServiceCardWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
-          color: Theme
-              .of(context)
-              .colorScheme
-              .background,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.background
+              : Theme.of(context).colorScheme.background,
           border: Border.all(
               color: isDarkMode
-                  ? serviceColor(service.qualiteDeService!.id, isDarkMode)
-                  : serviceTextColor(service.qualiteDeService!.id, isDarkMode))),
+                  ? serviceColor(widget.service.qualiteDeService!.niveauQos, isDarkMode)
+                  : serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -38,54 +42,54 @@ class ServiceCardWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 0, left: 3, right: 3),
             child: kIsWeb
                 ? Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Center(child: getIcon(service.qualiteDeService!.id, isDarkMode)),
-                ),
-                const SizedBox(height: kIsWeb ? 8 : 0),
-                // Espace entre l'icône et le texte
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    service.libelle,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: kIsWeb ? 26.0 : 22,
-                      color: serviceTextColor(service.qualiteDeService!.id, isDarkMode),
-                    ),
-                  ),
-                ),
-              ],
-            )
-                : Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
-                    child: Text(
-                      service.libelle,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: kIsWeb ? 26.0 : 22,
-                        color: serviceTextColor(service.qualiteDeService!.id, isDarkMode),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Center(child: getIcon(widget.service.qualiteDeService!.niveauQos, isDarkMode)),
                       ),
-                    ),
+                      const SizedBox(height: kIsWeb ? 8 : 0),
+                      // Espace entre l'icône et le texte
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          widget.service.libelle,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: kIsWeb ? 26.0 : 22,
+                            color: serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
+                          child: Text(
+                            widget.service.libelle,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: kIsWeb ? 26.0 : 22,
+                              color: serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 10,
+                        top: 0,
+                        bottom: 0,
+                        child: getIcon(widget.service.qualiteDeService!.niveauQos, isDarkMode) ?? const SizedBox(),
+                      ),
+                    ],
                   ),
-                ),
-                Positioned(
-                  right: 10,
-                  top: 0,
-                  bottom: 0,
-                  child: getIcon(service.qualiteDeService!.id, isDarkMode) ?? const SizedBox(),
-                ),
-              ],
-            ),
           ),
           Container(
-            color: serviceColor(service.qualiteDeService!.id, isDarkMode),
+            color: serviceColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
             height: 35,
             width: double.infinity,
             child: Row(
@@ -93,7 +97,7 @@ class ServiceCardWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  service.qualiteDeService!.libelle,
+                  widget.service.qualiteDeService!.libelle,
                   style: const TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],
@@ -108,23 +112,13 @@ class ServiceCardWidget extends StatelessWidget {
                   onTapLink: (text, url, title) {
                     launchUrl(Uri.parse(url!));
                   },
-                  data: service.description),
+                  data: widget.service.description),
             ),
           ),
         ],
       ),
     );
   }
-
-  static const List<Widget> icons = <Widget>[
-    Icon(
-      Icons.sunny,
-      color: Color(0xff247566),
-      size: 17,
-    ),
-    Icon(CupertinoIcons.umbrella_fill, color: Color(0xff945400), size: 17),
-    Icon(Icons.flash_on, color: Color(0xff94114e), size: 17),
-  ];
 
   Icon? getIcon(int qualiteDeServiceId, bool isDarkMode) {
     switch (qualiteDeServiceId) {
@@ -134,13 +128,13 @@ class ServiceCardWidget extends StatelessWidget {
           color: isDarkMode ? const Color(0xff3db482) : const Color(0xff247566),
           size: kIsWeb ? 30 : 20,
         );
-      case 1:
+      case 2:
         return Icon(
           CupertinoIcons.umbrella_fill,
           color: isDarkMode ? const Color(0xffdb8b00) : const Color(0xff945400),
           size: kIsWeb ? 30 : 20,
         );
-      case 2:
+      case 1:
         return Icon(
           Icons.flash_on,
           color: isDarkMode ? const Color(0xffdb2c66) : const Color(0xff94114e),
@@ -151,13 +145,12 @@ class ServiceCardWidget extends StatelessWidget {
   }
 
   static serviceColor(int qualiteDeServiceId, isDarkTheme) {
-    print(qualiteDeServiceId);
     switch (qualiteDeServiceId) {
       case 3:
         return const Color(0xff3db482);
-      case 1:
-        return const Color(0xffdb8b00);
       case 2:
+        return const Color(0xffdb8b00);
+      case 1:
         return const Color(0xffdb2c66);
     }
   }
@@ -165,17 +158,11 @@ class ServiceCardWidget extends StatelessWidget {
   static serviceTextColor(int qualiteDeServiceId, isDarkTheme) {
     switch (qualiteDeServiceId) {
       case 3:
-        return isDarkTheme ?
-        const Color(0xff3db482) : const
-        Color(0xff247566);
-      case 1:
-        return isDarkTheme ?
-        const Color(0xffdb8b00) :
-        const Color(0xff945400);
+        return isDarkTheme ? const Color(0xff3db482) : const Color(0xff247566);
       case 2:
-        return isDarkTheme ?
-        const Color(0xffdb2c66) :
-        const Color(0xff94114e);
+        return isDarkTheme ? const Color(0xffdb8b00) : const Color(0xff945400);
+      case 1:
+        return isDarkTheme ? const Color(0xffdb2c66) : const Color(0xff94114e);
     }
   }
 }

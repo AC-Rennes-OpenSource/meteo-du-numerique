@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:meteo_du_numerique/models/prevision_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../models/service_num_model.dart';
 import '../../utils.dart';
 
@@ -17,17 +14,10 @@ class PrevisionCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
-
-    bool isDarkMode = themeBloc.state.isDarkMode;
-
     return Container(
       decoration: BoxDecoration(
           borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
-          color: Theme
-              .of(context)
-              .colorScheme
-              .background,
+          color: Theme.of(context).colorScheme.background,
           border: Border.all(color: categoryColor(prevision.couleur))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,37 +27,37 @@ class PrevisionCardWidget extends StatelessWidget {
             padding: const EdgeInsets.only(top: 0, left: 3, right: 3),
             child: kIsWeb
                 ? Column(
-              children: [
-                const SizedBox(height: 8),
-                // Espace entre l'icône et le texte
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    prevision.libelle,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26.0,
-                      // color: Theme.of(context).colorScheme.onSurface
-                      color: categoryColor(prevision.couleur),
+                    children: [
+                      const SizedBox(height: 8),
+                      // Espace entre l'icône et le texte
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          prevision.libelle,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26.0,
+                            // color: Theme.of(context).colorScheme.onSurface
+                            color: categoryColor(prevision.couleur),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 8.0),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      prevision.libelle,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        // color: Theme.of(context).colorScheme.onSurface
+                        color: categoryColor(prevision.couleur),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
-                : Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 8.0),
-              child: Text(
-                textAlign: TextAlign.center,
-                prevision.libelle,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  // color: Theme.of(context).colorScheme.onSurface
-                  color: categoryColor(prevision.couleur),
-                ),
-              ),
-            ),
           ),
           Container(
             color: categoryColor(prevision.couleur),
@@ -139,7 +129,18 @@ class PrevisionCardWidget extends StatelessWidget {
     return null;
   }
 
+  // const Color(0xff63BAAB),
+  // const Color(0xffE197A4),
+  // const Color(0xff00B872),
+  // const Color(0xff0085AD),
+  // Colors.brown,
+  // const Color(0xff28619A),
+  // const Color(0xffC25452),
+  // Colors.green,
+  // Colors.blue,
+
   static categoryColor(String category) {
+    // todo rst : changement pour démo
     Color orange = const Color(0xFFD17010);
     Color jaune = const Color(0xFFC7A213);
     Color vert = const Color(0xff63BAAB);

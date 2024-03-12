@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/items_bloc/items_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/prevision_card_widget.dart';
 
@@ -20,13 +19,10 @@ class ExpansionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemsBloc = BlocProvider.of<ItemsBloc>(context);
     context.read<PrevisionsBloc>().add(FetchPrevisionsEvent());
 
     return BlocBuilder<PrevisionsBloc, PrevisionsState>(
       builder: (context, state) {
-        bool isExpanded = true;
-
         if (state is PrevisionsLoading) {
           return SliverFillRemaining(
             child: Platform.isIOS
@@ -40,31 +36,27 @@ class ExpansionList extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0, right: 6, left: 6),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Theme
-                          .of(context)
+                      color: Theme.of(context)
                           .colorScheme
                           .secondaryContainer
-                          .withOpacity(0.7), // Couleur de fond du Container
+                          .withOpacity(0.3), // Couleur de fond du Container
                       borderRadius: BorderRadius.circular(5), // Bords arrondis
                       border: state.dayPrevisions.isNotEmpty
                           ? Border.all(
-                        color: Colors.blueGrey,
-                        width: 1,
-                      )
+                              color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              width: 1,
+                            )
                           : null),
                   child: ExpansionPanelList(
                     materialGapSize: 0,
                     dividerColor: Colors.transparent,
-                    expandIconColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
+                    expandIconColor: Theme.of(context).colorScheme.primary,
                     expandedHeaderPadding: const EdgeInsets.only(bottom: 0),
                     elevation: 0,
                     expansionCallback: (int index, bool isExpanded) {
                       context.read<PrevisionsBloc>().add(ToggleDayPrevisionGroupEvent());
                     },
-                    children: state.dayPrevisions.map<ExpansionPanel>((PrevisionA item) {
+                    children: state.dayPrevisions.map<ExpansionPanel>((PrevisionA prev) {
                       return ExpansionPanel(
                         canTapOnHeader: true,
                         backgroundColor: Colors.transparent,
@@ -90,61 +82,62 @@ class ExpansionList extends StatelessWidget {
               ),
             );
           } else {
-            return SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 100.0),
-                child: ExpansionPanelList(
-                  materialGapSize: 0,
-                  dividerColor: Colors.transparent,
-                  // animationDuration: const Duration(milliseconds: 250),
-                  expandIconColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .primary,
-                  expandedHeaderPadding: const EdgeInsets.only(bottom: 0),
-                  elevation: 0,
-                  expansionCallback: (int index, bool isExpanded) {
-                    final year = state.previsionsGroupedByMonth.keys.elementAt(index).substring(0, 4);
-                    final month = state.previsionsGroupedByMonth.keys.elementAt(index).substring(4, 6);
+            return state.previsionsGroupedByMonth.isEmpty
+                ? const SliverFillRemaining(
+                    child: Center(child: Text('Pas de résultat.')),
+                  )
+                : SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 100.0),
+                      child: ExpansionPanelList(
+                        materialGapSize: 0,
+                        dividerColor: Colors.transparent,
+                        // animationDuration: const Duration(milliseconds: 250),
+                        expandIconColor: Theme.of(context).colorScheme.primary,
+                        expandedHeaderPadding: const EdgeInsets.only(bottom: 0),
+                        elevation: 0,
+                        expansionCallback: (int index, bool isExpanded) {
+                          final year = state.previsionsGroupedByMonth.keys.elementAt(index).substring(0, 4);
+                          final month = state.previsionsGroupedByMonth.keys.elementAt(index).substring(4, 6);
 
-                    context.read<PrevisionsBloc>().add(TogglePrevisionGroupEvent(month: month, year: year));
-                  },
-                  children: state.previsionsGroupedByMonth.entries.map<ExpansionPanel>((entry) {
-                    final year = entry.key.substring(0, 4);
-                    final month = entry.key.substring(4, 6);
+                          context.read<PrevisionsBloc>().add(TogglePrevisionGroupEvent(month: month, year: year));
+                        },
+                        children: state.previsionsGroupedByMonth.entries.map<ExpansionPanel>((entry) {
+                          final year = entry.key.substring(0, 4);
+                          final month = entry.key.substring(4, 6);
 
-                    // On ajoute un jour par défaut pour créer un format de date parsable
-                    String formattedDateString = "$year-$month-01";
-                    DateTime dateTime = DateTime.parse(formattedDateString);
+                          // On ajoute un jour par défaut pour créer un format de date parsable
+                          String formattedDateString = "$year-$month-01";
+                          DateTime dateTime = DateTime.parse(formattedDateString);
 
-                    return ExpansionPanel(
-                      // canTapOnHeader: true,
-                      backgroundColor: Colors.transparent,
-                      headerBuilder: (BuildContext context, bool isExpanded) {
-                        return ListTile(title: Text(Utils.formatDate2(dateTime)));
-                      },
-                      body: Column(
-                        children: entry.value.map<Widget>((prevision) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                            child: PrevisionCardWidget(prevision: prevision),
+                          return ExpansionPanel(
+                            // canTapOnHeader: true,
+                            backgroundColor: Colors.transparent,
+                            headerBuilder: (BuildContext context, bool isExpanded) {
+                              return ListTile(title: Text(Utils.formatDate2(dateTime)));
+                            },
+                            body: Column(
+                              children: entry.value.map<Widget>((prevision) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                                  child: PrevisionCardWidget(prevision: prevision),
+                                );
+                              }).toList(),
+                            ),
+                            isExpanded: state.expandedGroups[entry.key] ?? false,
                           );
                         }).toList(),
                       ),
-                      isExpanded: state.expandedGroups[entry.key] ?? false,
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
+                    ),
+                  );
           }
         } else if (state is PrevisionsError) {
           return const SliverFillRemaining(
-            child: Center(child: Text('Pas de résultats.')),
+            child: Center(child: Text('Un problème de connexion est survenu.')),
           );
         } else {
           return const SliverFillRemaining(
-            child: Center(child: Text('Pas de résultats.')),
+            child: Center(child: Text('Chargement...')),
           );
         }
       },

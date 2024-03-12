@@ -16,10 +16,12 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
         return AppBar(
           elevation: 0,
           scrolledUnderElevation: 0,
-          backgroundColor: state.isDarkMode ? Colors.black : Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
           title: const Text("Météo du numérique"),
           leading: Image.asset(
-            state.isDarkMode ? 'assets/logo_academie_dark.png' : 'assets/logo_academie.jpg',
+            Theme.of(context).brightness == Brightness.dark
+                ? 'assets/logo_academie_dark.png'
+                : 'assets/logo_academie.jpg',
           ),
           actions: [
             IconButton(
@@ -38,16 +40,11 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               data: Theme.of(context).copyWith(
                   highlightColor: Colors.transparent,
                   splashColor: Colors.transparent,
-                  textTheme: Theme
-                      .of(context)
-                      .textTheme),
+                  textTheme: Theme.of(context).textTheme),
               child: Container(
                   margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 15),
                   decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .secondaryContainer, // Couleur de fond jaune
+                    color: Theme.of(context).colorScheme.secondaryContainer, // Couleur de fond jaune
                     borderRadius: BorderRadius.circular(40.0), // Bords arrondis
                   ),
                   child: tabBar),

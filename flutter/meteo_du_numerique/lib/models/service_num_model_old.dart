@@ -7,13 +7,14 @@ class ServiceNumOld {
   late DateTime lastUpdate;
   late String category;
 
-  ServiceNumOld({required this.id,
-    required this.libelle,
-    required this.description,
-    required this.qualiteDeService,
-    required this.category,
-    required this.qualiteDeServiceId,
-    required this.lastUpdate});
+  ServiceNumOld(
+      {required this.id,
+      required this.libelle,
+      required this.description,
+      required this.qualiteDeService,
+      required this.category,
+      required this.qualiteDeServiceId,
+      required this.lastUpdate});
 
   factory ServiceNumOld.fromJson(Map<String, dynamic> json) {
     return ServiceNumOld(
@@ -26,7 +27,6 @@ class ServiceNumOld {
       category: json['category'] ?? '',
     );
   }
-
 
   dynamic getField(String field) {
     switch (field) {
@@ -47,8 +47,3 @@ class ServiceNumOld {
     }
   }
 }
-
-
-
-
-

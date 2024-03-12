@@ -3,6 +3,7 @@ import 'package:diacritic/diacritic.dart';
 
 import '../../models/service_num_model.dart';
 import '../../services/api_service.dart';
+import '../../utils.dart';
 import 'previsions_event.dart';
 import 'previsions_state.dart';
 
@@ -46,7 +47,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     try {
       final previsions = await _getPrevisions();
       final dayPrevisions = previsions.where((objet) {
-        return estMemeJour(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
+        return Utils.estMemeJour(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
       }).toList();
       final groupedPrevisions = _groupPrevisionsByMonthAndYear(previsions);
 
@@ -108,7 +109,6 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     final currentState = state;
     if (currentState is PrevisionsLoaded) {
       final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)..updateAll((key, value) => true);
-
       emit(PrevisionsLoaded(
           previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
           expandedGroups: expandedGroups,
@@ -155,7 +155,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
       currentPeriode = 'all';
     } else {
       currentFilterCriteria = event.categories;
-      currentFilters = currentFilterCriteria!;
+      currentFilters = currentFilterCriteria;
       currentPeriode = event.periode;
     }
     add(FetchPrevisionsEvent());
@@ -197,13 +197,12 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
 
     // Apply category filter
     if (currentFilterCriteria.isNotEmpty) {
-      print(currentFilterCriteria.toString());
       List<PrevisionA> previsionsupdate = [];
-      currentFilterCriteria.forEach((element) {
+      for (var element in currentFilterCriteria) {
         previsionsupdate.addAll(previsions
             .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
             .toList());
-      });
+      }
       previsions = previsionsupdate;
     }
 
@@ -219,19 +218,16 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
         }).toList();
       } else if (currentPeriode == 'mois') {
         previsions = previsions.where((prevision) {
-          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 1));
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
         }).toList();
       } else if (currentPeriode == 'semestre') {
         previsions = previsions.where((prevision) {
-          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 6));
+          return prevision.dateDebut.isAfter(today) &&
+              prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
         }).toList();
       }
     }
 
     return previsions;
-  }
-
-  bool estMemeJour(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
   }
 }

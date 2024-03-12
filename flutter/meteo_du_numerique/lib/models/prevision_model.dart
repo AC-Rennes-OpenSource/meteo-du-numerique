@@ -9,13 +9,14 @@ class Prevision {
   late String category;
   late String color;
 
-  Prevision({required this.id,
-    required this.libelle,
-    required this.description,
-    required this.dateDebut,
-    required this.category,
-    required this.color,
-    required this.lastUpdate});
+  Prevision(
+      {required this.id,
+      required this.libelle,
+      required this.description,
+      required this.dateDebut,
+      required this.category,
+      required this.color,
+      required this.lastUpdate});
 
   factory Prevision.fromJson(Map<String, dynamic> json) {
     return Prevision(

@@ -1,0 +1,189 @@
+import 'package:bloc/bloc.dart';
+import 'package:diacritic/diacritic.dart';
+import 'package:meteo_du_numerique/models/service_num_model.dart';
+
+import '../../models/service_num_model_old.dart';
+import '../../services/api_service.dart';
+import 'services_num_event.dart';
+import 'services_num_state.dart';
+
+class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
+  final ApiService apiService;
+  final bool useMockData;
+
+  String? currentSortCriteria = 'qualiteDeServiceId';
+  String? currentSortOrder = 'asc';
+  List<String>? currentFilterCriteria = [];
+  String? currentSearchQuery;
+  late DateTime? lastUpdate = DateTime.now();
+
+  List<String> currentFilters = [];
+
+  ServicesNumBloc({required this.apiService, this.useMockData = false}) : super(ServicesNumInitial()) {
+    on<FetchServicesNumEvent>(_onFetchItems);
+    on<FilterServicesNumEvent>(_onFilterItems);
+    on<SortServicesNumEvent>(_onSortItems);
+    on<SearchItemsEvent>(_onSearchItems);
+  }
+
+  @override
+  void onChange(Change<ServicesNumState> change) {
+    super.onChange(change);
+  }
+
+  @override
+  void onTransition(Transition<ServicesNumEvent, ServicesNumState> transition) {
+    super.onTransition(transition);
+  }
+
+  Future<void> _onFetchItems(FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+    if (event.showIndicator) {
+      emit(ServicesNumLoading());
+    }
+
+    // todo rst : délai pour test
+    await Future.delayed(const Duration(milliseconds: 250));
+
+    try {
+      final servicesList = await _getItems();
+      emit(ServicesNumLoaded(servicesList: servicesList));
+      if (servicesList.isNotEmpty) {
+        lastUpdate = servicesList.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
+      }
+    } catch (e) {
+      emit(ServicesNumError(message: e.toString()));
+    }
+  }
+
+  void _onFilterItems(FilterServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+    if (event.filterBy == []) {
+      resetCriteria();
+      currentFilters = [];
+
+      emit(ServicesNumFiltered(showBadge: false));
+    } else {
+      currentFilterCriteria = event.filterBy;
+      currentFilters = currentFilterCriteria!;
+
+      emit(ServicesNumFiltered(showBadge: true));
+    }
+
+    add(FetchServicesNumEvent());
+  }
+
+  void _onSortItems(SortServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+    // resetCriteria();
+    currentSortCriteria = event.sortBy;
+    currentSortOrder = event.order;
+    add(FetchServicesNumEvent());
+  }
+
+  void _onSearchItems(SearchItemsEvent event, Emitter<ServicesNumState> emit) async {
+    // resetCriteria();
+    currentSearchQuery = event.query;
+    add(FetchServicesNumEvent());
+  }
+
+  void resetCriteria() {
+    currentSortCriteria = null;
+    currentFilterCriteria = [];
+    currentSearchQuery = null;
+    add(FetchServicesNumEvent());
+  }
+
+  Future<List<ServiceNumOld>> _getItemsOld() async {
+    List<ServiceNumOld> servicesList;
+
+    servicesList = await apiService.fetchItems();
+    // await (useMockData
+    //     ? apiService.fetchMockItems()
+    //     : apiService.fetchItems();
+    // );
+
+    // search filter
+    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
+      servicesList = servicesList
+          .where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase()))
+          .toList();
+    }
+
+    // category filter
+    if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
+      List<ServiceNumOld> itemupdate = [];
+      currentFilterCriteria?.forEach((element) {
+        itemupdate
+            .addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase() == element).toList());
+      });
+      servicesList = itemupdate;
+    }
+
+    // Apply sorting
+    if (currentSortCriteria != null) {
+      if (currentSortCriteria == "qualiteDeServiceId") {
+        if (currentSortOrder == 'asc') {
+          servicesList.sort((a, b) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
+        } else {
+          servicesList.sort((b, a) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
+        }
+      } else {
+        if (currentSortOrder == 'asc') {
+          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+        } else {
+          servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+        }
+      }
+    }
+
+    return servicesList;
+  }
+
+  Future<List<ActualiteA>> _getItems() async {
+    List<ActualiteA> servicesList;
+
+    servicesList = await apiService.fetchMockItems();
+    // await (useMockData
+    //     ? apiService.fetchMockItems()
+    //     : apiService.fetchItems();
+    // );
+
+    // search filter
+    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
+      servicesList = servicesList
+          .where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase()))
+          .toList();
+    }
+
+    // category filter
+    if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
+      List<ActualiteA> itemupdate = [];
+      currentFilterCriteria?.forEach((element) {
+        itemupdate.addAll(
+            servicesList.where((serviceNum) => serviceNum.qualiteDeService?.libelle.toLowerCase() == element).toList());
+      });
+      servicesList = itemupdate;
+    }
+
+    // Apply sorting
+    if (currentSortCriteria != null) {
+      if (currentSortCriteria == "qualiteDeServiceId") {
+        if (currentSortOrder == 'asc') {
+          servicesList.sort((a, b) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+        } else {
+          servicesList.sort((b, a) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+        }
+      } else {
+        if (currentSortOrder == 'asc') {
+          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+        } else {
+          servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+        }
+      }
+    }
+
+    return servicesList;
+  }
+}

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/custom_search_bar.dart';
@@ -11,25 +10,27 @@ import 'package:meteo_du_numerique/ui/widgets/expansion_list.dart';
 import 'package:meteo_du_numerique/ui/widgets/sort_bottom_sheet.dart';
 import 'package:meteo_du_numerique/ui/widgets/theme_switch.dart';
 
-import '../../bloc/items_bloc/items_bloc.dart';
-import '../../bloc/items_bloc/items_event.dart';
+import '../../bloc/items_bloc/services_num_bloc.dart';
+import '../../bloc/items_bloc/services_num_event.dart';
+import '../../bloc/items_bloc/services_num_state.dart';
+import '../../bloc/previsions_bloc/previsions_state.dart';
 import '../../bloc/search_bar_bloc/search_bar_bloc.dart';
 import '../../bloc/search_bar_bloc/search_bar_event.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
+import '../../utils.dart';
 import '../decorations/rounded_rect_tab_indicator.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_previsions_bottom_sheet.dart';
 import '../widgets/items_list.dart';
 
-class ItemsPage extends StatelessWidget {
-  const ItemsPage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
-    final itemsBloc = BlocProvider.of<ItemsBloc>(context);
+    final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
 
     ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
@@ -40,7 +41,7 @@ class ItemsPage extends StatelessWidget {
             initialIndex: 0,
             length: 2, // Nombre d'onglets
             child: Scaffold(
-                backgroundColor: themeBloc.state.isDarkMode ? null : Colors.grey.shade200,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
                 appBar: ThemedAppBar(
                   tabBar: TabBar(
                     overlayColor: MaterialStateColor.resolveWith((states) => Colors.transparent),
@@ -83,13 +84,12 @@ class ItemsPage extends StatelessWidget {
                           return <Widget>[
                             BlocBuilder<ThemeBloc, ThemeState>(
                               builder: (context, state) {
-                                DefaultTabController.of(context).animation?.addListener(() => {
-                                      if (tabIndexNotifier.value !=
-                                          DefaultTabController.of(context).animation!.value.round())
-                                        {
-                                          tabIndexNotifier.value = DefaultTabController.of(context).index.round(),
-                                        }
-                                    });
+                                DefaultTabController.of(context).animation?.addListener(() {
+                                  if (tabIndexNotifier.value !=
+                                      DefaultTabController.of(context).animation!.value.round()) {
+                                    tabIndexNotifier.value = DefaultTabController.of(context).index.round();
+                                  }
+                                });
 
                                 return SliverAppBar(
                                   shape: const RoundedRectangleBorder(
@@ -97,7 +97,8 @@ class ItemsPage extends StatelessWidget {
                                           bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
                                   toolbarHeight: 72,
                                   scrolledUnderElevation: 0,
-                                  backgroundColor: themeBloc.state.isDarkMode ? Colors.black : Colors.white,
+                                  backgroundColor:
+                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
                                   pinned: false,
                                   floating: true,
                                   snap: true,
@@ -109,7 +110,7 @@ class ItemsPage extends StatelessWidget {
                                             style: const TextStyle(fontSize: 9
                                                 // todo rst
                                                 ),
-                                            lastUpdateString(itemsBloc.lastUpdate!),
+                                            Utils.lastUpdateString(servicesNumBloc.lastUpdate!),
                                           )),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,19 +118,104 @@ class ItemsPage extends StatelessWidget {
                                           Row(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(left: 8.0),
-                                                child: OutlinedButton.icon(
-                                                  icon: const Icon(Icons.filter_list),
-                                                  label: const Text('Filtres'),
-                                                  onPressed: () => _showFilterBottomSheet(
-                                                      context, itemsBloc, previsionsBloc, tabIndexNotifier.value),
-                                                  style: OutlinedButton.styleFrom(
-                                                      side: const BorderSide(width: 1.0, color: Colors.grey),
-                                                      padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                                      minimumSize: const Size(110, 30),
-                                                      foregroundColor: Theme.of(context).colorScheme.onSurface),
-                                                ),
-                                              ),
+                                                  padding: const EdgeInsets.only(left: 8.0),
+                                                  child: tabIndex == 0
+                                                      ? BlocBuilder<ServicesNumBloc, ServicesNumState>(
+                                                          builder: (context2, state) {
+                                                            return Stack(children: [
+                                                              OutlinedButton.icon(
+                                                                icon: const Icon(Icons.filter_list),
+                                                                label: const Text('Filtres'),
+                                                                onPressed: () => _showFilterBottomSheet(
+                                                                    context,
+                                                                    servicesNumBloc,
+                                                                    previsionsBloc,
+                                                                    tabIndexNotifier.value),
+                                                                style: OutlinedButton.styleFrom(
+                                                                    side: const BorderSide(
+                                                                        width: 1.0, color: Colors.grey),
+                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                                    minimumSize: const Size(110, 30),
+                                                                    foregroundColor:
+                                                                        Theme.of(context).colorScheme.onSurface),
+                                                              ),
+                                                              //badge sur bouton todo rst mise à jour du state
+                                                              if (BlocProvider.of<ServicesNumBloc>(context2)
+                                                                  .currentFilterCriteria!
+                                                                  .isNotEmpty)
+                                                                Positioned(
+                                                                  right: 0,
+                                                                  top: 5,
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.all(2),
+                                                                    decoration: BoxDecoration(
+                                                                      // border: Border.all(color: Theme.of(context).colorScheme.onSurface),
+                                                                      color: Colors.redAccent,
+                                                                      borderRadius: BorderRadius.circular(20),
+                                                                    ),
+                                                                    constraints: const BoxConstraints(
+                                                                      minWidth: 15,
+                                                                      minHeight: 15,
+                                                                    ),
+                                                                    child: const Icon(
+                                                                      Icons.check,
+                                                                      size: 10,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ]);
+                                                          },
+                                                        )
+                                                      : BlocBuilder<PrevisionsBloc, PrevisionsState>(
+                                                          builder: (context3, state) {
+                                                            return Stack(children: [
+                                                              OutlinedButton.icon(
+                                                                icon: const Icon(Icons.filter_list),
+                                                                label: const Text('Filtres'),
+                                                                onPressed: () => _showFilterBottomSheet(
+                                                                    context,
+                                                                    servicesNumBloc,
+                                                                    previsionsBloc,
+                                                                    tabIndexNotifier.value),
+                                                                style: OutlinedButton.styleFrom(
+                                                                    side: const BorderSide(
+                                                                        width: 1.0, color: Colors.grey),
+                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                                    minimumSize: const Size(110, 30),
+                                                                    foregroundColor:
+                                                                        Theme.of(context).colorScheme.onSurface),
+                                                              ),
+                                                              //badge sur bouton todo rst mise à jour du state
+                                                              if (BlocProvider.of<PrevisionsBloc>(context3)
+                                                                      .currentFilterCriteria
+                                                                      .isNotEmpty ||
+                                                                  BlocProvider.of<PrevisionsBloc>(context3)
+                                                                          .currentPeriode !=
+                                                                      'all')
+                                                                Positioned(
+                                                                  right: 0,
+                                                                  top: 5,
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.all(2),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.redAccent,
+                                                                      borderRadius: BorderRadius.circular(6),
+                                                                    ),
+                                                                    constraints: const BoxConstraints(
+                                                                      minWidth: 15,
+                                                                      minHeight: 15,
+                                                                    ),
+                                                                    child: const Icon(
+                                                                      Icons.check,
+                                                                      size: 10,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ]);
+                                                          },
+                                                        )),
                                               const SizedBox(
                                                 width: 6.0,
                                               ),
@@ -137,7 +223,7 @@ class ItemsPage extends StatelessWidget {
                                                   ? OutlinedButton.icon(
                                                       icon: const Icon(Icons.sort),
                                                       label: const Text('Tri'),
-                                                      onPressed: () => _showSortBottomSheet(context, itemsBloc),
+                                                      onPressed: () => _showSortBottomSheet(context, servicesNumBloc),
                                                       style: OutlinedButton.styleFrom(
                                                           side: const BorderSide(width: 1.0, color: Colors.grey),
                                                           padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -166,7 +252,8 @@ class ItemsPage extends StatelessWidget {
                                     slivers: [
                                       CupertinoSliverRefreshControl(
                                         onRefresh: () async {
-                                          itemsBloc.add(FetchItemsEvent(showIndicator: false));
+                                          previsionsBloc.add(FetchPrevisionsEvent());
+                                          servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
                                           // Ajoutez un délai si nécessaire pour simuler le temps de chargement
                                           await Future.delayed(const Duration(milliseconds: 250));
                                         },
@@ -177,7 +264,8 @@ class ItemsPage extends StatelessWidget {
                                   )
                                 : RefreshIndicator(
                                     onRefresh: () async {
-                                      itemsBloc.add(FetchItemsEvent(showIndicator: false));
+                                      previsionsBloc.add(FetchPrevisionsEvent());
+                                      servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
                                       await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
@@ -193,6 +281,7 @@ class ItemsPage extends StatelessWidget {
                                       CupertinoSliverRefreshControl(
                                         onRefresh: () async {
                                           // todo rst ouvrir l'accordéon à chaque refresh?
+                                          previsionsBloc.add(FetchPrevisionsEvent());
                                           previsionsBloc.add(OpenAllGroupsEvent());
                                           // délai pour simuler le temps de chargement
                                           await Future.delayed(const Duration(milliseconds: 250));
@@ -205,7 +294,10 @@ class ItemsPage extends StatelessWidget {
                                   )
                                 : RefreshIndicator(
                                     onRefresh: () async {
+                                      previsionsBloc.add(FetchPrevisionsEvent());
                                       previsionsBloc.add(OpenAllGroupsEvent());
+                                      // délai pour simuler le temps de chargement
+                                      await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
                                       slivers: [
@@ -224,14 +316,14 @@ class ItemsPage extends StatelessWidget {
                     valueListenable: tabIndexNotifier,
                     builder: (context, tabIndex, child) {
                       return CustomSearchBar(
-                        tabIndex: tabIndex,
+                        tabIndexNotifier: tabIndexNotifier,
                       );
                     })));
       },
     );
   }
 
-  void _showSortBottomSheet(BuildContext context, ItemsBloc itemsBloc) {
+  void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {
     FocusScope.of(context).unfocus();
     String? currentSorting = itemsBloc.currentSortCriteria;
     String? currentOrder = itemsBloc.currentSortOrder;
@@ -250,7 +342,7 @@ class ItemsPage extends StatelessWidget {
     });
   }
 
-  void _showFilterBottomSheet(BuildContext context, ItemsBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
+  void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
     FocusScope.of(context).unfocus();
 
     showModalBottomSheet(
@@ -272,12 +364,5 @@ class ItemsPage extends StatelessWidget {
     ).then((_) {
       context.read<SearchBarBloc>().add(CloseSearchBar());
     });
-  }
-
-  String lastUpdateString(DateTime lastUpdate) {
-    String form = DateFormat("dd MMMM yyyy", "fr_FR").format(lastUpdate);
-    String hour =
-        "${DateFormat("H").format(lastUpdate.add(const Duration(hours: 2)))}h${DateFormat("mm").format(lastUpdate)}";
-    return "Dernière mise à jour le $form à $hour";
   }
 }

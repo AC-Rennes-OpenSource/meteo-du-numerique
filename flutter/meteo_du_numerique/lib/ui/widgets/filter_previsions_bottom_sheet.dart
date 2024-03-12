@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
-import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 
 import '../../bloc/previsions_bloc/previsions_bloc.dart';
 
 class FilterPrevisionsBottomSheet extends StatefulWidget {
-  final String selectedFilter; // Modifié pour stocker un seul filtre
+  final String selectedFilter;
   final List<String> selectedCategories;
 
   final int tab;
@@ -23,21 +22,16 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
 
   late List<String> _selectedCategories = [];
 
-  late int _currentTab = 0;
-
   @override
   void initState() {
     super.initState();
     _selectedFilter = widget.selectedFilter;
     _selectedCategories = widget.selectedCategories;
-
-    _currentTab = widget.tab;
   }
 
   @override
   Widget build(BuildContext context) {
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
 
     final List<String> categoryOptions = [
       'Collaboration',
@@ -48,9 +42,9 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
       'Inclusion',
       'Pédagogie',
       'Santé et social',
-      // 'Scolarité',
+      'Scolarité',
 
-      'categorie2'
+      // 'categorie2'
     ]; // Exemple de catégories
 
     return Container(
@@ -72,13 +66,13 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
-          RadioListTile<String>(
-            title: const Text("Les 6 prochains mois"),
-            value: 'semestre',
-            selected: _selectedFilter == 'semestre',
-            groupValue: _selectedFilter,
-            onChanged: (value) => _onFilterChanged(value),
-          ),
+          // RadioListTile<String>(
+          //   title: const Text("Les 6 prochains mois"),
+          //   value: 'semestre',
+          //   selected: _selectedFilter == 'semestre',
+          //   groupValue: _selectedFilter,
+          //   onChanged: (value) => _onFilterChanged(value),
+          // ),
           RadioListTile<String>(
             title: const Text('Tout'),
             value: 'all',
@@ -121,7 +115,6 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                         setState(() {
                           if (selected) {
                             _selectedCategories.add(category);
-                            print(_selectedCategories.toString());
                           } else {
                             _selectedCategories.remove(category);
                           }
@@ -179,14 +172,24 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
   Color _getChipColor(int index) {
     // Exemple : retourne une couleur différente en fonction de l'index
     final colors = [
-      Color(0xff63BAAB),
-      Color(0xffE197A4),
-      Color(0xff00B872),
-      Color(0xff0085AD),
+      const Color(0xff63BAAB),
+      const Color(0xffE197A4),
+
+      const Color(0xffC25452),
+
+      const Color(0xff28619A),
+
+      const Color(0xFFC7A213),
+      const Color(0xFFD17010),
+      // const Color(0xff63BAAB),
+      // const Color(0xff28619A),
+      // const Color(0xffC25452),
+
+      const Color(0xff00B872),
+      // const Color(0xff0085AD),
       Colors.brown,
-      Color(0xff28619A),
-      Color(0xffC25452),
-      Colors.green,
+
+      // Colors.green,
       Colors.blue,
     ];
     return colors[index % colors.length];

@@ -1,6 +1,6 @@
 {
-  "name": "items_project",
-  "short_name": "items_project",
+  "name": "Météo du numérique",
+  "short_name": "Météo du num",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0175C2",

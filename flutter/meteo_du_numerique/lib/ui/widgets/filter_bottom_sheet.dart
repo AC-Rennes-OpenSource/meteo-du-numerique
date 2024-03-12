@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/items_bloc/items_bloc.dart';
-import '../../bloc/items_bloc/items_event.dart';
-import '../../bloc/previsions_bloc/previsions_bloc.dart';
+import '../../bloc/items_bloc/services_num_bloc.dart';
+import '../../bloc/items_bloc/services_num_event.dart';
+import 'custom_checkbox.dart';
 
 // todo rst : composant unique pour les deux tabs??
 class FilterBottomSheet extends StatefulWidget {
@@ -28,30 +29,41 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsBloc = BlocProvider.of<ItemsBloc>(context);
-    final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
+    final itemsBloc = BlocProvider.of<ServicesNumBloc>(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          CheckboxListTile(
-            title: const Text("Dysfonctionnement bloquant"),
+          MyCustomCheckboxTile(
+            leadingIcon: const Icon(Icons.flash_on,
+                color: Color(
+                  0xffdb2c66,
+                )),
+            title: 'Dysfonctionnement bloquant',
             value: _selectedFilters.contains('dysfonctionnement bloquant'),
             onChanged: (bool? value) {
               _onFilterChanged('dysfonctionnement bloquant', value!);
             },
           ),
-          CheckboxListTile(
-            title: const Text('Perturbations'),
+          MyCustomCheckboxTile(
+            leadingIcon: const Icon(
+              CupertinoIcons.umbrella_fill,
+              color: Color(0xffdb8b00),
+            ),
+            title: 'Perturbations',
             value: _selectedFilters.contains('perturbations'),
-            onChanged: (bool? value) {
-              _onFilterChanged('perturbations', value!);
+            onChanged: (value) {
+              _onFilterChanged('perturbations', value);
             },
           ),
-          CheckboxListTile(
-            title: const Text('Fonctionnement habituel'),
+          MyCustomCheckboxTile(
+            leadingIcon: const Icon(
+              Icons.sunny,
+              color: Color(0xff3db482),
+            ),
+            title: 'Fonctionnement habituel',
             value: _selectedFilters.contains('fonctionnement habituel'),
             onChanged: (bool? value) {
               _onFilterChanged('fonctionnement habituel', value!);
@@ -70,20 +82,17 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   style: OutlinedButton.styleFrom(
                       side: const BorderSide(width: 1.0, color: Colors.grey),
                       foregroundColor:
-                      _selectedFilters.isEmpty ? Colors.grey : Theme
-                          .of(context)
-                          .colorScheme
-                          .onSurface),
+                          _selectedFilters.isEmpty ? Colors.grey : Theme.of(context).colorScheme.onSurface),
                   icon: const Icon(Icons.close),
                   label: const Text("Réinitialiser"),
                   onPressed: _selectedFilters.isNotEmpty
                       ? () {
-                    setState(() {
-                      _selectedFilters.clear();
-                    });
-                    // Navigator.pop(context);
-                    // itemsBloc.add(FetchItemsEvent());
-                  }
+                          setState(() {
+                            _selectedFilters.clear();
+                          });
+                          // Navigator.pop(context);
+                          // itemsBloc.add(FetchItemsEvent());
+                        }
                       : null, // Désactive le bouton si _selectedFilters est vide
                 ),
                 OutlinedButton(
@@ -91,7 +100,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     side: const BorderSide(width: 1.0, color: Colors.grey),
                   ),
                   onPressed: () {
-                    itemsBloc.add(FilterItemsEvent(_selectedFilters));
+                    itemsBloc.add(FilterServicesNumEvent(_selectedFilters));
                     Navigator.pop(context);
                   },
                   child: const Text("Appliquer"),

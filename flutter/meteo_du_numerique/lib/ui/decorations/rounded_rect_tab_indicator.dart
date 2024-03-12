@@ -20,8 +20,8 @@ class _RoundedRectPainter extends BoxPainter {
 
   _RoundedRectPainter(Color color, this.radius, Color borderColor, double borderWidth)
       : _paint = Paint()
-    ..color = color
-    ..isAntiAlias = true,
+          ..color = color
+          ..isAntiAlias = true,
         _borderPaint = Paint()
           ..color = borderColor
           ..strokeWidth = borderWidth

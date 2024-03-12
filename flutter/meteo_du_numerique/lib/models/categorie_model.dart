@@ -34,8 +34,6 @@ class Categorie {
       'id': id,
       'libelle': libelle,
       'color': color,
-
     };
   }
-
 }

@@ -48,7 +48,7 @@ class _SortBottomSheetState extends State<SortPrevBottomSheet> {
               _onSortChanged('qualiteDeServiceId', 'asc');
             },
           ),
-          Divider(),
+          const Divider(),
           RadioListTile<String>(
             title: const Text('Nom du service (A-Z)'),
             value: 'libelle_asc',

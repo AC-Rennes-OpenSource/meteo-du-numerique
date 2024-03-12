@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../bloc/items_bloc/items_bloc.dart';
-import '../../bloc/items_bloc/items_event.dart';
+import '../../bloc/items_bloc/services_num_bloc.dart';
+import '../../bloc/items_bloc/services_num_event.dart';
 
 class SortBottomSheet extends StatefulWidget {
-  final ItemsBloc itemsBloc;
+  final ServicesNumBloc itemsBloc;
   final String? selectedSorting;
   final String? selectedOrder;
 
@@ -16,6 +16,7 @@ class SortBottomSheet extends StatefulWidget {
 }
 
 class _SortBottomSheetState extends State<SortBottomSheet> {
+  final int _groupValue = 0;
   String? _selectedSortCriteria;
   String? _selectedSortOrder;
 
@@ -34,7 +35,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RadioListTile<String>(
-            title: const Text('État décroissant'),
+            title: const Text('État du service décroissant'),
             value: 'qualiteDeServiceId_desc',
             groupValue: '${_selectedSortCriteria!}_${_selectedSortOrder ?? ''}',
             onChanged: (String? value) {
@@ -42,7 +43,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
             },
           ),
           RadioListTile<String>(
-            title: const Text('État croissant'),
+            title: const Text('État du service croissant'),
             value: 'qualiteDeServiceId_asc',
             groupValue: '${_selectedSortCriteria!}_${_selectedSortOrder ?? ''}',
             onChanged: (String? value) {
@@ -80,7 +81,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
       _selectedSortOrder = order;
     });
 
-    widget.itemsBloc.add(SortItemsEvent(criteria, order));
+    widget.itemsBloc.add(SortServicesNumEvent(criteria, order));
     Navigator.pop(context);
   }
 }
