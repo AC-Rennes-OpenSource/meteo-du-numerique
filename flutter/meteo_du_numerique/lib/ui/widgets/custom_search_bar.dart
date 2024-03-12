@@ -21,18 +21,11 @@ class CustomSearchBar extends StatefulWidget {
 class _CustomSearchBarState extends State<CustomSearchBar> {
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
-  late final ValueListenableBuilder<int> _tabIndexListener;
+  Map<int, String> searchQueries = {}; // Mémorisation des requêtes de recherche
 
   @override
   void initState() {
     super.initState();
-    _tabIndexListener = ValueListenableBuilder<int>(
-      valueListenable: widget.tabIndexNotifier,
-      builder: (context, value, child) {
-        _onTabIndexChange();
-        return const SizedBox.shrink();
-      },
-    );
     widget.tabIndexNotifier.addListener(_onTabIndexChange);
   }
 
@@ -45,12 +38,27 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _onTabIndexChange() {
-    _searchController.clear();
-    context.read<SearchBarBloc>().add(CloseSearchBar());
-    _triggerSearchUpdate('');
+    String? currentQuery = searchQueries[widget.tabIndexNotifier.value];
+    if (currentQuery != null && currentQuery.isNotEmpty) {
+      // Si une recherche était active sur cet onglet, ouvrez la barre de recherche avec la requête
+      context.read<SearchBarBloc>().add(OpenSearchBar());
+      _searchController.text = currentQuery;
+    } else {
+      // Ferme la barre de recherche si aucun texte n'est présent
+      context.read<SearchBarBloc>().add(CloseSearchBar());
+      _searchController.clear();
+    }
+
+    // Assurez-vous de toujours fermer le clavier lors du changement d'onglet
+    if (_focusNode.hasFocus) {
+      _focusNode.unfocus();
+    }
+
+    _triggerSearchUpdate(currentQuery ?? '');
   }
 
   void _triggerSearchUpdate(String query) {
+    searchQueries[widget.tabIndexNotifier.value] = query;
     if (widget.tabIndexNotifier.value == 0) {
       context.read<ServicesNumBloc>().add(SearchItemsEvent(query));
     } else {
@@ -60,70 +68,66 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _tabIndexListener,
-        BlocBuilder<SearchBarBloc, SearchBarState>(
-          builder: (context, state) {
-            bool isSearchOpen = state is SearchBarOpened;
-            double screenWidth = MediaQuery.of(context).size.width;
-            double padding = 16.0;
-            double searchWidth = isSearchOpen ? screenWidth - 2 * padding : 52.0; // FAB size for closed state
+    return BlocBuilder<SearchBarBloc, SearchBarState>(
+      builder: (context, state) {
+        bool isSearchOpen = state is SearchBarOpened;
+        double screenWidth = MediaQuery.of(context).size.width;
+        double padding = 16.0;
+        double searchWidth = isSearchOpen ? screenWidth - 2 * padding : 52.0;
 
-            return GestureDetector(
-              onTap: () {
-                if (!isSearchOpen) {
-                  context.read<SearchBarBloc>().add(OpenSearchBar());
-                  _focusNode.requestFocus();
-                }
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeOut,
-                width: searchWidth,
-                height: 52.0,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 1.0,
+        return GestureDetector(
+          onTap: () {
+            if (!isSearchOpen) {
+              context.read<SearchBarBloc>().add(OpenSearchBar());
+              _focusNode.requestFocus();
+            }
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOut,
+            width: searchWidth,
+            height: 52.0,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary,
+                width: 1.0,
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    focusNode: _focusNode,
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      hintText: 'Rechercher...',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(left: 16),
+                    ),
+                    onChanged: _triggerSearchUpdate,
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        focusNode: _focusNode,
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Rechercher...',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(left: 16),
-                        ),
-                        onChanged: _triggerSearchUpdate,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(isSearchOpen || _searchController.text.isNotEmpty ? Icons.close : Icons.search),
-                      onPressed: () {
-                        if (_searchController.text.isNotEmpty || isSearchOpen) {
-                          _searchController.clear();
-                          _triggerSearchUpdate('');
-                          context.read<SearchBarBloc>().add(CloseSearchBar());
-                        } else {
-                          context.read<SearchBarBloc>().add(OpenSearchBar());
-                          _focusNode.requestFocus();
-                        }
-                      },
-                    ),
-                  ],
+                IconButton(
+                  icon: Icon(isSearchOpen || _searchController.text.isNotEmpty ? Icons.close : Icons.search),
+                  onPressed: () {
+                    if (_searchController.text.isNotEmpty || isSearchOpen) {
+                      _searchController.clear();
+                      _triggerSearchUpdate('');
+                      context.read<SearchBarBloc>().add(CloseSearchBar());
+                      _focusNode.unfocus(); // Ferme également le clavier ici
+                    } else {
+                      context.read<SearchBarBloc>().add(OpenSearchBar());
+                      _focusNode.requestFocus();
+                    }
+                  },
                 ),
-              ),
-            );
-          },
-        ),
-      ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
