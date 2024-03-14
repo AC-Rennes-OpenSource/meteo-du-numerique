@@ -38,7 +38,6 @@ class PrevisionCardWidget extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 26.0,
-                            // color: Theme.of(context).colorScheme.onSurface
                             color: categoryColor(prevision.couleur),
                           ),
                         ),
@@ -53,7 +52,6 @@ class PrevisionCardWidget extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
-                        // color: Theme.of(context).colorScheme.onSurface
                         color: categoryColor(prevision.couleur),
                       ),
                     ),
@@ -128,16 +126,6 @@ class PrevisionCardWidget extends StatelessWidget {
     }
     return null;
   }
-
-  // const Color(0xff63BAAB),
-  // const Color(0xffE197A4),
-  // const Color(0xff00B872),
-  // const Color(0xff0085AD),
-  // Colors.brown,
-  // const Color(0xff28619A),
-  // const Color(0xffC25452),
-  // Colors.green,
-  // Colors.blue,
 
   static categoryColor(String category) {
     Color orange = const Color(0xFFD17010);

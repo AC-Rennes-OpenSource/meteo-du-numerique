@@ -29,7 +29,7 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               highlightColor: Colors.transparent,
               icon: Image.asset(
                 'assets/icon_meteo_dark.png',
-                width: 40.0, // Vous pouvez ajuster la largeur de l'image selon vos besoins
+                width: 40.0,
               ),
               onPressed: () {},
             ),
@@ -44,8 +44,8 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Container(
                   margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 15),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer, // Couleur de fond jaune
-                    borderRadius: BorderRadius.circular(40.0), // Bords arrondis
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(40.0),
                   ),
                   child: tabBar),
             ),

@@ -119,7 +119,7 @@ class ApiService {
           servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
           break;
         default:
-          // Gérer le cas où 'sortBy' n'est pas un attribut valide
+          // TODO Gérer le cas où 'sortBy' n'est pas un attribut valide
           break;
       }
     }

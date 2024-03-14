@@ -40,7 +40,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void _onTabIndexChange() {
     String? currentQuery = searchQueries[widget.tabIndexNotifier.value];
     if (currentQuery != null && currentQuery.isNotEmpty) {
-      // Si une recherche était active sur cet onglet, ouvrez la barre de recherche avec la requête
+      // Si une recherche était active sur cet onglet, ouvre la barre de recherche avec la requête
       context.read<SearchBarBloc>().add(OpenSearchBar());
       _searchController.text = currentQuery;
     } else {
@@ -49,7 +49,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       _searchController.clear();
     }
 
-    // Assurez-vous de toujours fermer le clavier lors du changement d'onglet
+    // Ferme le clavier lors du changement d'onglet
     if (_focusNode.hasFocus) {
       _focusNode.unfocus();
     }
@@ -116,7 +116,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       _searchController.clear();
                       _triggerSearchUpdate('');
                       context.read<SearchBarBloc>().add(CloseSearchBar());
-                      _focusNode.unfocus(); // Ferme également le clavier ici
+                      _focusNode.unfocus(); // Ferme le clavier
                     } else {
                       context.read<SearchBarBloc>().add(OpenSearchBar());
                       _focusNode.requestFocus();

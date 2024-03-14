@@ -38,19 +38,9 @@ class _HomePageWebState extends State<HomePageWeb> {
 
     fetchServices().then((value) {
       setState(() {
-        // _isLoading = false;
         _services.addAll(value);
-        // todo filter
-        // final filtered = _services
-        //     .where((service) => service.libelle.contains("COLIBRIS"))
-        //     .toList();
-        // _servicesDisplay = filtered;
         _servicesDisplay = _services;
-
         _servicesDisplay = sortAll(false);
-
-        // todo
-
         lastUpdate = _services.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
       });
     });
@@ -134,7 +124,6 @@ class _HomePageWebState extends State<HomePageWeb> {
                 itemBuilder: (BuildContext context, int index) => ServiceCardWidget(service: _servicesDisplay[index]),
               ),
             ),
-            // ),
           ),
         ],
       ),
@@ -166,7 +155,6 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Déterminez si nous sommes sur un petit écran
     bool isSmallScreen = screenWidth < 800;
 
     return SliverAppBar(
@@ -204,7 +192,6 @@ class _CombinedSliverAppBarState extends State<CombinedSliverAppBar> {
                         flex: isSmallScreen ? 10 : 6,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset('assets/icon-meteo-round.png', height: 90),
                             const SizedBox(height: 8),

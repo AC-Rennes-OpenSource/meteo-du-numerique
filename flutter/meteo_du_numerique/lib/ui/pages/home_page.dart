@@ -107,8 +107,7 @@ class HomePage extends StatelessWidget {
                                       Padding(
                                           padding: const EdgeInsets.only(bottom: 5.0),
                                           child: Text(
-                                            style: const TextStyle(fontSize: 9
-                                                ),
+                                            style: const TextStyle(fontSize: 9),
                                             Utils.lastUpdateString(servicesNumBloc.lastUpdate!),
                                           )),
                                       Row(
@@ -148,7 +147,6 @@ class HomePage extends StatelessWidget {
                                                                   child: Container(
                                                                     padding: const EdgeInsets.all(2),
                                                                     decoration: BoxDecoration(
-                                                                      // border: Border.all(color: Theme.of(context).colorScheme.onSurface),
                                                                       color: Colors.redAccent,
                                                                       borderRadius: BorderRadius.circular(20),
                                                                     ),

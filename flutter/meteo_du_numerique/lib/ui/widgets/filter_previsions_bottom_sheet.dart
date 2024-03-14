@@ -18,7 +18,7 @@ class FilterPrevisionsBottomSheet extends StatefulWidget {
 }
 
 class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
-  late String _selectedFilter; // Modifié pour stocker un seul filtre
+  late String _selectedFilter;
 
   late List<String> _selectedCategories = [];
 
@@ -43,8 +43,6 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
       'Pédagogie',
       'Santé et social',
       'Scolarité',
-
-      // 'categorie2'
     ]; // Exemple de catégories
 
     return Container(
@@ -66,13 +64,6 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
-          // RadioListTile<String>(
-          //   title: const Text("Les 6 prochains mois"),
-          //   value: 'semestre',
-          //   selected: _selectedFilter == 'semestre',
-          //   groupValue: _selectedFilter,
-          //   onChanged: (value) => _onFilterChanged(value),
-          // ),
           RadioListTile<String>(
             title: const Text('Tout'),
             value: 'all',
@@ -85,15 +76,14 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
             child: Divider(),
           ),
           Wrap(
-            spacing: 8.0, // Espacement horizontal entre les chips
-            runSpacing: 4.0, // Espacement vertical entre les chips
+            spacing: 8.0,
+            runSpacing: 4.0,
             children: categoryOptions
                 .asMap()
                 .map((index, category) => MapEntry(
                     index,
                     ChoiceChip(
                       selectedColor: _getChipColor(index),
-                      // checkmarkColor: Theme.of(context).colorScheme.onSurface,
                       checkmarkColor: Colors.white,
                       backgroundColor: _selectedCategories.contains(category)
                           ? _getChipColor(index)
@@ -108,7 +98,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                       ),
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: _getChipColor(index), width: 2),
-                        borderRadius: BorderRadius.circular(40), // Bords arrondis
+                        borderRadius: BorderRadius.circular(40),
                       ),
                       selected: _selectedCategories.contains(category),
                       onSelected: (bool selected) {
@@ -146,8 +136,6 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                       _selectedFilter = 'all'; // Réinitialiser la sélection
                       _selectedCategories = []; // Réinitialiser la sélection
                     });
-                    // previsionsBloc.add(FetchPrevisionsEvent());
-                    // Navigator.pop(context);
                   },
                 ),
                 OutlinedButton(
@@ -155,8 +143,7 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                     side: const BorderSide(width: 1.0, color: Colors.grey),
                   ),
                   onPressed: () {
-                    previsionsBloc
-                        .add(FilterPrevisionsEvent(_selectedCategories, _selectedFilter)); // Envoyer un seul filtre
+                    previsionsBloc.add(FilterPrevisionsEvent(_selectedCategories, _selectedFilter));
                     Navigator.pop(context);
                   },
                   child: const Text("Appliquer"),
@@ -170,26 +157,16 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
   }
 
   Color _getChipColor(int index) {
-    // Exemple : retourne une couleur différente en fonction de l'index
+    // TODO à modifier. Retourne une couleur différente en fonction de l'index
     final colors = [
       const Color(0xff63BAAB),
       const Color(0xffE197A4),
-
       const Color(0xffC25452),
-
       const Color(0xff28619A),
-
       const Color(0xFFC7A213),
       const Color(0xFFD17010),
-      // const Color(0xff63BAAB),
-      // const Color(0xff28619A),
-      // const Color(0xffC25452),
-
       const Color(0xff00B872),
-      // const Color(0xff0085AD),
       Colors.brown,
-
-      // Colors.green,
       Colors.blue,
     ];
     return colors[index % colors.length];

@@ -90,8 +90,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           setState(() {
                             _selectedFilters.clear();
                           });
-                          // Navigator.pop(context);
-                          // itemsBloc.add(FetchItemsEvent());
                         }
                       : null, // Désactive le bouton si _selectedFilters est vide
                 ),
@@ -121,9 +119,5 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         _selectedFilters.remove(filter);
       }
     });
-
-    // Envoyer l'événement au bloc avec les filtres sélectionnés
-    // widget.itemsBloc.add(FilterItemsEvent(_selectedFilters));
-    // Navigator.pop(context);
   }
 }

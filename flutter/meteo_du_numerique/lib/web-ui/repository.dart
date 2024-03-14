@@ -26,9 +26,8 @@ List<Service> parseOldService(String responseBody) {
 }
 
 Future<List<Service>> fetchServices() async {
-  http.Response response = await http.get(Uri.parse(v4url));
   // TODO à retirer : tests qt
-  // response = await http.get(Uri.parse(qtV4Url));
+  http.Response response = await http.get(Uri.parse(v4url));
   if (response.statusCode == 200) {
     return compute(parseService, response.body);
   } else {

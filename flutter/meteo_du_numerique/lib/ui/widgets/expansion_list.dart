@@ -36,11 +36,8 @@ class ExpansionList extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0, right: 6, left: 6),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .secondaryContainer
-                          .withOpacity(0.3), // Couleur de fond du Container
-                      borderRadius: BorderRadius.circular(5), // Bords arrondis
+                      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(5),
                       border: state.dayPrevisions.isNotEmpty
                           ? Border.all(
                               color: Theme.of(context).colorScheme.onSecondaryContainer,
@@ -92,7 +89,6 @@ class ExpansionList extends StatelessWidget {
                       child: ExpansionPanelList(
                         materialGapSize: 0,
                         dividerColor: Colors.transparent,
-                        // animationDuration: const Duration(milliseconds: 250),
                         expandIconColor: Theme.of(context).colorScheme.primary,
                         expandedHeaderPadding: const EdgeInsets.only(bottom: 0),
                         elevation: 0,

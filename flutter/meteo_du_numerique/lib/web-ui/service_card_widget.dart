@@ -30,7 +30,6 @@ class ServiceCardWidget extends StatelessWidget {
                   child: Center(child: getIcon(service.qualiteDeServiceId)),
                 ),
                 const SizedBox(height: 8),
-                // Espace entre l'icône et le texte
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(

@@ -49,7 +49,6 @@ class ItemsList extends StatelessWidget {
             child: Center(child: Text('Un problème de connexion est survenu.')),
           );
         }
-        // Bloc d'instruction par défaut si aucun des états ci-dessus n'est rencontré
         return const SliverFillRemaining(
           child: Center(child: Text('Chargement...')),
         );

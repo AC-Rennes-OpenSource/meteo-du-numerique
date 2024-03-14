@@ -36,7 +36,7 @@ class ServiceNum {
     return {
       'id': id,
       'libelle': libelle,
-      'category': category.toJson(), // Assurez-vous que Categorie a une méthode toJson()
+      'category': category.toJson(),
       'actualites': actualites.map((a) => a.toJson()).toList(),
       'previsions': previsions.map((p) => p.toJson()).toList(),
     };
