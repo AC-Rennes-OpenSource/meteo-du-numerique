@@ -140,7 +140,6 @@ class PrevisionCardWidget extends StatelessWidget {
   // Colors.blue,
 
   static categoryColor(String category) {
-    // todo rst : changement pour démo
     Color orange = const Color(0xFFD17010);
     Color jaune = const Color(0xFFC7A213);
     Color vert = const Color(0xff63BAAB);

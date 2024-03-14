@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Config {
+  //  TODO mémo
+  //  v3url : "https://www.toutatice.fr/strapi/services";
+  //  v4url : "https://www.toutatice.fr/strapi/api/services?populate=*";
   static String get urlAttributes => dotenv.env['URL_ATTRIBUTES'] ?? '';
 
   static String get baseUrl {

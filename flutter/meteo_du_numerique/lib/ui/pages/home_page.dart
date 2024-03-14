@@ -108,7 +108,6 @@ class HomePage extends StatelessWidget {
                                           padding: const EdgeInsets.only(bottom: 5.0),
                                           child: Text(
                                             style: const TextStyle(fontSize: 9
-                                                // todo rst
                                                 ),
                                             Utils.lastUpdateString(servicesNumBloc.lastUpdate!),
                                           )),
@@ -139,7 +138,7 @@ class HomePage extends StatelessWidget {
                                                                     foregroundColor:
                                                                         Theme.of(context).colorScheme.onSurface),
                                                               ),
-                                                              //badge sur bouton todo rst mise à jour du state
+                                                              // badge sur bouton
                                                               if (BlocProvider.of<ServicesNumBloc>(context2)
                                                                   .currentFilterCriteria!
                                                                   .isNotEmpty)
@@ -186,7 +185,7 @@ class HomePage extends StatelessWidget {
                                                                     foregroundColor:
                                                                         Theme.of(context).colorScheme.onSurface),
                                                               ),
-                                                              //badge sur bouton todo rst mise à jour du state
+                                                              // badge sur bouton
                                                               if (BlocProvider.of<PrevisionsBloc>(context3)
                                                                       .currentFilterCriteria
                                                                       .isNotEmpty ||
@@ -254,8 +253,6 @@ class HomePage extends StatelessWidget {
                                         onRefresh: () async {
                                           previsionsBloc.add(FetchPrevisionsEvent());
                                           servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                          // todo rst : délai pour test
-                                          // await Future.delayed(const Duration(milliseconds: 250));
                                         },
                                       ),
                                       const ExpansionList(dayPrevison: true),
@@ -266,8 +263,6 @@ class HomePage extends StatelessWidget {
                                     onRefresh: () async {
                                       previsionsBloc.add(FetchPrevisionsEvent());
                                       servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                      // todo rst : délai pour test
-                                      // await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
                                       slivers: [
@@ -281,11 +276,9 @@ class HomePage extends StatelessWidget {
                                     slivers: [
                                       CupertinoSliverRefreshControl(
                                         onRefresh: () async {
-                                          // todo rst ouvrir l'accordéon à chaque refresh?
+                                          // TODO ouvrir l'accordéon à chaque refresh?
                                           previsionsBloc.add(FetchPrevisionsEvent());
                                           previsionsBloc.add(OpenAllGroupsEvent());
-                                          // todo rst : délai pour test
-                                          //  await Future.delayed(const Duration(milliseconds: 250));
                                         },
                                       ),
                                       const ExpansionList(
@@ -297,8 +290,6 @@ class HomePage extends StatelessWidget {
                                     onRefresh: () async {
                                       previsionsBloc.add(FetchPrevisionsEvent());
                                       previsionsBloc.add(OpenAllGroupsEvent());
-                                      // todo rst : délai pour test
-                                      // await Future.delayed(const Duration(milliseconds: 250));
                                     },
                                     child: const CustomScrollView(
                                       slivers: [
@@ -358,7 +349,6 @@ class HomePage extends StatelessWidget {
             : FilterPrevisionsBottomSheet(
                 selectedFilter: previsionsBloc.currentPeriode,
                 tab: tab,
-                // todo rst
                 selectedCategories: previsionsBloc.currentFilterCriteria,
               );
       },

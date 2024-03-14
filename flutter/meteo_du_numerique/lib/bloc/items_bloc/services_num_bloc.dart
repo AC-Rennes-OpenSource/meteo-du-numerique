@@ -41,8 +41,8 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
       emit(ServicesNumLoading());
     }
 
-    // todo rst : délai pour test
-    // await Future.delayed(const Duration(milliseconds: 250));
+    // TODO : délai pour test
+    await Future.delayed(const Duration(milliseconds: 250));
 
     try {
       final servicesList = await _getItems();
@@ -138,7 +138,9 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   Future<List<ActualiteA>> _getItems() async {
     List<ActualiteA> servicesList;
 
-    servicesList = await apiService.fetchItems();
+    // servicesList = await apiService.fetchItems();
+    // TODO mock/stub
+    servicesList = await apiService.fetchMockItems();
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {

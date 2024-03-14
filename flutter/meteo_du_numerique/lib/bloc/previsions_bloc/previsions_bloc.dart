@@ -41,8 +41,8 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
       emit(PrevisionsLoading());
     }
 
-    // todo rst : délai pour test
-    // await Future.delayed(const Duration(milliseconds: 250));
+    // TODO : délai pour test
+    await Future.delayed(const Duration(milliseconds: 250));
 
     try {
       final previsions = await _getPrevisions();
@@ -183,13 +183,15 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   }
 
   Future<List<PrevisionA>> _getPrevisions() async {
-    List<PrevisionA> previsions;
+    List<PrevisionA> previsionList;
 
-    previsions = await apiService.fetchMockPrevisions();
+    // previsionList = await apiService.fetchPrevisions();
+    // TODO mock/stub
+    previsionList = await apiService.fetchMockPrevisions();
 
     // Apply search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      previsions = previsions
+      previsionList = previsionList
           .where((prevision) => removeDiacritics(prevision.libelle.toLowerCase())
               .contains(removeDiacritics(currentSearchQuery!.toLowerCase())))
           .toList();
@@ -199,11 +201,11 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     if (currentFilterCriteria.isNotEmpty) {
       List<PrevisionA> previsionsupdate = [];
       for (var element in currentFilterCriteria) {
-        previsionsupdate.addAll(previsions
+        previsionsupdate.addAll(previsionList
             .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
             .toList());
       }
-      previsions = previsionsupdate;
+      previsionList = previsionsupdate;
     }
 
     // Apply perio filter
@@ -212,22 +214,22 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
       DateTime today = DateTime(now.year, now.month, now.day - 1);
 
       if (currentPeriode == 'semaine') {
-        previsions = previsions.where((prevision) {
+        previsionList = previsionList.where((prevision) {
           return prevision.dateDebut.isAfter(today) &&
               prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
         }).toList();
       } else if (currentPeriode == 'mois') {
-        previsions = previsions.where((prevision) {
+        previsionList = previsionList.where((prevision) {
           return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
         }).toList();
       } else if (currentPeriode == 'semestre') {
-        previsions = previsions.where((prevision) {
+        previsionList = previsionList.where((prevision) {
           return prevision.dateDebut.isAfter(today) &&
               prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
         }).toList();
       }
     }
 
-    return previsions;
+    return previsionList;
   }
 }

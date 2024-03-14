@@ -93,8 +93,6 @@ class _HomePageWebState extends State<HomePageWeb> {
 
   List<bool> isSelected = <bool>[false, false, false];
 
-  //todo rst
-
   bool isSearchOpen = false;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();

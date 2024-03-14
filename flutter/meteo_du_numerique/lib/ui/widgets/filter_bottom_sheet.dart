@@ -6,7 +6,7 @@ import '../../bloc/items_bloc/services_num_bloc.dart';
 import '../../bloc/items_bloc/services_num_event.dart';
 import 'custom_checkbox.dart';
 
-// todo rst : composant unique pour les deux tabs??
+// TODO : composant unique pour les deux tabs??
 class FilterBottomSheet extends StatefulWidget {
   final List<String> selectedFilters;
 
