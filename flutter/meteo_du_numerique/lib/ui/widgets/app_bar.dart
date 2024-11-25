@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 
+import '../../bloc/items_bloc/services_num_bloc.dart';
+import '../../bloc/items_bloc/services_num_event.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
 
@@ -16,7 +20,9 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
         return AppBar(
           elevation: 0,
           scrolledUnderElevation: 0,
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
           title: const Text("Météo du numérique"),
           leading: Image.asset(
             Theme.of(context).brightness == Brightness.dark
@@ -42,12 +48,36 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   splashColor: Colors.transparent,
                   textTheme: Theme.of(context).textTheme),
               child: Container(
-                  margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 15),
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 15),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(40.0),
                   ),
-                  child: tabBar),
+                  child:
+
+                  // tabBar
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: tabBar,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.replay),
+                        onPressed: () {
+                          BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
+                          BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'asc'));
+                          BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
+                          // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
+                          // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
+
+                        },
+                      ),
+                    ],
+                  ),
+
+              ),
             ),
           ),
         );

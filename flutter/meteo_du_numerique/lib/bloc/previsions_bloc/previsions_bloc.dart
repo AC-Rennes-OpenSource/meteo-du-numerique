@@ -42,10 +42,12 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     }
 
     // TODO : délai pour test
-    await Future.delayed(const Duration(milliseconds: 250));
+    // await Future.delayed(const Duration(milliseconds: 1500));
 
     try {
+
       final previsions = await _getPrevisions();
+
       final dayPrevisions = previsions.where((objet) {
         return Utils.estMemeJour(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
       }).toList();
@@ -59,6 +61,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
           previsionsGroupedByMonth: groupedPrevisions,
           expandedGroups: expandedGroups,
           dayPrevisions: dayPrevisions));
+
     } catch (e) {
       emit(PrevisionsError(message: e.toString()));
     }
@@ -185,9 +188,11 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   Future<List<PrevisionA>> _getPrevisions() async {
     List<PrevisionA> previsionList;
 
-    // previsionList = await apiService.fetchPrevisions();
+    previsionList = await apiService.fetchPrevisions();
+
+
     // TODO mock/stub
-    previsionList = await apiService.fetchMockPrevisions();
+    // previsionList = await apiService.fetchMockPrevisions();
 
     // Apply search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {

@@ -13,8 +13,10 @@ class ApiService {
 
   Future<List<ActualiteA>> fetchItems() async {
     try {
-      final response = await http.get(Uri.parse(baseUrl + Config.urlAttributes));
-      return getActu(_processResponse(response.body));
+      final response =
+          await http.get(Uri.parse(baseUrl + Config.urlAttributes));
+      var act = getActu(_processResponse(response.body));
+      return act;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -24,10 +26,14 @@ class ApiService {
   }
 
   //TODO : séparer les appels serviceNums/prévisions ----------------------------------------------------------
-  Future<List<PrevisionA>> fetchPrevisions({String? category, String? sortBy, String? query}) async {
+  Future<List<PrevisionA>> fetchPrevisions(
+      {String? category, String? sortBy, String? query}) async {
     try {
-      final response = await http.get(Uri.parse(baseUrl + Config.urlAttributes));
-      return getSortedPrev(_processResponse(response.body));
+      final response =
+          await http.get(Uri.parse(baseUrl + Config.urlAttributes));
+      var b = _processResponse(response.body);
+      var a = getSortedPrev(b);
+      return a;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -38,9 +44,10 @@ class ApiService {
 
   List<ServiceNum> _processResponse(String data) {
     List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
-
-    List<ServiceNum> listeServicesNum = jsonData.map((e) => ServiceNum.fromJson(e)).toList();
-
+    // TODO json-server sert un tableau : nécessité de prendre le 1er élément
+    // List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
+    List<ServiceNum> listeServicesNum =
+        jsonData.map((e) => ServiceNum.fromJson(e)).toList();
     return listeServicesNum;
   }
 
@@ -49,20 +56,27 @@ class ApiService {
     for (var element in servList) {
       for (var prev in element.previsions) {
         prev.categorieLibelle = element.category.libelle;
+        // print(prev.categorieLibelle);
         prev.couleur = element.category.color;
-        if (prev.dateDebut.isAfter(DateTime.now())) {
+        // print(prev.couleur);
+        // print(prev);
+        // TODO affiche uniquement si après aujourd'hui (à garder?)
+        // if (prev.dateDebut.isAfter(DateTime.now())) {
           listprev.add(prev);
-        }
+        // }
       }
     }
-    // TODO test pour affichage de la prévision du jour dans la tab 1
-    listprev.first.dateDebut = DateTime.now();
+    if (listprev.isNotEmpty) {
 
-    listprev.sort((a, b) {
-      DateTime dateADebut = a.dateDebut;
-      DateTime dateBDebut = b.dateDebut;
-      return dateADebut.compareTo(dateBDebut);
-    });
+      // TODO test pour affichage de la prévision du jour dans la tab 1
+       listprev.first.dateDebut = DateTime.now();
+
+      listprev.sort((a, b) {
+        DateTime dateADebut = a.dateDebut;
+        DateTime dateBDebut = b.dateDebut;
+        return dateADebut.compareTo(dateBDebut);
+      });
+    }
     return listprev;
   }
 
@@ -75,7 +89,8 @@ class ApiService {
   }
 
   //---------------------------------------------------------------------------------------------------
-  Future<List<ServiceNumOld>> fetchItems_v3({String? category, String? sortBy, String? query}) async {
+  Future<List<ServiceNumOld>> fetchItems_v3(
+      {String? category, String? sortBy, String? query}) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/services'));
       return _processResponse_v3(response.body, category, sortBy, query);
@@ -84,19 +99,28 @@ class ApiService {
     }
   }
 
-  List<ServiceNumOld> _processResponse_v3(String data, String? filterBy, String? sortBy, String? query) {
+  List<ServiceNumOld> _processResponse_v3(
+      String data, String? filterBy, String? sortBy, String? query) {
     List<dynamic> jsonData = jsonDecode(data);
-    List<ServiceNumOld> servicesList = jsonData.map((serviceNum) => ServiceNumOld.fromJson(serviceNum)).toList();
+    List<ServiceNumOld> servicesList = jsonData
+        .map((serviceNum) => ServiceNumOld.fromJson(serviceNum))
+        .toList();
 
-    servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
+    servicesList
+        .sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
 
     // filtering
     if (filterBy != null) {
-      if (filterBy.toLowerCase().contains("perturbations") || filterBy.toLowerCase().contains("fonctionnement")) {
-        servicesList =
-            servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase().contains(filterBy)).toList();
+      if (filterBy.toLowerCase().contains("perturbations") ||
+          filterBy.toLowerCase().contains("fonctionnement")) {
+        servicesList = servicesList
+            .where((serviceNum) =>
+                serviceNum.qualiteDeService.toLowerCase().contains(filterBy))
+            .toList();
       } else {
-        servicesList = servicesList.where((serviceNum) => serviceNum.category == filterBy).toList();
+        servicesList = servicesList
+            .where((serviceNum) => serviceNum.category == filterBy)
+            .toList();
       }
     }
 
@@ -113,10 +137,12 @@ class ApiService {
           servicesList.sort((a, b) => a.id.compareTo(b.id));
           break;
         case 'etat':
-          servicesList.sort((a, b) => b.qualiteDeServiceId.compareTo(b.qualiteDeServiceId));
+          servicesList.sort(
+              (a, b) => b.qualiteDeServiceId.compareTo(b.qualiteDeServiceId));
           break;
         case 'qualiteDeService':
-          servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
+          servicesList
+              .sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
           break;
         default:
           // TODO Gérer le cas où 'sortBy' n'est pas un attribut valide
@@ -126,8 +152,10 @@ class ApiService {
 
     // Searching
     if (query != null) {
-      servicesList =
-          servicesList.where((serviceNum) => serviceNum.libelle.toLowerCase().contains(query.toLowerCase())).toList();
+      servicesList = servicesList
+          .where((serviceNum) =>
+              serviceNum.libelle.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
     return servicesList;
   }
@@ -135,7 +163,9 @@ class ApiService {
   Future<List<ActualiteA>> fetchMockItems() async {
     try {
       String data = await rootBundle.loadString('assets/stub.json');
-      return getActu(_processResponse(data));
+      var a = _processResponse(data);
+      var b = getActu(a);
+      return b;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -144,7 +174,8 @@ class ApiService {
     }
   }
 
-  Future<List<PrevisionA>> fetchMockPrevisions({String? category, String? sortBy, String? query}) async {
+  Future<List<PrevisionA>> fetchMockPrevisions(
+      {String? category, String? sortBy, String? query}) async {
     try {
       String data = await rootBundle.loadString('assets/stub.json');
       return getSortedPrev(_processResponse(data));

@@ -37,10 +37,10 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
       'Collaboration',
       'Communication',
       'Finance',
+      'Pédagogie',
       'Examens et concours',
       'RH',
       'Inclusion',
-      'Pédagogie',
       'Santé et social',
       'Scolarité',
     ]; // Exemple de catégories
@@ -51,14 +51,14 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           RadioListTile<String>(
-            title: const Text('La semaine prochaine'),
+            title: const Text('7 prochains jours'),
             value: 'semaine',
             selected: _selectedFilter == 'semaine',
             groupValue: _selectedFilter,
             onChanged: (value) => _onFilterChanged(value),
           ),
           RadioListTile<String>(
-            title: const Text('Le mois prochain'),
+            title: const Text('30 prochains jours'),
             value: 'mois',
             selected: _selectedFilter == 'mois',
             groupValue: _selectedFilter,
@@ -159,11 +159,20 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
   Color _getChipColor(int index) {
     // TODO à modifier. Retourne une couleur différente en fonction de l'index
     final colors = [
+      // 'Collaboration',
+      // 'Communication',
+      // 'Finance',
+      // 'Pédagogie',
+      // 'Examens et concours',
+      // 'RH',
+      // 'Inclusion',
+      // 'Santé et social',
+      // 'Scolarité',
       const Color(0xff63BAAB),
+      const Color(0xFFC7A213),
       const Color(0xffE197A4),
       const Color(0xffC25452),
       const Color(0xff28619A),
-      const Color(0xFFC7A213),
       const Color(0xFFD17010),
       const Color(0xff00B872),
       Colors.brown,

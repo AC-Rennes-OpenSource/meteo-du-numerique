@@ -19,7 +19,7 @@ class ExpansionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<PrevisionsBloc>().add(FetchPrevisionsEvent());
+    // context.read<PrevisionsBloc>().add(FetchPrevisionsEvent());
 
     return BlocBuilder<PrevisionsBloc, PrevisionsState>(
       builder: (context, state) {
@@ -36,11 +36,13 @@ class ExpansionList extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10.0, right: 6, left: 6),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.3),
+                      color: Colors.teal.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(5),
                       border: state.dayPrevisions.isNotEmpty
                           ? Border.all(
-                              color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              // color: Theme.of(context).colorScheme.onSecondaryContainer,
+                              // width: 1,
+                        color: Colors.teal.withOpacity(0.3),
                               width: 1,
                             )
                           : null),
@@ -53,7 +55,8 @@ class ExpansionList extends StatelessWidget {
                     expansionCallback: (int index, bool isExpanded) {
                       context.read<PrevisionsBloc>().add(ToggleDayPrevisionGroupEvent());
                     },
-                    children: state.dayPrevisions.map<ExpansionPanel>((PrevisionA prev) {
+                    children:
+                    state.dayPrevisions.map<ExpansionPanel>((PrevisionA prev) {
                       return ExpansionPanel(
                         canTapOnHeader: true,
                         backgroundColor: Colors.transparent,

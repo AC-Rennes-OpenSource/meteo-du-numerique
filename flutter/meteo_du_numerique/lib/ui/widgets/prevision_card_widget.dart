@@ -17,7 +17,7 @@ class PrevisionCardWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           border: Border.all(color: categoryColor(prevision.couleur))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

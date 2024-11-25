@@ -90,7 +90,7 @@ class PrevisionA {
   }
 
   factory PrevisionA.fromJson(Map<String, dynamic> json) {
-    return PrevisionA(
+    var prev = PrevisionA(
       id: json['id']?.toString() ?? '',
       libelle: json['attributes']['libelle'] ?? '',
       description: json['attributes']['description'] ?? '',
@@ -99,6 +99,7 @@ class PrevisionA {
       dateDebut:
           json['attributes']['date_debut'] != null ? DateTime.parse(json['attributes']['date_debut']) : DateTime.now(),
     );
+    return prev;
   }
 
   dynamic getField(String field) {

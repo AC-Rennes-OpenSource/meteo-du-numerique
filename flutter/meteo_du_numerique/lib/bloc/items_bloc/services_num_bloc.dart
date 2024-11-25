@@ -1,3 +1,4 @@
+
 import 'package:bloc/bloc.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:meteo_du_numerique/models/service_num_model.dart';
@@ -19,7 +20,8 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
 
   List<String> currentFilters = [];
 
-  ServicesNumBloc({required this.apiService, this.useMockData = false}) : super(ServicesNumInitial()) {
+  ServicesNumBloc({required this.apiService, this.useMockData = true})
+      : super(ServicesNumInitial()) {
     on<FetchServicesNumEvent>(_onFetchItems);
     on<FilterServicesNumEvent>(_onFilterItems);
     on<SortServicesNumEvent>(_onSortItems);
@@ -36,26 +38,35 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     super.onTransition(transition);
   }
 
-  Future<void> _onFetchItems(FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+  Future<void> _onFetchItems(
+      FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
     if (event.showIndicator) {
       emit(ServicesNumLoading());
     }
 
     // TODO : délai pour test
-    await Future.delayed(const Duration(milliseconds: 250));
+    // await Future.delayed(const Duration(milliseconds: 250));
 
     try {
+
       final servicesList = await _getItems();
+
       emit(ServicesNumLoaded(servicesList: servicesList));
+
       if (servicesList.isNotEmpty) {
-        lastUpdate = servicesList.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
+        // lastUpdate = servicesList
+        //     .map((e) => e.lastUpdate)
+        //     .reduce((min, e) => e.isAfter(min) ? e : min);
+        DateTime.now();
       }
+
     } catch (e) {
       emit(ServicesNumError(message: e.toString()));
     }
   }
 
-  void _onFilterItems(FilterServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+  void _onFilterItems(
+      FilterServicesNumEvent event, Emitter<ServicesNumState> emit) async {
     if (event.filterBy == []) {
       resetCriteria();
       currentFilters = [];
@@ -71,14 +82,17 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     add(FetchServicesNumEvent());
   }
 
-  void _onSortItems(SortServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+  void _onSortItems(
+      SortServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+
     // resetCriteria();
     currentSortCriteria = event.sortBy;
     currentSortOrder = event.order;
     add(FetchServicesNumEvent());
   }
 
-  void _onSearchItems(SearchItemsEvent event, Emitter<ServicesNumState> emit) async {
+  void _onSearchItems(
+      SearchItemsEvent event, Emitter<ServicesNumState> emit) async {
     // resetCriteria();
     currentSearchQuery = event.query;
     add(FetchServicesNumEvent());
@@ -99,7 +113,9 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
       servicesList = servicesList
-          .where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase()))
+          .where((serviceNum) => serviceNum.libelle
+              .toLowerCase()
+              .contains(currentSearchQuery!.toLowerCase()))
           .toList();
     }
 
@@ -107,8 +123,10 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<ServiceNumOld> itemupdate = [];
       currentFilterCriteria?.forEach((element) {
-        itemupdate
-            .addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase() == element).toList());
+        itemupdate.addAll(servicesList
+            .where((serviceNum) =>
+                serviceNum.qualiteDeService.toLowerCase() == element)
+            .toList());
       });
       servicesList = itemupdate;
     }
@@ -117,17 +135,25 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     if (currentSortCriteria != null) {
       if (currentSortCriteria == "qualiteDeServiceId") {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
+          servicesList.sort((a, b) => a
+              .getField(currentSortCriteria!)
+              .compareTo(b.getField(currentSortCriteria!)));
         } else {
-          servicesList.sort((b, a) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
+          servicesList.sort((b, a) => a
+              .getField(currentSortCriteria!)
+              .compareTo(b.getField(currentSortCriteria!)));
         }
       } else {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+          servicesList.sort((a, b) =>
+              removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+                  .compareTo(removeDiacritics(
+                      b.getField(currentSortCriteria!).toLowerCase())));
         } else {
-          servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+          servicesList.sort((b, a) =>
+              removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+                  .compareTo(removeDiacritics(
+                      b.getField(currentSortCriteria!).toLowerCase())));
         }
       }
     }
@@ -138,14 +164,16 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   Future<List<ActualiteA>> _getItems() async {
     List<ActualiteA> servicesList;
 
-    // servicesList = await apiService.fetchItems();
+    servicesList = await apiService.fetchItems();
     // TODO mock/stub
-    servicesList = await apiService.fetchMockItems();
+    // servicesList = await apiService.fetchMockItems();
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
       servicesList = servicesList
-          .where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase()))
+          .where((serviceNum) => serviceNum.libelle
+              .toLowerCase()
+              .contains(currentSearchQuery!.toLowerCase()))
           .toList();
     }
 
@@ -153,8 +181,10 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<ActualiteA> itemupdate = [];
       currentFilterCriteria?.forEach((element) {
-        itemupdate.addAll(
-            servicesList.where((serviceNum) => serviceNum.qualiteDeService?.libelle.toLowerCase() == element).toList());
+        itemupdate.addAll(servicesList
+            .where((serviceNum) =>
+                serviceNum.qualiteDeService?.libelle.toLowerCase() == element)
+            .toList());
       });
       servicesList = itemupdate;
     }
@@ -163,21 +193,27 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     if (currentSortCriteria != null) {
       if (currentSortCriteria == "qualiteDeServiceId") {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((a, b) => a.qualiteDeService!.niveauQos
+              .compareTo(b.qualiteDeService!.niveauQos));
         } else {
-          servicesList.sort((b, a) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((b, a) => a.qualiteDeService!.niveauQos
+              .compareTo(b.qualiteDeService!.niveauQos));
         }
       } else {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+          servicesList.sort((a, b) =>
+              removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+                  .compareTo(removeDiacritics(
+                      b.getField(currentSortCriteria!).toLowerCase())));
         } else {
-          servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+          servicesList.sort((b, a) =>
+              removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
+                  .compareTo(removeDiacritics(
+                      b.getField(currentSortCriteria!).toLowerCase())));
         }
       }
     }
 
-    return servicesList;
+    return servicesList??[];
   }
 }

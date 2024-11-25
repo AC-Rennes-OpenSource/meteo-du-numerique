@@ -38,6 +38,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _onTabIndexChange() {
+    // FIXME la valeur est inversée
     String? currentQuery = searchQueries[widget.tabIndexNotifier.value];
     if (currentQuery != null && currentQuery.isNotEmpty) {
       // Si une recherche était active sur cet onglet, ouvre la barre de recherche avec la requête
@@ -54,12 +55,12 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       _focusNode.unfocus();
     }
 
-    _triggerSearchUpdate(currentQuery ?? '');
+    // _triggerSearchUpdate(currentQuery ?? '');
   }
 
   void _triggerSearchUpdate(String query) {
     searchQueries[widget.tabIndexNotifier.value] = query;
-    if (widget.tabIndexNotifier.value == 0) {
+    if (widget.tabIndexNotifier.value == 0 ) {
       context.read<ServicesNumBloc>().add(SearchItemsEvent(query));
     } else {
       context.read<PrevisionsBloc>().add(SearchPrevisionsEvent(query));
@@ -82,9 +83,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               _focusNode.requestFocus();
             }
           },
+
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.ease,
             width: searchWidth,
             height: 52.0,
             decoration: BoxDecoration(
@@ -112,12 +114,17 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                 IconButton(
                   icon: Icon(isSearchOpen || _searchController.text.isNotEmpty ? Icons.close : Icons.search),
                   onPressed: () {
-                    if (_searchController.text.isNotEmpty || isSearchOpen) {
+                    if (_searchController.text.isNotEmpty && isSearchOpen) {
                       _searchController.clear();
                       _triggerSearchUpdate('');
                       context.read<SearchBarBloc>().add(CloseSearchBar());
                       _focusNode.unfocus(); // Ferme le clavier
-                    } else {
+                    }
+                    else if(_searchController.text.isEmpty && isSearchOpen){
+                      context.read<SearchBarBloc>().add(CloseSearchBar());
+                      _focusNode.unfocus();
+                    }
+                    else {
                       context.read<SearchBarBloc>().add(OpenSearchBar());
                       _focusNode.requestFocus();
                     }

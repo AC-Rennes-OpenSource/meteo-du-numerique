@@ -28,8 +28,8 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
       decoration: BoxDecoration(
           borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
           color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.background
-              : Theme.of(context).colorScheme.background,
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.surface,
           border: Border.all(
               color: isDarkMode
                   ? serviceColor(widget.service.qualiteDeService!.niveauQos, isDarkMode)

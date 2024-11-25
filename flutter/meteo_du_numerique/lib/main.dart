@@ -13,17 +13,16 @@ import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
+import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
 import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
-import 'firebase_options.dart';
-
 final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _initLocalNotifications() async {
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_notification');
 
   // Configuration pour iOS
   const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
@@ -45,14 +44,28 @@ Future<void> _initLocalNotifications() async {
 Future<void> main() async {
   await dotenv.load(fileName: ".env"); // Charge les variables d'environnement
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await _initLocalNotifications();
+
+  if (Firebase.apps.isEmpty) {
+    print("coucou");
+    await Firebase.initializeApp(
+        // name: 'meteo-du-numerique-acrennes',
+        options: DefaultFirebaseOptions.currentPlatform);
+  }
+
+  // await _initLocalNotifications();
   initializeDateFormatting('fr_FR', null);
 
   final themePreferences = ThemePreferences();
   final themeMode = await themePreferences.getThemeMode();
 
+  // Get APNS token for iOS
+  // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+  // print('APNS Token: $apnsToken');
+
   runApp(MyApp(themeModePreference: themeMode));
+
+
+
 }
 
 class MyApp extends StatefulWidget {
@@ -67,11 +80,18 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+
+    print("TEST");
+    // print(Firebase.app().name);
+    print("TEST");
+
+
     super.initState();
     if (!kIsWeb) {
       _requestPermissions();
       _configureFirebaseListeners();
     }
+
   }
 
   void _requestPermissions() {
