@@ -40,51 +40,51 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () {},
             ),
           ],
-          bottom: PreferredSize(
-            preferredSize: tabBar.preferredSize,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  textTheme: Theme.of(context).textTheme),
-              child: Container(
-                  margin: const EdgeInsets.only(
-                      left: 20, right: 20, bottom: 10, top: 15),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(40.0),
-                  ),
-                  child:
-
-                  // tabBar
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: tabBar,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.replay),
-                        onPressed: () {
-                          BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
-                          BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'asc'));
-                          BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
-                          // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
-                          // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
-
-                        },
-                      ),
-                    ],
-                  ),
-
-              ),
-            ),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: tabBar.preferredSize,
+          //   child: Theme(
+          //     data: Theme.of(context).copyWith(
+          //         highlightColor: Colors.transparent,
+          //         splashColor: Colors.transparent,
+          //         textTheme: Theme.of(context).textTheme),
+          //     child: Container(
+          //         margin: const EdgeInsets.only(
+          //             left: 20, right: 20, bottom: 10, top: 15),
+          //         decoration: BoxDecoration(
+          //           color: Theme.of(context).colorScheme.secondaryContainer,
+          //           borderRadius: BorderRadius.circular(40.0),
+          //         ),
+          //         child:
+          //
+          //         // tabBar
+          //
+          //         Row(
+          //           children: [
+          //             Expanded(
+          //               child: tabBar,
+          //             ),
+          //             IconButton(
+          //               icon: Icon(Icons.replay),
+          //               onPressed: () {
+          //                 BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
+          //                 BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'asc'));
+          //                 BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
+          //                 // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
+          //                 // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
+          //
+          //               },
+          //             ),
+          //           ],
+          //         ),
+          //
+          //     ),
+          //   ),
+          // ),
         );
       },
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(120);
+  Size get preferredSize => const Size.fromHeight(70);
 }

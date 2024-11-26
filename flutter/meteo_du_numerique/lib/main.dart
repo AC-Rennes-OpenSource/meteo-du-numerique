@@ -16,6 +16,7 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
 import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
+import 'package:meteo_du_numerique/ui/pages/home_page2.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
 import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
@@ -174,7 +175,7 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,
             themeMode: themeState.themeMode,
-            home: kIsWeb ? const HomePageWeb() : const HomePage(),
+            home: kIsWeb ? const HomePageWeb() : const HomePage2(),
           );
         },
       ),

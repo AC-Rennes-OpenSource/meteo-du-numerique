@@ -38,7 +38,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _onTabIndexChange() {
-    // FIXME la valeur est inversée
     String? currentQuery = searchQueries[widget.tabIndexNotifier.value];
     if (currentQuery != null && currentQuery.isNotEmpty) {
       // Si une recherche était active sur cet onglet, ouvre la barre de recherche avec la requête
@@ -55,7 +54,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       _focusNode.unfocus();
     }
 
-    // _triggerSearchUpdate(currentQuery ?? '');
+    _triggerSearchUpdate(currentQuery ?? '');
   }
 
   void _triggerSearchUpdate(String query) {
