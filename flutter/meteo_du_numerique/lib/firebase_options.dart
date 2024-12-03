@@ -46,29 +46,31 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBGQy4kEn-NkXmkkAbX1j8B6FyFQ9JoWXA',
-    appId: '1:665353360218:web:8f86ac4c9302f10f2c9963',
-    messagingSenderId: '665353360218',
-    projectId: 'meteo-du-numerique-acrennes',
-    authDomain: 'meteo-du-numerique-acrennes.firebaseapp.com',
-    storageBucket: 'meteo-du-numerique-acrennes.firebasestorage.app',
+    apiKey: 'AIzaSyDKU0_iP2J6J_gX0nw21HRLFQgcozeKZIU',
+    appId: '1:699520918683:web:3889c0fafcf42e8f82523e',
+    messagingSenderId: '699520918683',
+    projectId: 'meteo-du-numerique-84da1',
+    authDomain: 'meteo-du-numerique-84da1.firebaseapp.com',
+    storageBucket: 'meteo-du-numerique-84da1.firebasestorage.app',
+    measurementId: 'G-B0R8NR5YDP',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCRznsFBjp44MJST8CKI30J2CqkqGEnmZ0',
-    appId: '1:665353360218:android:b69d64c3a8802f142c9963',
-    messagingSenderId: '665353360218',
-    projectId: 'meteo-du-numerique-acrennes',
-    storageBucket: 'meteo-du-numerique-acrennes.firebasestorage.app',
+    apiKey: 'AIzaSyDHSOta-63fwC2j_9yfdjehNnQc4dNH4m0',
+    appId: '1:699520918683:android:b4a8228923c2a0dd82523e',
+    messagingSenderId: '699520918683',
+    projectId: 'meteo-du-numerique-84da1',
+    storageBucket: 'meteo-du-numerique-84da1.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA9vSsATznQTmBhXPYiGsEElKV8dnRHj8w',
-    appId: '1:665353360218:ios:89091a8dbdb476642c9963',
-    messagingSenderId: '665353360218',
-    projectId: 'meteo-du-numerique-acrennes',
-    storageBucket: 'meteo-du-numerique-acrennes.firebasestorage.app',
-    iosBundleId: 'com.example.meteoDuNumerique',
+    apiKey: 'AIzaSyBM9WqmtXGxSy8xm_a6dGwTIpt0IjmmwXU',
+    appId: '1:699520918683:ios:8fd22c09a39879ff82523e',
+    messagingSenderId: '699520918683',
+    projectId: 'meteo-du-numerique-84da1',
+    storageBucket: 'meteo-du-numerique-84da1.firebasestorage.app',
+    androidClientId: '699520918683-65umma4i0ra3l87gj0k2arnu3j02sm86.apps.googleusercontent.com',
+    iosBundleId: 'fr.acrennes.MeteoDuNumeriqueUITests',
   );
 
 }

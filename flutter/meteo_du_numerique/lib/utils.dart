@@ -28,7 +28,9 @@ class Utils {
   static String lastUpdateString(DateTime lastUpdate) {
     String form = DateFormat("dd MMMM yyyy", "fr_FR").format(lastUpdate);
     String hour =
-        "${DateFormat("H").format(lastUpdate.add(const Duration(hours: 2)))}h${DateFormat("mm").format(lastUpdate)}";
+        "${DateFormat("H").format(lastUpdate
+        // .add(const Duration(hours: 2))
+    )}h${DateFormat("mm").format(lastUpdate)}";
     return "Dernière mise à jour le $form à $hour";
   }
 }

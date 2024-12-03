@@ -26,14 +26,17 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
 
     return Container(
       decoration: BoxDecoration(
-          borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
+          borderRadius:
+              kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
           color: Theme.of(context).brightness == Brightness.dark
               ? Theme.of(context).colorScheme.surface
               : Theme.of(context).colorScheme.surface,
           border: Border.all(
               color: isDarkMode
-                  ? serviceColor(widget.service.qualiteDeService!.niveauQos, isDarkMode)
-                  : serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode))),
+                  ? serviceColor(
+                      widget.service.qualiteDeService!.niveauQos, isDarkMode)
+                  : serviceTextColor(
+                      widget.service.qualiteDeService!.niveauQos, isDarkMode))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -45,7 +48,10 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: Center(child: getIcon(widget.service.qualiteDeService!.niveauQos, isDarkMode)),
+                        child: Center(
+                            child: getIcon(
+                                widget.service.qualiteDeService!.niveauQos,
+                                isDarkMode)),
                       ),
                       const SizedBox(height: kIsWeb ? 8 : 0),
                       // Espace entre l'icône et le texte
@@ -57,7 +63,9 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: kIsWeb ? 26.0 : 22,
-                            color: serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
+                            color: serviceTextColor(
+                                widget.service.qualiteDeService!.niveauQos,
+                                isDarkMode),
                           ),
                         ),
                       ),
@@ -74,7 +82,9 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: kIsWeb ? 26.0 : 22,
-                              color: serviceTextColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
+                              color: serviceTextColor(
+                                  widget.service.qualiteDeService!.niveauQos,
+                                  isDarkMode),
                             ),
                           ),
                         ),
@@ -83,13 +93,17 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                         right: 10,
                         top: 0,
                         bottom: 0,
-                        child: getIcon(widget.service.qualiteDeService!.niveauQos, isDarkMode) ?? const SizedBox(),
+                        child: getIcon(
+                                widget.service.qualiteDeService!.niveauQos,
+                                isDarkMode) ??
+                            const SizedBox(),
                       ),
                     ],
                   ),
           ),
           Container(
-            color: serviceColor(widget.service.qualiteDeService!.niveauQos, isDarkMode),
+            color: serviceColor(
+                widget.service.qualiteDeService!.niveauQos, isDarkMode),
             height: 35,
             width: double.infinity,
             child: Row(
@@ -108,11 +122,25 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: MarkdownBody(
-                  selectable: true,
-                  onTapLink: (text, url, title) {
-                    launchUrl(Uri.parse(url!));
-                  },
-                  data: widget.service.description),
+                selectable: true,
+                onTapLink: (text, url, title) {
+                  launchUrl(Uri.parse(url!));
+                },
+                data: widget.service.description,
+                styleSheet: MarkdownStyleSheet(
+                    // h1: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
+                    // h2: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                    // p: TextStyle(fontSize: 16),
+                    // blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                    horizontalRuleDecoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                )),
+              ),
             ),
           ),
         ],
@@ -122,7 +150,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
 
   Icon? getIcon(int qualiteDeServiceId, bool isDarkMode) {
     switch (qualiteDeServiceId) {
-      case 3:
+      case 1:
         return Icon(
           Icons.sunny,
           color: isDarkMode ? const Color(0xff3db482) : const Color(0xff247566),
@@ -134,7 +162,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
           color: isDarkMode ? const Color(0xffdb8b00) : const Color(0xff945400),
           size: kIsWeb ? 30 : 20,
         );
-      case 1:
+      case 3:
         return Icon(
           Icons.flash_on,
           color: isDarkMode ? const Color(0xffdb2c66) : const Color(0xff94114e),
@@ -146,22 +174,22 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
 
   static serviceColor(int qualiteDeServiceId, isDarkTheme) {
     switch (qualiteDeServiceId) {
-      case 3:
+      case 1:
         return const Color(0xff3db482);
       case 2:
         return const Color(0xffdb8b00);
-      case 1:
+      case 3:
         return const Color(0xffdb2c66);
     }
   }
 
   static serviceTextColor(int qualiteDeServiceId, isDarkTheme) {
     switch (qualiteDeServiceId) {
-      case 3:
+      case 1:
         return isDarkTheme ? const Color(0xff3db482) : const Color(0xff247566);
       case 2:
         return isDarkTheme ? const Color(0xffdb8b00) : const Color(0xff945400);
-      case 1:
+      case 3:
         return isDarkTheme ? const Color(0xffdb2c66) : const Color(0xff94114e);
     }
   }

@@ -188,53 +188,53 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   Future<List<PrevisionA>> _getPrevisions() async {
     List<PrevisionA> previsionList;
 
-    previsionList = await apiService.fetchPrevisions();
+    // previsionList = await apiService.fetchPrevisions();
+    //
+    //
+    // // TODO mock/stub
+    // // previsionList = await apiService.fetchMockPrevisions();
+    //
+    // // Apply search filter
+    // if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
+    //   previsionList = previsionList
+    //       .where((prevision) => removeDiacritics(prevision.libelle.toLowerCase())
+    //           .contains(removeDiacritics(currentSearchQuery!.toLowerCase())))
+    //       .toList();
+    // }
+    //
+    // // Apply category filter
+    // if (currentFilterCriteria.isNotEmpty) {
+    //   List<PrevisionA> previsionsupdate = [];
+    //   for (var element in currentFilterCriteria) {
+    //     previsionsupdate.addAll(previsionList
+    //         .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
+    //         .toList());
+    //   }
+    //   previsionList = previsionsupdate;
+    // }
+    //
+    // // Apply perio filter
+    // if (currentPeriode != 'all') {
+    //   DateTime now = DateTime.now();
+    //   DateTime today = DateTime(now.year, now.month, now.day - 1);
+    //
+    //   if (currentPeriode == 'semaine') {
+    //     previsionList = previsionList.where((prevision) {
+    //       return prevision.dateDebut.isAfter(today) &&
+    //           prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
+    //     }).toList();
+    //   } else if (currentPeriode == 'mois') {
+    //     previsionList = previsionList.where((prevision) {
+    //       return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
+    //     }).toList();
+    //   } else if (currentPeriode == 'semestre') {
+    //     previsionList = previsionList.where((prevision) {
+    //       return prevision.dateDebut.isAfter(today) &&
+    //           prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
+    //     }).toList();
+    //   }
+    // }
 
-
-    // TODO mock/stub
-    // previsionList = await apiService.fetchMockPrevisions();
-
-    // Apply search filter
-    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      previsionList = previsionList
-          .where((prevision) => removeDiacritics(prevision.libelle.toLowerCase())
-              .contains(removeDiacritics(currentSearchQuery!.toLowerCase())))
-          .toList();
-    }
-
-    // Apply category filter
-    if (currentFilterCriteria.isNotEmpty) {
-      List<PrevisionA> previsionsupdate = [];
-      for (var element in currentFilterCriteria) {
-        previsionsupdate.addAll(previsionList
-            .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
-            .toList());
-      }
-      previsionList = previsionsupdate;
-    }
-
-    // Apply perio filter
-    if (currentPeriode != 'all') {
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day - 1);
-
-      if (currentPeriode == 'semaine') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) &&
-              prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
-        }).toList();
-      } else if (currentPeriode == 'mois') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
-        }).toList();
-      } else if (currentPeriode == 'semestre') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) &&
-              prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
-        }).toList();
-      }
-    }
-
-    return previsionList;
+    return [];
   }
 }

@@ -23,6 +23,7 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
           backgroundColor: Theme.of(context).brightness == Brightness.dark
               ? Colors.black
               : Colors.white,
+          centerTitle: true,
           title: const Text("Météo du numérique"),
           leading: Image.asset(
             Theme.of(context).brightness == Brightness.dark

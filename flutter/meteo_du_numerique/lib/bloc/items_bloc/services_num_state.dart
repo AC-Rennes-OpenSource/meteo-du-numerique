@@ -11,8 +11,10 @@ class ServicesNumLoading extends ServicesNumState {}
 
 class ServicesNumLoaded extends ServicesNumState {
   final List<ActualiteA> servicesList;
+  final DateTime? lastUpdate;
 
-  ServicesNumLoaded({required this.servicesList});
+  ServicesNumLoaded({required this.servicesList,this.lastUpdate});
+
 }
 
 class ServicesNumError extends ServicesNumState {

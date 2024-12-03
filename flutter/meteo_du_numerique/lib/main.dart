@@ -20,13 +20,16 @@ import 'package:meteo_du_numerique/ui/pages/home_page2.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
 import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
-final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin localNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 Future<void> _initLocalNotifications() async {
-  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_notification');
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('ic_notification');
 
   // Configuration pour iOS
-  const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestSoundPermission: true,
@@ -51,6 +54,21 @@ Future<void> main() async {
     await Firebase.initializeApp(
         // name: 'meteo-du-numerique-acrennes',
         options: DefaultFirebaseOptions.currentPlatform);
+
+    try {
+      FirebaseApp app = Firebase.app();
+      print('--- Firebase Configuration ---');
+      print('App Name: ${app.name}');
+      print('API Key: ${app.options.apiKey ?? "N/A"}');
+      print('Project ID: ${app.options.projectId ?? "N/A"}');
+      print('App ID: ${app.options.appId ?? "N/A"}');
+      print('Messaging Sender ID: ${app.options.messagingSenderId ?? "N/A"}');
+      print('Database URL: ${app.options.databaseURL ?? "N/A"}');
+      print('Storage Bucket: ${app.options.storageBucket ?? "N/A"}');
+      print('--------------------------------');
+    } catch (e) {
+      print('Erreur lors de la récupération des détails Firebase: $e');
+    }
   }
 
   // await _initLocalNotifications();
@@ -64,9 +82,6 @@ Future<void> main() async {
   // print('APNS Token: $apnsToken');
 
   runApp(MyApp(themeModePreference: themeMode));
-
-
-
 }
 
 class MyApp extends StatefulWidget {
@@ -81,18 +96,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-
     print("TEST");
     // print(Firebase.app().name);
     print("TEST");
-
 
     super.initState();
     if (!kIsWeb) {
       _requestPermissions();
       _configureFirebaseListeners();
     }
-
   }
 
   void _requestPermissions() {
@@ -103,8 +115,13 @@ class _MyAppState extends State<MyApp> {
       sound: true,
     )
         .then((settings) {
-      FirebaseMessaging.instance.subscribeToTopic('notifications_meteo');
+      // FirebaseMessaging.instance.subscribeToTopic('notifications_meteo');
+      FirebaseMessaging.instance.subscribeToTopic('updated');
       print("User granted permission: ${settings.authorizationStatus}");
+    });
+
+    FirebaseMessaging.instance.getToken().then((token) {
+      print('Jeton FCM : ${token!}');
     });
   }
 
@@ -155,10 +172,12 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ServicesNumBloc>(
-          create: (_) => ServicesNumBloc(apiService: ApiService(), useMockData: true),
+          create: (_) =>
+              ServicesNumBloc(apiService: ApiService(), useMockData: true),
         ),
         BlocProvider<PrevisionsBloc>(
-          create: (_) => PrevisionsBloc(apiService: ApiService(), useMockData: true),
+          create: (_) =>
+              PrevisionsBloc(apiService: ApiService(), useMockData: true),
         ),
         BlocProvider<SearchBarBloc>(
           create: (_) => SearchBarBloc(),
@@ -170,7 +189,9 @@ class _MyAppState extends State<MyApp> {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
           return MaterialApp(
-            locale: const Locale.fromSubtags(languageCode: "fr", countryCode: "FR"),
+            debugShowCheckedModeBanner: false,
+            locale:
+                const Locale.fromSubtags(languageCode: "fr", countryCode: "FR"),
             title: 'Météo du numérique',
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,

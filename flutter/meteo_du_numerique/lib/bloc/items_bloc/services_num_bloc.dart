@@ -13,10 +13,10 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   final bool useMockData;
 
   String? currentSortCriteria = 'qualiteDeServiceId';
-  String? currentSortOrder = 'asc';
+  String? currentSortOrder = 'desc';
   List<String>? currentFilterCriteria = [];
   String? currentSearchQuery;
-  late DateTime? lastUpdate = DateTime.now();
+  late DateTime lastUpdate;
 
   List<String> currentFilters = [];
 
@@ -26,6 +26,8 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     on<FilterServicesNumEvent>(_onFilterItems);
     on<SortServicesNumEvent>(_onSortItems);
     on<SearchItemsEvent>(_onSearchItems);
+
+    add(FetchServicesNumEvent(showIndicator: true));
   }
 
   @override
@@ -49,16 +51,18 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
 
     try {
 
-      final servicesList = await _getItems();
+      await _getItems().then((serviceList){
+        if (serviceList.isNotEmpty) {
+          lastUpdate = serviceList
+              .map((e) => e.lastUpdate)
+              .reduce((min, e) => e.isAfter(min) ? e : min);
+          // DateTime.now();
+        }
+        emit(ServicesNumLoaded(servicesList: serviceList, lastUpdate: lastUpdate));
+      });
 
-      emit(ServicesNumLoaded(servicesList: servicesList));
 
-      if (servicesList.isNotEmpty) {
-        // lastUpdate = servicesList
-        //     .map((e) => e.lastUpdate)
-        //     .reduce((min, e) => e.isAfter(min) ? e : min);
-        DateTime.now();
-      }
+
 
     } catch (e) {
       emit(ServicesNumError(message: e.toString()));

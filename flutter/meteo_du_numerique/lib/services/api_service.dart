@@ -26,59 +26,70 @@ class ApiService {
   }
 
   //TODO : séparer les appels serviceNums/prévisions ----------------------------------------------------------
-  Future<List<PrevisionA>> fetchPrevisions(
-      {String? category, String? sortBy, String? query}) async {
-    try {
-      final response =
-          await http.get(Uri.parse(baseUrl + Config.urlAttributes));
-      var b = _processResponse(response.body);
-      var a = getSortedPrev(b);
-      return a;
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      throw Exception('Failed to load mock previsions: $e');
-    }
-  }
+  // Future<List<PrevisionA>> fetchPrevisions(
+  //     {String? category, String? sortBy, String? query}) async {
+  //   try {
+  //     final response =
+  //         await http.get(Uri.parse(baseUrl + Config.urlAttributes));
+  //     var b = _processResponse(response.body);
+  //     var a = getSortedPrev(b);
+  //     return a;
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //     throw Exception('Failed to load mock previsions: $e');
+  //   }
+  // }
+
+  // List<ServiceNum> _processResponse(String data) {
+  //   // List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
+  //   List<dynamic> jsonData = json.decode(data) as List<dynamic>;
+  //   // TODO json-server sert un tableau : nécessité de prendre le 1er élément
+  //   // List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
+  //   List<ServiceNum> listeServicesNum =
+  //       jsonData.map((e) => ServiceNum.fromJson(e)).toList();
+  //   return listeServicesNum;
+  // }
 
   List<ServiceNum> _processResponse(String data) {
-    List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
-    // TODO json-server sert un tableau : nécessité de prendre le 1er élément
-    // List<dynamic> jsonData = json.decode(data)['data'] as List<dynamic>;
-    List<ServiceNum> listeServicesNum =
-        jsonData.map((e) => ServiceNum.fromJson(e)).toList();
-    return listeServicesNum;
+    // Décoder la réponse JSON
+    List<dynamic> jsonData = json.decode(data);
+
+    // Transformer chaque élément en un objet ServiceNum
+    return jsonData.map((item) {
+      return ServiceNum.fromJson(item as Map<String, dynamic>);
+    }).toList();
   }
 
-  List<PrevisionA> getSortedPrev(List<ServiceNum> servList) {
-    List<PrevisionA> listprev = [];
-    for (var element in servList) {
-      for (var prev in element.previsions) {
-        prev.categorieLibelle = element.category.libelle;
-        // print(prev.categorieLibelle);
-        prev.couleur = element.category.color;
-        // print(prev.couleur);
-        // print(prev);
-        // TODO affiche uniquement si après aujourd'hui (à garder?)
-        // if (prev.dateDebut.isAfter(DateTime.now())) {
-          listprev.add(prev);
-        // }
-      }
-    }
-    if (listprev.isNotEmpty) {
-
-      // TODO test pour affichage de la prévision du jour dans la tab 1
-       listprev.first.dateDebut = DateTime.now();
-
-      listprev.sort((a, b) {
-        DateTime dateADebut = a.dateDebut;
-        DateTime dateBDebut = b.dateDebut;
-        return dateADebut.compareTo(dateBDebut);
-      });
-    }
-    return listprev;
-  }
+  // List<PrevisionA> getSortedPrev(List<ServiceNum> servList) {
+  //   List<PrevisionA> listprev = [];
+  //   for (var element in servList) {
+  //     for (var prev in element.previsions) {
+  //       prev.categorieLibelle = element.category.libelle;
+  //       // print(prev.categorieLibelle);
+  //       prev.couleur = element.category.color;
+  //       // print(prev.couleur);
+  //       // print(prev);
+  //       // TODO affiche uniquement si après aujourd'hui (à garder?)
+  //       // if (prev.dateDebut.isAfter(DateTime.now())) {
+  //         listprev.add(prev);
+  //       // }
+  //     }
+  //   }
+  //   if (listprev.isNotEmpty) {
+  //
+  //     // TODO test pour affichage de la prévision du jour dans la tab 1
+  //      listprev.first.dateDebut = DateTime.now();
+  //
+  //     listprev.sort((a, b) {
+  //       DateTime dateADebut = a.dateDebut;
+  //       DateTime dateBDebut = b.dateDebut;
+  //       return dateADebut.compareTo(dateBDebut);
+  //     });
+  //   }
+  //   return listprev;
+  // }
 
   List<ActualiteA> getActu(List<ServiceNum> servList) {
     List<ActualiteA> listactus = [];
@@ -174,17 +185,17 @@ class ApiService {
     }
   }
 
-  Future<List<PrevisionA>> fetchMockPrevisions(
-      {String? category, String? sortBy, String? query}) async {
-    try {
-      String data = await rootBundle.loadString('assets/stub.json');
-      return getSortedPrev(_processResponse(data));
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      throw Exception('Failed to load mock previsions: $e');
-    }
-  }
+  // Future<List<PrevisionA>> fetchMockPrevisions(
+  //     {String? category, String? sortBy, String? query}) async {
+  //   try {
+  //     String data = await rootBundle.loadString('assets/stub.json');
+  //     return getSortedPrev(_processResponse(data));
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //     throw Exception('Failed to load mock previsions: $e');
+  //   }
+  // }
 //---------------------------------------------------------------------------------------------------
 }
