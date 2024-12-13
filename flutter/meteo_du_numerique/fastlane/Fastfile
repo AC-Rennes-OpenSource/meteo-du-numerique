@@ -1,0 +1,118 @@
+# fastlane/Fastfile
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Incrémenter la version Flutter, construire et distribuer l'IPA signé"
+  lane :beta do
+    # Incrémenter la version dans pubspec.yaml
+    increment_flutter_version
+
+    # Construire l'IPA pour iOS avec signature
+    build_ios(
+      scheme: "Runner",
+      workspace: "Runner.xcworkspace",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "fr.acrennes.meteo-du-numerique" => "Automatic"
+        }
+      }
+    )
+
+    # Distribuer sur TestFlight
+    pilot(
+      skip_waiting_for_build_processing: true
+    )
+  end
+end
+
+platform :android do
+  desc "Incrémenter la version Flutter, construire et distribuer l'App Bundle signé"
+  lane :beta do
+    # Incrémenter la version dans pubspec.yaml
+    increment_flutter_version
+
+    # Construire l'App Bundle pour Android avec signature
+    build_android(
+      task: 'bundle',
+      build_type: 'Release',
+      properties: {
+        "android.injected.signing.store.file" => "key.jks",
+        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => "key0",
+        "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"]
+      }
+    )
+
+    # Distribuer sur Google Play
+    upload_to_play_store(
+      track: 'internal',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true
+    )
+  end
+end
+
+desc "Incrémenter la version Flutter, construire et distribuer pour les deux plateformes"
+lane :beta_both do
+  increment_flutter_version
+  beta_ios
+  beta_android
+end
+
+# Fonction pour incrémenter la version dans pubspec.yaml
+def increment_flutter_version
+  pubspec_path = '../pubspec.yaml'
+  pubspec = YAML.load_file(pubspec_path)
+  version = pubspec['version'].split('+')
+  version_name = version[0].split('.')
+  build_number = (version[1] || '0').to_i + 1
+
+  # Incrémentation du patch par défaut
+  version_name[2] = (version_name[2].to_i + 1).to_s
+  new_version_name = version_name.join('.')
+  new_version = "#{new_version_name}+#{build_number}"
+
+  # Écriture de la nouvelle version dans pubspec.yaml
+  pubspec['version'] = new_version
+  File.write(pubspec_path, pubspec.to_yaml)
+
+  puts "Version mise à jour à #{new_version}"
+end
+
+# Action personnalisée pour construire iOS
+def build_ios(options)
+  Dir.chdir("../ios") do
+    gym(
+      scheme: options[:scheme],
+      workspace: options[:workspace],
+      export_method: options[:export_method],
+      export_options: options[:export_options]
+    )
+  end
+end
+
+# Action personnalisée pour construire Android
+def build_android(options)
+  Dir.chdir("../android") do
+    gradle(
+      task: options[:task],
+      build_type: options[:build_type],
+      properties: options[:properties]
+    )
+  end
+end
+
+# Invocation des lanes spécifiques à chaque plateforme
+def beta_ios
+  Dir.chdir("../ios") do
+    sh("fastlane", "beta")
+  end
+end
+
+def beta_android
+  Dir.chdir("../android") do
+    sh("fastlane", "beta")
+  end
+end

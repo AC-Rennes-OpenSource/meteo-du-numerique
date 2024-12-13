@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart'; // Ajout de la bibliothèque Remote Config
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
 import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
-import 'package:meteo_du_numerique/ui/pages/home_page.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page2.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
 import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
@@ -23,26 +23,8 @@ import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-Future<void> _initLocalNotifications() async {
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('ic_notification');
-
-  // Configuration pour iOS
-  const DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
-  );
-
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-  );
-
-  await localNotificationsPlugin.initialize(
-    initializationSettings,
-  );
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
 }
 
 Future<void> main() async {
@@ -50,9 +32,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Firebase.apps.isEmpty) {
-    print("coucou");
     await Firebase.initializeApp(
-        // name: 'meteo-du-numerique-acrennes',
         options: DefaultFirebaseOptions.currentPlatform);
 
     try {
@@ -71,6 +51,8 @@ Future<void> main() async {
     }
   }
 
+  await _initRemoteConfig();
+
   // await _initLocalNotifications();
   initializeDateFormatting('fr_FR', null);
 
@@ -82,6 +64,23 @@ Future<void> main() async {
   // print('APNS Token: $apnsToken');
 
   runApp(MyApp(themeModePreference: themeMode));
+}
+
+Future<void> _initRemoteConfig() async {
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  await remoteConfig.setConfigSettings(RemoteConfigSettings(
+    fetchTimeout: const Duration(minutes: 1),
+    minimumFetchInterval: const Duration(seconds: 10),
+  ));
+  await remoteConfig.setDefaults({
+    'welcome_message': 'Welcome to the appppppppp',
+    'show_feature': false,
+  });
+  await remoteConfig.fetchAndActivate().then((updated) {
+    print(remoteConfig.getString('welcome_message'));
+    print(remoteConfig.getBool('show_feature'));
+    print("remote config updated? : "+updated.toString());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -96,10 +95,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    print("TEST");
-    // print(Firebase.app().name);
-    print("TEST");
-
     super.initState();
     if (!kIsWeb) {
       _requestPermissions();
@@ -116,7 +111,8 @@ class _MyAppState extends State<MyApp> {
     )
         .then((settings) {
       // FirebaseMessaging.instance.subscribeToTopic('notifications_meteo');
-      FirebaseMessaging.instance.subscribeToTopic('updated');
+      FirebaseMessaging.instance
+          .subscribeToTopic(dotenv.env['FCM_TOPIC_NAME']!);
       print("User granted permission: ${settings.authorizationStatus}");
     });
 
@@ -126,7 +122,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _configureFirebaseListeners() {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Message received: ${message.notification}');
+
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       AppleNotification? ios = message.notification?.apple;
@@ -137,9 +136,9 @@ class _MyAppState extends State<MyApp> {
         if (android != null) {
           platformChannelSpecifics = const NotificationDetails(
             android: AndroidNotificationDetails(
-              'your channel id',
-              'your channel name',
-              channelDescription: 'your channel description',
+              'meteo-updated',
+              'Mise à jour de la météo du numérique',
+              channelDescription: '',
               importance: Importance.max,
               priority: Priority.high,
             ),
@@ -196,7 +195,7 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,
             themeMode: themeState.themeMode,
-            home: kIsWeb ? const HomePageWeb() : const HomePage2(),
+            home: kIsWeb ? const HomePageWeb() : HomePage2(),
           );
         },
       ),
