@@ -33,6 +33,7 @@ class HomePage extends StatelessWidget {
     final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
     _refreshAll(context);
+    DateTime? displayedLastUpdate;
 
     ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
 
@@ -46,6 +47,7 @@ class HomePage extends StatelessWidget {
                     ? null
                     : Colors.grey.shade200,
                 appBar: ThemedAppBar(
+                  onTitleTap: _handleTap,
                   tabBar: TabBar(
                     overlayColor: WidgetStateColor.resolveWith(
                         (states) => Colors.transparent),
@@ -467,6 +469,9 @@ class HomePage extends StatelessWidget {
     ).then((_) {
       context.read<SearchBarBloc>().add(CloseSearchBar());
     });
+  }
+  void _handleTap(BuildContext context) {
+
   }
 
   Future<void> _refreshAll(BuildContext context) async {

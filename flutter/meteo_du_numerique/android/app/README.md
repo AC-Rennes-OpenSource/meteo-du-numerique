@@ -1,4 +1,4 @@
-keytool -genkey -v -keystore ~/meteo-du-numerique-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias
+keytool -genkey -v -keystore /android/app/meteo-du-numerique-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias
 meteo_key
 
 82D93ngafKN3Sc

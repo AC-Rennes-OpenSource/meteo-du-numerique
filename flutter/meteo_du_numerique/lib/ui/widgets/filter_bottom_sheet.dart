@@ -80,6 +80,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               children: [
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
+                      iconColor: Theme.of(context).colorScheme.onSurface,
                       side: const BorderSide(width: 1.0, color: Colors.grey),
                       foregroundColor:
                           _selectedFilters.isEmpty ? Colors.grey : Theme.of(context).colorScheme.onSurface),
@@ -95,6 +96,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                     side: const BorderSide(width: 1.0, color: Colors.grey),
                   ),
                   onPressed: () {

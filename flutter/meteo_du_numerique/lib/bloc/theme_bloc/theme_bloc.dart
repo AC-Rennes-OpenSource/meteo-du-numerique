@@ -1,3 +1,4 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_event.dart';
@@ -6,8 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final String themePrefKey = 'selectedTheme';
+  final FirebaseRemoteConfig remoteConfig;
 
-  ThemeBloc()
+
+  ThemeBloc({required this.remoteConfig})
       : super(ThemeState(themeData: lightTheme, themeMode: ThemeMode.system, currentTheme: ThemeEvent.toggleSystem)) {
     on<ThemeEvent>((event, emit) async {
       final prefs = await SharedPreferences.getInstance();

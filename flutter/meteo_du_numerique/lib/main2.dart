@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart'; // Ajout de la bibliothèque Remote Config
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +17,11 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
 import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page2.dart';
+import 'package:meteo_du_numerique/ui/pages/home_page.dart';
 import 'package:meteo_du_numerique/ui/theme_preferences.dart';
 import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
+
+import 'config.dart';
 
 final FlutterLocalNotificationsPlugin localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -27,12 +30,37 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
+Future<void> _initLocalNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('ic_notification');
+
+  // Configuration pour iOS
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await localNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+}
+
 Future<void> main() async {
   await dotenv.load(fileName: ".env"); // Charge les variables d'environnement
   WidgetsFlutterBinding.ensureInitialized();
 
+  bool showPrevisions;
+
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
+        // name: 'meteo-du-numerique-acrennes',
         options: DefaultFirebaseOptions.currentPlatform);
 
     try {
@@ -51,7 +79,9 @@ Future<void> main() async {
     }
   }
 
-  await _initRemoteConfig();
+  await _initRemoteConfig().then((remoteConfig) {
+    showPrevisions = remoteConfig.getBool("show_previsions");
+  });
 
   // await _initLocalNotifications();
   initializeDateFormatting('fr_FR', null);
@@ -63,24 +93,29 @@ Future<void> main() async {
   // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
   // print('APNS Token: $apnsToken');
 
+  await Config.init(); // Initialiser Remote Config
+
   runApp(MyApp(themeModePreference: themeMode));
 }
 
-Future<void> _initRemoteConfig() async {
+Future<FirebaseRemoteConfig> _initRemoteConfig() async {
   final remoteConfig = FirebaseRemoteConfig.instance;
   await remoteConfig.setConfigSettings(RemoteConfigSettings(
     fetchTimeout: const Duration(minutes: 1),
     minimumFetchInterval: const Duration(seconds: 10),
   ));
   await remoteConfig.setDefaults({
-    'show_feature': false,
+    'show_previsions': false,
     'strapi_5': false,
   });
   await remoteConfig.fetchAndActivate().then((updated) {
-    print(remoteConfig.getBool('show_previsions'));
-    print(remoteConfig.getBool('strapi_5'));
-    print("remote config updated? : "+updated.toString());
+    print("show_previsions : " +
+        remoteConfig.getBool('show_previsions').toString());
+    print("strapi_5 : " + remoteConfig.getBool('strapi_5').toString());
+    print("remote config updated? : " + updated.toString());
+    return remoteConfig;
   });
+  return remoteConfig;
 }
 
 class MyApp extends StatefulWidget {
@@ -93,6 +128,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isConfigLoaded = false;
+  bool showPrevisions = false;
+  late FirebaseRemoteConfig configurationFromFirebase;
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +139,19 @@ class _MyAppState extends State<MyApp> {
       _requestPermissions();
       _configureFirebaseListeners();
     }
+
+    // Charger la configuration à distance
+    _loadRemoteConfig();
+  }
+
+  Future<void> _loadRemoteConfig() async {
+    final remoteConfig = await _initRemoteConfig();
+    setState(() {
+      showPrevisions = remoteConfig.getBool('show_previsions');
+      configurationFromFirebase = remoteConfig;
+      isConfigLoaded = true; // Indique que la configuration est prête
+    });
+
   }
 
   void _requestPermissions() {
@@ -116,16 +168,14 @@ class _MyAppState extends State<MyApp> {
       print("User granted permission: ${settings.authorizationStatus}");
     });
 
-    FirebaseMessaging.instance.getToken().then((token) {
-      print('Jeton FCM : ${token!}');
-    });
+    // FirebaseMessaging.instance.getToken().then((token) {
+    //   print('Jeton FCM : ${token!}');
+    // });
   }
 
   void _configureFirebaseListeners() {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Message received: ${message.notification}');
-
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       AppleNotification? ios = message.notification?.apple;
@@ -136,9 +186,9 @@ class _MyAppState extends State<MyApp> {
         if (android != null) {
           platformChannelSpecifics = const NotificationDetails(
             android: AndroidNotificationDetails(
-              'meteo-updated',
-              'Mise à jour de la météo du numérique',
-              channelDescription: '',
+              'your channel id',
+              'your channel name',
+              channelDescription: 'your channel description',
               importance: Importance.max,
               priority: Priority.high,
             ),
@@ -168,6 +218,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Afficher un écran de chargement pendant la récupération de la configuration
+    if (!isConfigLoaded) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<ServicesNumBloc>(
@@ -182,7 +240,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => SearchBarBloc(),
         ),
         BlocProvider<ThemeBloc>(
-          create: (_) => ThemeBloc(),
+          create: (_) => ThemeBloc(remoteConfig: configurationFromFirebase),
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -191,11 +249,20 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             locale:
                 const Locale.fromSubtags(languageCode: "fr", countryCode: "FR"),
-            title: 'Météo du numérique',
+            title:
+                'Météo du numérique',
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,
             themeMode: themeState.themeMode,
-            home: kIsWeb ? const HomePageWeb() : HomePage2(),
+            home: kIsWeb
+                ? const HomePageWeb()
+                :
+            // (showPrevisions
+            //         //TODO
+            //         ? HomePage()
+            //         :
+            HomePage2(remoteConfig: configurationFromFirebase)
+            // ),
           );
         },
       ),

@@ -11,7 +11,10 @@ class FilterPrevisionsBottomSheet extends StatefulWidget {
   final int tab;
 
   const FilterPrevisionsBottomSheet(
-      {super.key, required this.selectedFilter, required this.tab, required this.selectedCategories});
+      {super.key,
+      required this.selectedFilter,
+      required this.tab,
+      required this.selectedCategories});
 
   @override
   State<FilterPrevisionsBottomSheet> createState() => _FilterBottomSheetState();
@@ -72,7 +75,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
             onChanged: (value) => _onFilterChanged(value),
           ),
           const Padding(
-            padding: EdgeInsets.only(left: 15, right: 25, top: 15.0, bottom: 15.0),
+            padding:
+                EdgeInsets.only(left: 15, right: 25, top: 15.0, bottom: 15.0),
             child: Divider(),
           ),
           Wrap(
@@ -115,7 +119,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                 .toList(),
           ),
           const Padding(
-            padding: EdgeInsets.only(left: 15, right: 25, top: 15.0, bottom: 25.0),
+            padding:
+                EdgeInsets.only(left: 15, right: 25, top: 15.0, bottom: 25.0),
             child: Divider(),
           ),
           Padding(
@@ -125,8 +130,10 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
               children: [
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
+                      iconColor: Theme.of(context).colorScheme.onSurface,
                       side: const BorderSide(width: 1.0, color: Colors.grey),
-                      foregroundColor: _selectedFilter == 'all' && _selectedCategories.isEmpty
+                      foregroundColor: _selectedFilter == 'all' &&
+                              _selectedCategories.isEmpty
                           ? Colors.grey
                           : Theme.of(context).colorScheme.onSurface),
                   icon: const Icon(Icons.close),
@@ -143,7 +150,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
                     side: const BorderSide(width: 1.0, color: Colors.grey),
                   ),
                   onPressed: () {
-                    previsionsBloc.add(FilterPrevisionsEvent(_selectedCategories, _selectedFilter));
+                    previsionsBloc.add(FilterPrevisionsEvent(
+                        _selectedCategories, _selectedFilter));
                     Navigator.pop(context);
                   },
                   child: const Text("Appliquer"),

@@ -12,9 +12,12 @@ class ApiService {
   final String baseUrl = Config.baseUrl;
 
   Future<List<ActualiteA>> fetchItems() async {
+    print("Config.baseUrl : "+Config.baseUrl);
+    print("Config.urlAttributes : "+Config.urlAttributes);
     try {
       final response =
           await http.get(Uri.parse(baseUrl + Config.urlAttributes));
+
       var act = getActu(_processResponse(response.body));
       return act;
     } catch (e) {

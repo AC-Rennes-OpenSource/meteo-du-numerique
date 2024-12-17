@@ -26,8 +26,6 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     on<FilterServicesNumEvent>(_onFilterItems);
     on<SortServicesNumEvent>(_onSortItems);
     on<SearchItemsEvent>(_onSearchItems);
-
-    add(FetchServicesNumEvent(showIndicator: true));
   }
 
   @override

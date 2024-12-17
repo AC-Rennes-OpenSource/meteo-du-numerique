@@ -1,118 +1,133 @@
-# fastlane/Fastfile
+desc "Construire l'AppBundle Android"
+lane :build_android do
+UI.message("Construction de l'AppBundle Android...")
 
-default_platform(:ios)
+# Construire l'AppBundle en release
+  sh "flutter clean"
+    sh "flutter pub get"
+sh "flutter build appbundle --release"
+UI.message("Build Android réalisé.")
 
-platform :ios do
-  desc "Incrémenter la version Flutter, construire et distribuer l'IPA signé"
-  lane :beta do
-    # Incrémenter la version dans pubspec.yaml
-    increment_flutter_version
+# Extraire la version et le code de version depuis pubspec.yaml
+version = get_version_from_pubspec
+version_name = version[:version_number]
+version_code = version[:build_number]
 
-    # Construire l'IPA pour iOS avec signature
-    build_ios(
-      scheme: "Runner",
-      workspace: "Runner.xcworkspace",
-      export_method: "app-store",
-      export_options: {
-        provisioningProfiles: {
-          "fr.acrennes.meteo-du-numerique" => "Automatic"
-        }
-      }
-    )
+# Obtenez la date du jour sous forme de AAAAMMJJ (ex. : 24122024 pour 24 décembre 2024)
+                    date_today = Time.now.strftime("%d%m%Y")
 
-    # Distribuer sur TestFlight
-    pilot(
-      skip_waiting_for_build_processing: true
-    )
+# Créer le nom du fichier AppBundle avec la version
+aab_filename = "MeteoApp_#{version_name}+#{version_code}_#{date_today}.aab"
+UI.message("Nom du fichier AAB : #{aab_filename}")
+
+# Déplacer le fichier généré dans un dossier organisé avec le nom personnalisé
+sh "mkdir -p ../build_output"
+sh "cp ../build/app/outputs/bundle/release/app-release.aab ../build_output/#{aab_filename}"
+
+UI.message("Android AppBundle généré dans `build_output/#{aab_filename}`")
+end
+
+desc "Construire l'IPA iOS"
+lane :build_ios do
+  # Assurez-vous que le projet Flutter est prêt
+
+#   sh "flutter clean"
+#   sh "flutter pub get"
+#   sh "flutter build ios"
+  sh "flutter build ipa --release"
+
+  # Construire l'IPA à partir du projet iOS Flutter
+  # Paramètres de signature
+  sign_command = "xcodebuild -workspace ../ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath ../build/ios/archive/Runner.xcarchive archive"
+  sh sign_command
+
+     # Extraire la version et le code de version depuis pubspec.yaml
+        version = get_version_from_pubspec
+        version_name = version[:version_number]
+        version_code = version[:build_number]
+
+        # Obtenez la date du jour sous forme de AAAAMMJJ (ex. : 24122024 pour 24 décembre 2024)
+            date_today = Time.now.strftime("%d%m%Y")
+
+        # Créer le nom du fichier IPA avec la version
+        ipa_filename = "MeteoApp_#{version_name}+#{version_code}_#{date_today}.ipa"
+        UI.message("Nom du fichier IPA : #{ipa_filename}")
+
+        # Déplacer le fichier généré dans un dossier organisé avec le nom personnalisé
+        sh "mkdir -p ../build_output"
+        sh "cp ../build/ios/ipa/*.ipa ../build_output/#{ipa_filename}"
+
+        UI.message("IPA iOS généré dans `build_output/#{ipa_filename}`")
+
+  # Exporter l'IPA signé
+#           export_command = "xcodebuild -exportArchive -archivePath ./build/ios/archive/Runner.xcarchive -exportPath ./build/ios/ipa -exportOptionsPlist ./ios/ExportOptions.plist"
+#           sh export_command
+
+  UI.message("Fichier IPA généré dans build/ios/ipa/Runner.ipa")
+end
+
+
+
+lane :increment_version do
+  require 'yaml'
+
+  pubspec_path = '../pubspec.yaml'
+
+  # Lire tout le fichier en mémoire
+  lines = File.readlines(pubspec_path)
+
+  # Trouver et modifier la ligne contenant la version
+  lines.map! do |line|
+    if line.strip.start_with?('version:')
+      # Extraire la version actuelle
+      version_info = line.split(':').last.strip
+      version, build_number = version_info.split('+')
+      build_number = build_number.to_i
+
+      # Demander s'il faut incrémenter le numéro de version ou de build
+      increment_version = prompt(text: "Souhaitez-vous incrémenter le numéro de version (#{version}) ? (yes/no)", boolean: true)
+
+      # Incrémentation de la version
+      if increment_version
+        version_parts = version.split('.').map(&:to_i)
+        version_parts[2] += 1 # Incrementer le patch (x.y.z)
+        version = version_parts.join('.')
+      end
+
+      # Incrémentation du numéro de build
+      build_number += 1
+
+      # Mettre à jour la ligne
+      "version: #{version}+#{build_number}\n"
+    else
+      line
+    end
   end
+
+  # Réécrire le fichier avec la ligne modifiée
+  File.write(pubspec_path, lines.join)
+  UI.message("Fichier pubspec.yaml mis à jour avec succès.")
 end
 
-platform :android do
-  desc "Incrémenter la version Flutter, construire et distribuer l'App Bundle signé"
-  lane :beta do
-    # Incrémenter la version dans pubspec.yaml
-    increment_flutter_version
-
-    # Construire l'App Bundle pour Android avec signature
-    build_android(
-      task: 'bundle',
-      build_type: 'Release',
-      properties: {
-        "android.injected.signing.store.file" => "key.jks",
-        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
-        "android.injected.signing.key.alias" => "key0",
-        "android.injected.signing.key.password" => ENV["ANDROID_KEY_PASSWORD"]
-      }
-    )
-
-    # Distribuer sur Google Play
-    upload_to_play_store(
-      track: 'internal',
-      aab: '../build/app/outputs/bundle/release/app-release.aab',
-      skip_upload_apk: true
-    )
-  end
+desc "Incrémenter la version et construire Android et iOS"
+lane :all do
+  increment_version
+  build_ios
+  build_android
 end
 
-desc "Incrémenter la version Flutter, construire et distribuer pour les deux plateformes"
-lane :beta_both do
-  increment_flutter_version
-  beta_ios
-  beta_android
-end
+# Fonction pour obtenir la version depuis pubspec.yaml
+def get_version_from_pubspec
+  require 'yaml'
 
-# Fonction pour incrémenter la version dans pubspec.yaml
-def increment_flutter_version
+  # Charger le fichier pubspec.yaml
   pubspec_path = '../pubspec.yaml'
   pubspec = YAML.load_file(pubspec_path)
+
+  # Extraire la version et le code de version
   version = pubspec['version'].split('+')
-  version_name = version[0].split('.')
-  build_number = (version[1] || '0').to_i + 1
+  version_number = version[0] # Partie x.y.z
+  build_number = version[1].to_i
 
-  # Incrémentation du patch par défaut
-  version_name[2] = (version_name[2].to_i + 1).to_s
-  new_version_name = version_name.join('.')
-  new_version = "#{new_version_name}+#{build_number}"
-
-  # Écriture de la nouvelle version dans pubspec.yaml
-  pubspec['version'] = new_version
-  File.write(pubspec_path, pubspec.to_yaml)
-
-  puts "Version mise à jour à #{new_version}"
-end
-
-# Action personnalisée pour construire iOS
-def build_ios(options)
-  Dir.chdir("../ios") do
-    gym(
-      scheme: options[:scheme],
-      workspace: options[:workspace],
-      export_method: options[:export_method],
-      export_options: options[:export_options]
-    )
-  end
-end
-
-# Action personnalisée pour construire Android
-def build_android(options)
-  Dir.chdir("../android") do
-    gradle(
-      task: options[:task],
-      build_type: options[:build_type],
-      properties: options[:properties]
-    )
-  end
-end
-
-# Invocation des lanes spécifiques à chaque plateforme
-def beta_ios
-  Dir.chdir("../ios") do
-    sh("fastlane", "beta")
-  end
-end
-
-def beta_android
-  Dir.chdir("../android") do
-    sh("fastlane", "beta")
-  end
+  return { version_number: version_number, build_number: build_number }
 end

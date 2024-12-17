@@ -13,39 +13,37 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
-### beta_both
+### build_android
 
 ```sh
-[bundle exec] fastlane beta_both
+[bundle exec] fastlane build_android
 ```
 
-Incrémenter la version Flutter, construire et distribuer pour les deux plateformes
+Construire l'AppBundle Android
 
-----
-
-
-## iOS
-
-### ios beta
+### build_ios
 
 ```sh
-[bundle exec] fastlane ios beta
+[bundle exec] fastlane build_ios
 ```
 
-Incrémenter la version Flutter, construire et distribuer l'IPA signé
+Construire l'IPA iOS
 
-----
-
-
-## Android
-
-### android beta
+### increment_version
 
 ```sh
-[bundle exec] fastlane android beta
+[bundle exec] fastlane increment_version
 ```
 
-Incrémenter la version Flutter, construire et distribuer l'App Bundle signé
+
+
+### all
+
+```sh
+[bundle exec] fastlane all
+```
+
+Incrémenter la version et construire Android et iOS
 
 ----
 

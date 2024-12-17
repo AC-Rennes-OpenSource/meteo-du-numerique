@@ -9,9 +9,10 @@ import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
 
 class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ThemedAppBar({super.key, required this.tabBar});
+  const ThemedAppBar({super.key, this.tabBar, required this.onTitleTap});
 
-  final TabBar tabBar;
+  final TabBar? tabBar;
+  final void Function(BuildContext) onTitleTap;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,16 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? Colors.black
               : Colors.white,
           centerTitle: true,
-          title: const Text("Météo du numérique"),
+          // title: ,
+          title: GestureDetector(
+            onTap: ()=>onTitleTap(context),
+            child: SizedBox(
+              height: kToolbarHeight, // Hauteur standard pour un AppBar
+              child: Center(
+                child: const Text("Météo du numérique")
+              ),
+            ),
+          ),
           leading: Image.asset(
             Theme.of(context).brightness == Brightness.dark
                 ? 'assets/logo_academie_dark.png'
@@ -35,57 +45,60 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               icon: Image.asset(
-                'assets/icon_meteo_dark.png',
+                'assets/icon-meteo-round.png',
                 width: 40.0,
               ),
               onPressed: () {},
             ),
           ],
-          // bottom: PreferredSize(
-          //   preferredSize: tabBar.preferredSize,
-          //   child: Theme(
-          //     data: Theme.of(context).copyWith(
-          //         highlightColor: Colors.transparent,
-          //         splashColor: Colors.transparent,
-          //         textTheme: Theme.of(context).textTheme),
-          //     child: Container(
-          //         margin: const EdgeInsets.only(
-          //             left: 20, right: 20, bottom: 10, top: 15),
-          //         decoration: BoxDecoration(
-          //           color: Theme.of(context).colorScheme.secondaryContainer,
-          //           borderRadius: BorderRadius.circular(40.0),
-          //         ),
-          //         child:
-          //
-          //         // tabBar
-          //
-          //         Row(
-          //           children: [
-          //             Expanded(
-          //               child: tabBar,
-          //             ),
-          //             IconButton(
-          //               icon: Icon(Icons.replay),
-          //               onPressed: () {
-          //                 BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
-          //                 BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'asc'));
-          //                 BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
-          //                 // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
-          //                 // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
-          //
-          //               },
-          //             ),
-          //           ],
-          //         ),
-          //
-          //     ),
-          //   ),
-          // ),
+          bottom: tabBar != null ? PreferredSize(
+            preferredSize: tabBar!.preferredSize,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  textTheme: Theme.of(context).textTheme),
+              child: Container(
+                  margin: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 15),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  child:
+
+                  // tabBar
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: tabBar!,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.replay),
+                        onPressed: () {
+                          BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
+                          BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'asc'));
+                          //TODO
+                          // BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
+
+                          // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
+                          // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
+
+                        },
+                      ),
+                    ],
+                  ),
+
+              ),
+            ),
+          ) : null,
         );
-      },
+      }
+
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(70);
+  Size get preferredSize => tabBar != null ? const Size.fromHeight(120) : const Size.fromHeight(70);
 }

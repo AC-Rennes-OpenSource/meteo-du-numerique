@@ -4,7 +4,7 @@ description: "La météo du numérique de l'Académie de Rennes."
 
 publish_to: 'none'
 
-version: 1.0.2+10
+version: 1.0.3+15
 
 environment:
   sdk: '>=3.2.2 <4.0.0'
@@ -24,6 +24,8 @@ dependencies:
   firebase_messaging: ^15.1.5
   firebase_remote_config: ^5.2.0
   flutter_local_notifications: ^18.0.1
+  flutter_launcher_icons: ^0.14.1
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -38,7 +40,6 @@ dependencies:
   dynamic_height_grid_view: 0.0.4
   flutter_staggered_grid_view: 0.7.0
   transparent_image: 2.0.1
-  flutter_launcher_icons: ^0.14.2
   intl: ^0.20.1
   google_fonts: ^6.2.1
   liquid_pull_to_refresh: 3.0.1
@@ -131,5 +132,8 @@ fonts:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icon-meteo.png"
+  image_path: "assets/icon-meteo1.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icon-meteo.png"
+  adaptive_icon_foreground_inset: 25
   remove_alpha_ios: true
