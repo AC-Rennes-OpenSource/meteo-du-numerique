@@ -4,6 +4,8 @@ class OpenSearchBar extends SearchBarEvent {}
 
 class CloseSearchBar extends SearchBarEvent {}
 
+class ClearAllEvent extends SearchBarEvent {}
+
 class UpdateSearchQuery extends SearchBarEvent {
   final String query;
 

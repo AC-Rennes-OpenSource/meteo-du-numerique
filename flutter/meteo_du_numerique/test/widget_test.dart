@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meteo_du_numerique/main.dart';
-import 'package:meteo_du_numerique/ui/theme_preferences.dart';
+import 'package:meteo_du_numerique/config/theme_preferences.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

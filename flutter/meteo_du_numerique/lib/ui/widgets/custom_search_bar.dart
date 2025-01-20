@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/items_bloc/services_num_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_event.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_state.dart';

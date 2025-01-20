@@ -14,8 +14,6 @@ import '../../bloc/items_bloc/services_num_bloc.dart';
 import '../../bloc/items_bloc/services_num_event.dart';
 import '../../bloc/items_bloc/services_num_state.dart';
 import '../../bloc/previsions_bloc/previsions_state.dart';
-import '../../bloc/search_bar_bloc/search_bar_bloc.dart';
-import '../../bloc/search_bar_bloc/search_bar_event.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
 import '../../utils.dart';
@@ -30,9 +28,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
-    _refreshAll(context);
+    // _refreshAll(context);
     DateTime? displayedLastUpdate;
 
     ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
@@ -43,18 +42,13 @@ class HomePage extends StatelessWidget {
             initialIndex: 0,
             length: 2, // Nombre d'onglets
             child: Scaffold(
-                backgroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? null
-                    : Colors.grey.shade200,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
                 appBar: ThemedAppBar(
                   onTitleTap: _handleTap,
                   tabBar: TabBar(
-                    overlayColor: WidgetStateColor.resolveWith(
-                        (states) => Colors.transparent),
-                    splashBorderRadius:
-                        const BorderRadius.all(Radius.circular(40)),
-                    unselectedLabelColor:
-                        Theme.of(context).colorScheme.onSurface,
+                    overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
+                    splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
+                    unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
                     labelColor: Theme.of(context).colorScheme.onSecondary,
                     onTap: (index) {
                       tabIndexNotifier.value = index;
@@ -88,220 +82,137 @@ class HomePage extends StatelessWidget {
                     valueListenable: tabIndexNotifier,
                     builder: (context, tabIndex, child) {
                       return NestedScrollView(
-                        headerSliverBuilder:
-                            (BuildContext context, bool innerBoxIsScrolled) {
-                          return <Widget>[
+                        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                          return [
                             BlocBuilder<ThemeBloc, ThemeState>(
                               builder: (context, state) {
-                                DefaultTabController.of(context)
-                                    .animation
-                                    ?.addListener(() {
+                                DefaultTabController.of(context).animation?.addListener(() {
                                   if (tabIndexNotifier.value !=
-                                      DefaultTabController.of(context)
-                                          .animation!
-                                          .value
-                                          .round()) {
-                                    tabIndexNotifier.value =
-                                        DefaultTabController.of(context)
-                                            .index
-                                            .round();
+                                      DefaultTabController.of(context).animation!.value.round()) {
+                                    tabIndexNotifier.value = DefaultTabController.of(context).index.round();
                                   }
                                 });
 
                                 return SliverAppBar(
                                   shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(35),
-                                          bottomRight: Radius.circular(35))),
+                                          bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
                                   toolbarHeight: 72,
                                   scrolledUnderElevation: 0,
                                   backgroundColor:
-                                      Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.black
-                                          : Colors.white,
+                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
                                   pinned: false,
                                   floating: true,
                                   snap: true,
                                   title: Column(
                                     children: [
                                       Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 5.0),
+                                          padding: const EdgeInsets.only(bottom: 5.0),
                                           child: Text(
                                             style: const TextStyle(fontSize: 9),
-                                            Utils.lastUpdateString(
-                                                servicesNumBloc.lastUpdate!),
+                                            Utils.lastUpdateString(servicesNumBloc.lastUpdate!),
                                           )),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
                                             children: [
                                               Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
+                                                  padding: const EdgeInsets.only(left: 8.0),
                                                   child: tabIndex == 0
-                                                      ? BlocBuilder<
-                                                          ServicesNumBloc,
-                                                          ServicesNumState>(
-                                                          builder: (context2,
-                                                              state) {
-                                                            return Stack(
-                                                                children: [
-                                                                  OutlinedButton
-                                                                      .icon(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .filter_list),
-                                                                    label: const Text(
-                                                                        'Filtres'),
-                                                                    onPressed: () => _showFilterBottomSheet(
-                                                                        context,
-                                                                        servicesNumBloc,
-                                                                        previsionsBloc,
-                                                                        tabIndexNotifier
-                                                                            .value),
-                                                                    style: OutlinedButton.styleFrom(
-                                                                        side: const BorderSide(
-                                                                            width:
-                                                                                1.0,
-                                                                            color: Colors
-                                                                                .grey),
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                5.0),
-                                                                        minimumSize: const Size(
-                                                                            110,
-                                                                            30),
-                                                                        foregroundColor: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .onSurface),
-                                                                  ),
-                                                                  // badge sur bouton
-                                                                  if (BlocProvider.of<
-                                                                              ServicesNumBloc>(
-                                                                          context2)
-                                                                      .currentFilterCriteria!
-                                                                      .isNotEmpty)
-                                                                    Positioned(
-                                                                      right: 0,
-                                                                      top: 5,
-                                                                      child:
-                                                                          Container(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            2),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Colors.redAccent,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(20),
-                                                                        ),
-                                                                        constraints:
-                                                                            const BoxConstraints(
-                                                                          minWidth:
-                                                                              15,
-                                                                          minHeight:
-                                                                              15,
-                                                                        ),
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .check,
-                                                                          size:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.white,
-                                                                        ),
-                                                                      ),
+                                                      ? BlocBuilder<ServicesNumBloc, ServicesNumState>(
+                                                          builder: (context2, state) {
+                                                            return Stack(children: [
+                                                              OutlinedButton.icon(
+                                                                icon: const Icon(Icons.filter_list),
+                                                                label: const Text('Filtres'),
+                                                                onPressed: () => _showFilterBottomSheet(
+                                                                    context,
+                                                                    servicesNumBloc,
+                                                                    previsionsBloc,
+                                                                    tabIndexNotifier.value),
+                                                                style: OutlinedButton.styleFrom(
+                                                                    side: const BorderSide(
+                                                                        width: 1.0, color: Colors.grey),
+                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                                    minimumSize: const Size(110, 30),
+                                                                    foregroundColor:
+                                                                        Theme.of(context).colorScheme.onSurface),
+                                                              ),
+                                                              // badge sur bouton
+                                                              if (BlocProvider.of<ServicesNumBloc>(context2)
+                                                                  .currentFilterCriteria!
+                                                                  .isNotEmpty)
+                                                                Positioned(
+                                                                  right: 0,
+                                                                  top: 5,
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.all(2),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.redAccent,
+                                                                      borderRadius: BorderRadius.circular(20),
                                                                     ),
-                                                                ]);
+                                                                    constraints: const BoxConstraints(
+                                                                      minWidth: 15,
+                                                                      minHeight: 15,
+                                                                    ),
+                                                                    child: const Icon(
+                                                                      Icons.check,
+                                                                      size: 10,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ]);
                                                           },
                                                         )
-                                                      : BlocBuilder<
-                                                          PrevisionsBloc,
-                                                          PrevisionsState>(
-                                                          builder: (context3,
-                                                              state) {
-                                                            return Stack(
-                                                                children: [
-                                                                  OutlinedButton
-                                                                      .icon(
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .filter_list),
-                                                                    label: const Text(
-                                                                        'Filtres'),
-                                                                    onPressed: () => _showFilterBottomSheet(
-                                                                        context,
-                                                                        servicesNumBloc,
-                                                                        previsionsBloc,
-                                                                        tabIndexNotifier
-                                                                            .value),
-                                                                    style: OutlinedButton.styleFrom(
-                                                                        side: const BorderSide(
-                                                                            width:
-                                                                                1.0,
-                                                                            color: Colors
-                                                                                .grey),
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            vertical:
-                                                                                5.0),
-                                                                        minimumSize: const Size(
-                                                                            110,
-                                                                            30),
-                                                                        foregroundColor: Theme.of(context)
-                                                                            .colorScheme
-                                                                            .onSurface),
-                                                                  ),
-                                                                  // badge sur bouton
-                                                                  if (BlocProvider.of<PrevisionsBloc>(
-                                                                              context3)
-                                                                          .currentFilterCriteria
-                                                                          .isNotEmpty ||
-                                                                      BlocProvider.of<PrevisionsBloc>(context3)
-                                                                              .currentPeriode !=
-                                                                          'all')
-                                                                    Positioned(
-                                                                      right: 0,
-                                                                      top: 5,
-                                                                      child:
-                                                                          Container(
-                                                                        padding: const EdgeInsets
-                                                                            .all(
-                                                                            2),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          color:
-                                                                              Colors.redAccent,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(6),
-                                                                        ),
-                                                                        constraints:
-                                                                            const BoxConstraints(
-                                                                          minWidth:
-                                                                              15,
-                                                                          minHeight:
-                                                                              15,
-                                                                        ),
-                                                                        child:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .check,
-                                                                          size:
-                                                                              10,
-                                                                          color:
-                                                                              Colors.white,
-                                                                        ),
-                                                                      ),
+                                                      : BlocBuilder<PrevisionsBloc, PrevisionsState>(
+                                                          builder: (context3, state) {
+                                                            return Stack(children: [
+                                                              OutlinedButton.icon(
+                                                                icon: const Icon(Icons.filter_list),
+                                                                label: const Text('Filtres'),
+                                                                onPressed: () => _showFilterBottomSheet(
+                                                                    context,
+                                                                    servicesNumBloc,
+                                                                    previsionsBloc,
+                                                                    tabIndexNotifier.value),
+                                                                style: OutlinedButton.styleFrom(
+                                                                    side: const BorderSide(
+                                                                        width: 1.0, color: Colors.grey),
+                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                                    minimumSize: const Size(110, 30),
+                                                                    foregroundColor:
+                                                                        Theme.of(context).colorScheme.onSurface),
+                                                              ),
+                                                              // badge sur bouton
+                                                              if (BlocProvider.of<PrevisionsBloc>(context3)
+                                                                      .currentFilterCriteria
+                                                                      .isNotEmpty ||
+                                                                  BlocProvider.of<PrevisionsBloc>(context3)
+                                                                          .currentPeriode !=
+                                                                      'all')
+                                                                Positioned(
+                                                                  right: 0,
+                                                                  top: 5,
+                                                                  child: Container(
+                                                                    padding: const EdgeInsets.all(2),
+                                                                    decoration: BoxDecoration(
+                                                                      color: Colors.redAccent,
+                                                                      borderRadius: BorderRadius.circular(6),
                                                                     ),
-                                                                ]);
+                                                                    constraints: const BoxConstraints(
+                                                                      minWidth: 15,
+                                                                      minHeight: 15,
+                                                                    ),
+                                                                    child: const Icon(
+                                                                      Icons.check,
+                                                                      size: 10,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ]);
                                                           },
                                                         )),
                                               const SizedBox(
@@ -309,30 +220,14 @@ class HomePage extends StatelessWidget {
                                               ),
                                               tabIndex == 0
                                                   ? OutlinedButton.icon(
-                                                      icon: const Icon(
-                                                          Icons.sort),
+                                                      icon: const Icon(Icons.sort),
                                                       label: const Text('Tri'),
-                                                      onPressed: () =>
-                                                          _showSortBottomSheet(
-                                                              context,
-                                                              servicesNumBloc),
+                                                      onPressed: () => _showSortBottomSheet(context, servicesNumBloc),
                                                       style: OutlinedButton.styleFrom(
-                                                          side: const BorderSide(
-                                                              width: 1.0,
-                                                              color:
-                                                                  Colors.grey),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical:
-                                                                      5.0),
-                                                          minimumSize:
-                                                              const Size(
-                                                                  90, 30),
-                                                          foregroundColor:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .onSurface),
+                                                          side: const BorderSide(width: 1.0, color: Colors.grey),
+                                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                                          minimumSize: const Size(90, 30),
+                                                          foregroundColor: Theme.of(context).colorScheme.onSurface),
                                                     )
                                                   : const SizedBox(
                                                       width: 90,
@@ -385,11 +280,8 @@ class HomePage extends StatelessWidget {
                                       CupertinoSliverRefreshControl(
                                         onRefresh: () async {
                                           // TODO ouvrir l'accordéon à chaque refresh?
-                                          previsionsBloc.add(
-                                              FetchPrevisionsEvent(
-                                                  showIndicator: false));
-                                          previsionsBloc
-                                              .add(OpenAllGroupsEvent());
+                                          previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
+                                          previsionsBloc.add(OpenAllGroupsEvent());
                                         },
                                       ),
                                       const ExpansionList(
@@ -399,8 +291,7 @@ class HomePage extends StatelessWidget {
                                   )
                                 : RefreshIndicator(
                                     onRefresh: () async {
-                                      previsionsBloc.add(FetchPrevisionsEvent(
-                                          showIndicator: false));
+                                      previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
                                       previsionsBloc.add(OpenAllGroupsEvent());
                                     },
                                     child: const CustomScrollView(
@@ -415,15 +306,16 @@ class HomePage extends StatelessWidget {
                         ),
                       );
                     }),
-                floatingActionButtonLocation:
-                    FloatingActionButtonLocation.endFloat,
+                floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
                 floatingActionButton: ValueListenableBuilder<int>(
                     valueListenable: tabIndexNotifier,
                     builder: (context, tabIndex, child) {
                       return CustomSearchBar(
                         tabIndexNotifier: tabIndexNotifier,
                       );
-                    })));
+                    })
+            )
+        );
       },
     );
   }
@@ -443,12 +335,11 @@ class HomePage extends StatelessWidget {
         );
       },
     ).then((_) {
-      context.read<SearchBarBloc>().add(CloseSearchBar());
+      // context.read<SearchBarBloc>().add(CloseSearchBar());
     });
   }
 
-  void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc,
-      PrevisionsBloc previsionsBloc, int tab) {
+  void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
     FocusScope.of(context).unfocus();
 
     showModalBottomSheet(
@@ -467,12 +358,11 @@ class HomePage extends StatelessWidget {
               );
       },
     ).then((_) {
-      context.read<SearchBarBloc>().add(CloseSearchBar());
+      // context.read<SearchBarBloc>().add(CloseSearchBar());
     });
   }
-  void _handleTap(BuildContext context) {
 
-  }
+  void _handleTap(BuildContext context) {}
 
   Future<void> _refreshAll(BuildContext context) async {
     final previsionsBloc = context.read<PrevisionsBloc>();
@@ -484,10 +374,8 @@ class HomePage extends StatelessWidget {
 
     // On attend que les deux blocs aient fini de traiter leurs états
     await Future.wait([
-      previsionsBloc.stream.firstWhere(
-          (state) => state is PrevisionsLoaded || state is PrevisionsError),
-      servicesNumBloc.stream.firstWhere(
-          (state) => state is ServicesNumLoaded || state is ServicesNumError),
+      previsionsBloc.stream.firstWhere((state) => state is PrevisionsLoaded || state is PrevisionsError),
+      servicesNumBloc.stream.firstWhere((state) => state is ServicesNumLoaded || state is ServicesNumError),
     ]);
   }
 }

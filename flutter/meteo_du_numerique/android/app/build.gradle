@@ -35,7 +35,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('meteo-du-numerique-release-key.jks')
+            storeFile file('upload-keystore.jks')
             storePassword rootProject.ext.storePassword
             keyAlias rootProject.ext.keyAlias
             keyPassword rootProject.ext.keyPassword

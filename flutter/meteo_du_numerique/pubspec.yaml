@@ -4,7 +4,7 @@ description: "La météo du numérique de l'Académie de Rennes."
 
 publish_to: 'none'
 
-version: 1.0.3+15
+version: 1.0.4+20
 
 environment:
   sdk: '>=3.2.2 <4.0.0'

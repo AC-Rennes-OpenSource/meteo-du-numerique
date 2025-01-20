@@ -27,43 +27,134 @@ sh "cp ../build/app/outputs/bundle/release/app-release.aab ../build_output/#{aab
 UI.message("Android AppBundle généré dans `build_output/#{aab_filename}`")
 end
 
-desc "Construire l'IPA iOS"
-lane :build_ios do
-  # Assurez-vous que le projet Flutter est prêt
+# desc "Construire l'IPA iOS"
+# lane :build_ios do
+#   # Assurez-vous que le projet Flutter est prêt
+#
+# #   sh "flutter clean"
+# #   sh "flutter pub get"
+# #   sh "flutter build ios"
+#   sh "flutter build ipa --release"
+#
+#   # Construire l'IPA à partir du projet iOS Flutter
+#   # Paramètres de signature
+#   sign_command = "xcodebuild -workspace ../ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath ../build/ios/archive/Runner.xcarchive archive"
+#   sh sign_command
+#
+#      # Extraire la version et le code de version depuis pubspec.yaml
+#         version = get_version_from_pubspec
+#         version_name = version[:version_number]
+#         version_code = version[:build_number]
+#
+#         # Obtenez la date du jour sous forme de AAAAMMJJ (ex. : 24122024 pour 24 décembre 2024)
+#             date_today = Time.now.strftime("%d%m%Y")
+#
+#         # Créer le nom du fichier IPA avec la version
+#         ipa_filename = "MeteoApp_#{version_name}+#{version_code}_#{date_today}.ipa"
+#         UI.message("Nom du fichier IPA : #{ipa_filename}")
+#
+#         # Déplacer le fichier généré dans un dossier organisé avec le nom personnalisé
+#         sh "mkdir -p ../build_output"
+#         sh "cp ../build/ios/ipa/*.ipa ../build_output/#{ipa_filename}"
+#
+#         UI.message("IPA iOS généré dans `build_output/#{ipa_filename}`")
+#
+#   # Exporter l'IPA signé
+# #           export_command = "xcodebuild -exportArchive -archivePath ./build/ios/archive/Runner.xcarchive -exportPath ./build/ios/ipa -exportOptionsPlist ./ios/ExportOptions.plist"
+# #           sh export_command
+#
+#   UI.message("Fichier IPA généré dans build/ios/ipa/Runner.ipa")
+# end
 
+desc "Déployer l'IPA sur TestFlight"
+lane :deploy_to_testflight do
+  version = get_version_from_pubspec
+  version_name = version[:version_number]
+  version_code = version[:build_number]
+
+
+
+  ipa_dir = "../build_output"
+  ipa_filename = Dir.glob("#{ipa_dir}/*#{version_name}+#{version_code}_*.ipa").first
+
+  # Lister tous les fichiers pour diagnostic
+    UI.message("Recherche d'IPA dans le dossier : #{ipa_dir}")
+    all_files = Dir.glob("#{ipa_dir}/*")
+    UI.message("Fichiers trouvés : #{all_files.join("\n")}")
+
+  unless ipa_filename
+    UI.user_error!("Impossible de trouver un fichier IPA correspondant à la version #{version_name}+#{version_code} dans le dossier `build_output`.")
+  end
+
+  UI.message("Déploiement de l'IPA : #{ipa_filename} sur TestFlight")
+
+  upload_to_testflight(
+    ipa: ipa_filename,
+    skip_waiting_for_build_processing: false
+  )
+
+  UI.success("Déploiement sur TestFlight terminé avec succès!")
+end
+
+desc "Construire et (optionnellement) déployer l'IPA iOS sur TestFlight"
+lane :build_ios do
+  # Nettoyer et préparer le projet Flutter
 #   sh "flutter clean"
 #   sh "flutter pub get"
 #   sh "flutter build ios"
   sh "flutter build ipa --release"
 
-  # Construire l'IPA à partir du projet iOS Flutter
-  # Paramètres de signature
+  # Commande de signature
   sign_command = "xcodebuild -workspace ../ios/Runner.xcworkspace -scheme Runner -configuration Release -archivePath ../build/ios/archive/Runner.xcarchive archive"
   sh sign_command
 
-     # Extraire la version et le code de version depuis pubspec.yaml
-        version = get_version_from_pubspec
-        version_name = version[:version_number]
-        version_code = version[:build_number]
+  # Extraire la version et le code de version depuis pubspec.yaml
+  version = get_version_from_pubspec
+  version_name = version[:version_number]
+  version_code = version[:build_number]
 
-        # Obtenez la date du jour sous forme de AAAAMMJJ (ex. : 24122024 pour 24 décembre 2024)
-            date_today = Time.now.strftime("%d%m%Y")
+  # Obtenez la date du jour sous forme de JJMMYYYY
+  date_today = Time.now.strftime("%d%m%Y")
 
-        # Créer le nom du fichier IPA avec la version
-        ipa_filename = "MeteoApp_#{version_name}+#{version_code}_#{date_today}.ipa"
-        UI.message("Nom du fichier IPA : #{ipa_filename}")
+  # Créer le nom du fichier IPA avec la version
+  ipa_filename = "MeteoApp_#{version_name}+#{version_code}_#{date_today}.ipa"
+  UI.message("Nom du fichier IPA : #{ipa_filename}")
 
-        # Déplacer le fichier généré dans un dossier organisé avec le nom personnalisé
-        sh "mkdir -p ../build_output"
-        sh "cp ../build/ios/ipa/*.ipa ../build_output/#{ipa_filename}"
+  # Déplacer le fichier généré dans un dossier organisé avec le nom personnalisé
+  sh "mkdir -p ../build_output"
+  sh "cp ../build/ios/ipa/*.ipa ../build_output/#{ipa_filename}"
 
-        UI.message("IPA iOS généré dans `build_output/#{ipa_filename}`")
+  UI.message("IPA iOS généré dans `build_output/#{ipa_filename}`")
 
-  # Exporter l'IPA signé
-#           export_command = "xcodebuild -exportArchive -archivePath ./build/ios/archive/Runner.xcarchive -exportPath ./build/ios/ipa -exportOptionsPlist ./ios/ExportOptions.plist"
-#           sh export_command
+  # Demander si l'utilisateur veut déployer sur TestFlight
+  deploy_to_testflight = UI.input("Voulez-vous déployer sur TestFlight ? (yes/no)").strip.downcase
 
-  UI.message("Fichier IPA généré dans build/ios/ipa/Runner.ipa")
+  if deploy_to_testflight == "yes"
+    # Déployer sur TestFlight
+    pilot(
+      ipa: "../build_output/#{ipa_filename}",
+      skip_submission: true,         # Sauter la soumission à App Store Review
+      distribute_external: false,    # Tester uniquement en interne
+      changelog: "Version #{version_name}, build #{version_code} - Compilé le #{date_today}."
+    )
+    UI.success("Application déployée sur TestFlight avec succès 🎉")
+  else
+    UI.important("Déploiement sur TestFlight annulé.")
+  end
+end
+
+# Méthode pour extraire la version et le numéro de build depuis pubspec.yaml
+private_lane :get_version_from_pubspec do
+  pubspec_path = "../pubspec.yaml"
+  pubspec = YAML.load_file(pubspec_path)
+
+  version_string = pubspec["version"]
+  version_parts = version_string.split('+')
+
+  {
+    version_number: version_parts[0],
+    build_number: version_parts[1]
+  }
 end
 
 
@@ -76,28 +167,54 @@ lane :increment_version do
   # Lire tout le fichier en mémoire
   lines = File.readlines(pubspec_path)
 
-  # Trouver et modifier la ligne contenant la version
+  # Trouver et extraire la version et le numéro de build actuel
+  version_info = nil
+  lines.each do |line|
+    if line.strip.start_with?('version:')
+      version_info = line.split(':').last.strip
+      break
+    end
+  end
+
+  version, build_number = version_info.split('+')
+  build_number = build_number.to_i
+
+  # Afficher la version et le build actuel
+  UI.message("Version actuelle : #{version}+#{build_number}".red)
+
+  # Demander si on souhaite modifier le numéro de build uniquement
+  modify_build_only = prompt(
+    text: "Voulez-vous modifier le numéro de build ? (yes/no)",
+    boolean: true
+  )
+
+  if modify_build_only
+    # Demander si on souhaite aussi changer le numéro de version
+    modify_version = prompt(
+      text: "Voulez-vous aussi changer le numéro de version actuel (#{version}) ? (yes/no)",
+      boolean: true
+    )
+
+    # Modifier la version si nécessaire
+    if modify_version
+      version_parts = version.split('.').map(&:to_i)
+      version_parts[2] += 1 # Incrementer le patch (x.y.z)
+      version = version_parts.join('.')
+    end
+
+    # Incrémentation du numéro de build
+    build_number += 1
+  else
+    UI.message("Aucune modification apportée.")
+    return
+  end
+
+  # Afficher le numéro de version et build modifié
+  UI.message("Nouvelle version : #{version}+#{build_number}".red)
+
+  # Réécrire le fichier avec la ligne modifiée
   lines.map! do |line|
     if line.strip.start_with?('version:')
-      # Extraire la version actuelle
-      version_info = line.split(':').last.strip
-      version, build_number = version_info.split('+')
-      build_number = build_number.to_i
-
-      # Demander s'il faut incrémenter le numéro de version ou de build
-      increment_version = prompt(text: "Souhaitez-vous incrémenter le numéro de version (#{version}) ? (yes/no)", boolean: true)
-
-      # Incrémentation de la version
-      if increment_version
-        version_parts = version.split('.').map(&:to_i)
-        version_parts[2] += 1 # Incrementer le patch (x.y.z)
-        version = version_parts.join('.')
-      end
-
-      # Incrémentation du numéro de build
-      build_number += 1
-
-      # Mettre à jour la ligne
       "version: #{version}+#{build_number}\n"
     else
       line

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:diacritic/diacritic.dart';
 
 import '../../models/service_num_model.dart';
 import '../../services/api_service.dart';
@@ -40,6 +39,8 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     if (event.showIndicator) {
       emit(PrevisionsLoading());
     }
+
+    print("log : _onFetchPrevisions bloc 1 triggered");
 
     // TODO : délai pour test
     // await Future.delayed(const Duration(milliseconds: 1500));
@@ -236,5 +237,6 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     // }
 
     return [];
+
   }
 }

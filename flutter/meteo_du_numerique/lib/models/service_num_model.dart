@@ -1,7 +1,5 @@
 import 'package:meteo_du_numerique/models/qualite_de_service_model.dart';
 
-import 'categorie_model.dart';
-
 class ServiceNum {
   late int id;
   late String libelle;
@@ -142,7 +140,7 @@ class ActualiteA {
       id: json['id'] as int,
       libelle: json['libelle'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      lastUpdate: DateTime.parse(json['updated_at']),
+      lastUpdate: DateTime.parse(json['updated_at']).toLocal(),
       qualiteDeService: json['qualiteDeService'] != null
           ? QualiteDeService.fromJson(json['qualiteDeService'] as Map<String, dynamic>)
           : null,

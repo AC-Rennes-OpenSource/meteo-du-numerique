@@ -21,13 +21,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Construire l'AppBundle Android
 
+### deploy_to_testflight
+
+```sh
+[bundle exec] fastlane deploy_to_testflight
+```
+
+Déployer l'IPA sur TestFlight
+
 ### build_ios
 
 ```sh
 [bundle exec] fastlane build_ios
 ```
 
-Construire l'IPA iOS
+Construire et (optionnellement) déployer l'IPA iOS sur TestFlight
 
 ### increment_version
 

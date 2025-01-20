@@ -127,13 +127,13 @@ class PrevisionCardWidget extends StatelessWidget {
     return null;
   }
 
-  static categoryColor(String category) {
+  static categoryColor(String color) {
     Color orange = const Color(0xFFD17010);
     Color jaune = const Color(0xFFC7A213);
     Color vert = const Color(0xff63BAAB);
     Color bleu = const Color(0xff28619A);
     Color rose = const Color(0xffC25452);
-    switch (category) {
+    switch (color) {
       case "rose":
         return rose;
       case "bleu":

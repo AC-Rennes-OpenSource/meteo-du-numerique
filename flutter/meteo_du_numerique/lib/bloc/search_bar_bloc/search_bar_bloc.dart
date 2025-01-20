@@ -16,5 +16,13 @@ class SearchBarBloc extends Bloc<SearchBarEvent, SearchBarState> {
     on<UpdateSearchQuery>((event, emit) {
       emit(SearchBarQueryUpdated(event.query));
     });
+
+    on<ClearAllEvent>((event, emit) {
+      UpdateSearchQuery('');
+      CloseSearchBar();
+
+
+      emit(ClearedAll());
+    });
   }
 }

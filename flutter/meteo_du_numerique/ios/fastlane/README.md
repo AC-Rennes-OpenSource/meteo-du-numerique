@@ -1,6 +1,13 @@
 fastlane documentation
 ----
 
+
+https://medium.com/@lucas.buchalla.sesti/automating-deployment-of-ios-apps-in-flutter-project-with-fastlane-1174a4e235b9
+
+
+
+
+
 # Installation
 
 Make sure you have the latest version of the Xcode command line tools installed:

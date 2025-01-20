@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +11,7 @@ class Config {
 
     // Définir les valeurs par défaut
     await remoteConfig.setDefaults(<String, dynamic>{
-      'show_previsions': true,
+      'show_previsions': false,
     });
 
     try {
@@ -55,7 +53,6 @@ class Config {
         //     : dotenv.env['BASE_URL_IOS'];
       url = remoteConfig.getBool('show_previsions')? dotenv.env['BASE_URL_LOCAL']:dotenv.env['BASE_URL_PROD'];
       break;
-        break;
       case 'production':
         url = dotenv.env['BASE_URL_PROD'];
         break;

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/prevision_card_widget.dart';
 
-import '../../bloc/previsions_bloc/previsions_bloc.dart';
+import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
 import '../../bloc/previsions_bloc/previsions_state.dart';
 import '../../models/prevision_model.dart';
 import '../../models/service_num_model.dart';

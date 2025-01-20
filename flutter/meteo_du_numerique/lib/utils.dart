@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
@@ -38,4 +39,9 @@ class Utils {
     }
 
   }
+
+  static String normalizeText(String text) {
+    return removeDiacritics(text.toLowerCase());
+  }
+
 }

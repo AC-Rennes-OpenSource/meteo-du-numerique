@@ -3,7 +3,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/items_bloc/services_num_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/service_card_widget.dart';
 
 import '../../bloc/items_bloc/services_num_bloc.dart';
