@@ -38,6 +38,9 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   }
 
   Future<void> _onFetchItems(FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
+    print("_onFetchItems __________________________");
+
+
     if (event.showIndicator) {
       emit(ServicesNumLoading());
     }
@@ -47,10 +50,10 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
 
     try {
       await _getItems().then((serviceList) {
-        if (serviceList.isNotEmpty) {
-          lastUpdate = serviceList.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
-          // DateTime.now();
-        }
+        // if (serviceList.isNotEmpty) {
+        //   lastUpdate = serviceList.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
+        //   // DateTime.now();
+        // }
         emit(ServicesNumLoaded(servicesList: serviceList, lastUpdate: lastUpdate));
       });
     } catch (e) {
@@ -101,17 +104,14 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      servicesList = servicesList
-          .where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase()))
-          .toList();
+      servicesList = servicesList.where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase())).toList();
     }
 
     // category filter
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<ServiceNumOld> itemupdate = [];
       currentFilterCriteria?.forEach((element) {
-        itemupdate
-            .addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase() == element).toList());
+        itemupdate.addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase() == element).toList());
       });
       servicesList = itemupdate;
     }
@@ -144,21 +144,20 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     servicesList = await apiService.fetchItems();
     // TODO mock/stub
     // servicesList = await apiService.fetchMockItems();
+    // set lastUpdate
+    lastUpdate = servicesList.map((e) => e.lastUpdate).reduce((min, e) => e.isAfter(min) ? e : min);
 
     // search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      servicesList = servicesList
-          .where((serviceNum) =>
-              Utils.normalizeText(serviceNum.libelle).contains(Utils.normalizeText(currentSearchQuery!)))
-          .toList();
+      servicesList =
+          servicesList.where((serviceNum) => Utils.normalizeText(serviceNum.libelle).contains(Utils.normalizeText(currentSearchQuery!))).toList();
     }
 
     // category filter
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<ActualiteA> itemupdate = [];
       currentFilterCriteria?.forEach((element) {
-        itemupdate.addAll(
-            servicesList.where((serviceNum) => serviceNum.qualiteDeService?.libelle.toLowerCase() == element).toList());
+        itemupdate.addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService?.libelle.toLowerCase() == element).toList());
       });
       servicesList = itemupdate;
     }

@@ -4,6 +4,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 
 import '../../bloc/items_bloc/services_num_bloc.dart';
 import '../../bloc/items_bloc/services_num_event.dart';
@@ -32,6 +33,11 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   final remoteConfig = FirebaseRemoteConfig.instance;
   late TabController _tabController;
   bool _isObserverAdded = false;
+  bool _showFeature = true;
+
+  // Variable statique pour gérer le compteur de taps
+  static int _tapCount = 0;
+  static DateTime? _lastTapTime;
 
   @override
   void initState() {
@@ -39,7 +45,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
     _refreshAll(context);
     if (!_isObserverAdded) {
       WidgetsBinding.instance.addObserver(this);
-      print("Ajout de l'observateur");
+      debugPrint("Ajout de l'observateur");
       _isObserverAdded = true;
     }
     _tabController = TabController(length: 2, vsync: this);
@@ -57,7 +63,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
 
     if (_isObserverAdded) {
       WidgetsBinding.instance.removeObserver(this);
-      print("Suppression de l'observateur");
+      debugPrint("Suppression de l'observateur");
       _isObserverAdded = false;
     }
 
@@ -70,68 +76,73 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
 
     switch (state) {
       case AppLifecycleState.inactive:
-        print("App inactive");
+        debugPrint("App inactive");
         break;
       case AppLifecycleState.paused:
-        print("App en arrière-plan");
+        debugPrint("App en arrière-plan");
         break;
       case AppLifecycleState.resumed:
         _refreshAll(context);
-        print("App au premier plan");
+        debugPrint("App au premier plan");
         break;
       case AppLifecycleState.detached:
-        print("App détachée");
+        debugPrint("App détachée");
       case AppLifecycleState.hidden:
-        print("App hidden");
+        debugPrint("App hidden");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    _showFeature = context.read<ThemeBloc>().state.showPrevision;
+    print("_showFeature : " + _showFeature.toString());
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
       appBar: ThemedAppBar(
         onTitleTap: _handleTap,
-        tabBar: !remoteConfig.getBool("show_previsions")
-            ? TabBar(
-                controller: _tabController,
-                overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
-                splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
-                unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
-                labelColor: Theme.of(context).colorScheme.onSecondary,
-                enableFeedback: true,
-                indicatorPadding: const EdgeInsets.all(3),
-                indicator: RoundedRectTabIndicator(
-                    color: Theme.of(context).colorScheme.primary,
-                    radius: 40,
-                    borderColor: Colors.transparent,
-                    borderWidth: 1),
-                indicatorSize: TabBarIndicatorSize.tab,
-                dividerColor: Colors.transparent,
-                tabs: [
-                  Tab(
-                    child: Text(
-                      'Météo du jour',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      'Prévisions',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
-              )
-            : null,
+        tabBar:
+            // remoteConfig.getBool("show_previsions")
+            _showFeature
+                ? TabBar(
+                    controller: _tabController,
+                    overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
+                    splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
+                    unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
+                    labelColor: Theme.of(context).colorScheme.onSecondary,
+                    enableFeedback: true,
+                    indicatorPadding: const EdgeInsets.all(3),
+                    indicator: RoundedRectTabIndicator(
+                        color: Theme.of(context).colorScheme.primary, radius: 40, borderColor: Colors.transparent, borderWidth: 1),
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    dividerColor: Colors.transparent,
+                    tabs: [
+                      Tab(
+                        child: Text(
+                          'Météo du jour',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      Tab(
+                        child: Text(
+                          'Prévisions',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  )
+                : null,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildTabContent(context, isPrevisionsTab: false),
-          _buildTabContent(context, isPrevisionsTab: true),
-        ],
-      ),
+      body: TabBarView(controller: _tabController, children:
+              // _showFeature
+              //     ?
+              [
+        _buildTabContent(context, isPrevisionsTab: false),
+        _buildTabContent(context, isPrevisionsTab: true),
+      ]
+          //     : [
+          //   _buildTabContent(context, isPrevisionsTab: false),
+          // ],
+          ),
       floatingActionButton: CustomSearchBar(tabController: _tabController),
     );
   }
@@ -141,8 +152,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [_buildSliverAppBar(context, isPrevisionsTab)];
       },
-      body:
-          Platform.isIOS ? _buildIOSContent(context, isPrevisionsTab) : _buildAndroidContent(context, isPrevisionsTab),
+      body: Platform.isIOS ? _buildIOSContent(context, isPrevisionsTab) : _buildAndroidContent(context, isPrevisionsTab),
     );
   }
 
@@ -167,41 +177,31 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   }
 
   Widget _buildSliverAppBar(BuildContext context, bool isPrevisionsTab) {
-    return BlocBuilder<ServicesNumBloc, ServicesNumState>(
-      builder: (context, state) {
-        DateTime? displayedLastUpdate;
-        if (state is ServicesNumLoaded && state.lastUpdate != null) {
-          displayedLastUpdate = state.lastUpdate;
-        }
-
-        return SliverAppBar(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
-          toolbarHeight: 50,
-          scrolledUnderElevation: 0,
-          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
-          pinned: false,
-          floating: true,
-          snap: true,
-          title: Column(
+    return SliverAppBar(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
+      toolbarHeight: 50,
+      scrolledUnderElevation: 0,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      pinned: false,
+      floating: true,
+      snap: true,
+      title: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      _buildFilterButton(context, isPrevisionsTab),
-                      const SizedBox(width: 6.0),
-                      if (!isPrevisionsTab) _buildSortButton(context),
-                    ],
-                  ),
-                  const ThemeSwitch(),
+                  _buildFilterButton(context, isPrevisionsTab),
+                  const SizedBox(width: 6.0),
+                  if (!isPrevisionsTab) _buildSortButton(context),
                 ],
               ),
+              const ThemeSwitch(),
             ],
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -245,7 +245,27 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                   ),
                 ),
               ),
-            // TODO badge pour PREVISIONS if (PrevisionsBloc.currentFilterCriteria!.isNotEmpty && !isPrevisionsTab)
+            if (previsionsBloc.currentFilterCriteria.isNotEmpty && isPrevisionsTab)
+              Positioned(
+                right: 0,
+                top: 5,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 15,
+                    minHeight: 15,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    size: 10,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
           ],
         );
       },
@@ -269,7 +289,6 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   }
 
   Future<void> _refreshAll(BuildContext context) async {
-    print("--------refresh");
     final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
     servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
@@ -277,13 +296,109 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   }
 
   void _handleTap(BuildContext context) {
-    print("tap");
-    // Implement your tap handling logic here
+    final now = DateTime.now();
+
+    // Vérifie si le tap précédent a eu lieu récemment (moins de 500ms)
+    if (_lastTapTime != null && now.difference(_lastTapTime!) < Duration(milliseconds: 300)) {
+      _tapCount++;
+    } else {
+      _tapCount = 1; // Réinitialise le compteur si un tap est effectué après un délai plus long
+    }
+
+    // Met à jour le temps du dernier tap
+    _lastTapTime = now;
+
+    if (_tapCount == 10) {
+      _showHiddenMenu(context);
+      _tapCount = 0; // Réinitialise le compteur après avoir montré le menu
+    }
+  }
+
+  void _showHiddenMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)), // Coins arrondis en haut
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 250,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // Étire les widgets horizontalement
+              children: [
+                // Titre
+                Text(
+                  'Menu des prévisions',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+
+                // Séparateur
+                Divider(thickness: 1, color: Colors.grey[300]),
+
+                // Boutons centrés
+                Spacer(), // Ajoute un espace flexible pour centrer verticalement
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Espace égal entre les boutons
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.close,
+                      ), // Icône pour le bouton "Fermer"
+                      label: Text(
+                        'Fermer',
+                        // style: TextStyle(color: Colors.redAccent), // Couleur du texte
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        // side: BorderSide(color: Colors.redAccent, width: 2), // Bordure rouge
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFeature = !_showFeature; // Activer ou désactiver la fonctionnalité
+                        });
+                      },
+                      icon: Icon(Icons.check), // Icône pour le bouton "test"
+                      label: Text('Activer'),
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.greenAccent, width: 2), // Bordure rouge
+
+                        // backgroundColor: Colors.greenAccent, // Couleur du bouton
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(), // Ajoute un espace flexible après les boutons
+
+                // Séparateur final
+                Divider(thickness: 1, color: Colors.grey[300]),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
 void _updateTabIndex(int index) {
-  print(index);
+  debugPrint(index as String?);
 }
 
 void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {

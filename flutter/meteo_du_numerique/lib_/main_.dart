@@ -13,10 +13,14 @@ import 'package:meteo_du_numerique/cubit/app_cubit.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/services/notification_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
-import 'package:meteo_du_numerique/ui/pages/home_page2_cubit.dart';
 
 import 'bloc/theme_bloc/theme_state.dart';
 import 'config.dart';
+import 'cubit/previsions_cubit.dart';
+import 'cubit/services_numeriques_cubit.dart';
+import 'services/mock-api-service.dart';
+import 'ui/pages/home-page-test.dart';
+import 'ui/pages/home_page2_cubit.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -40,12 +44,20 @@ class MyApp extends StatelessWidget {
   final ThemeModePreference themeModePreference;
   final FirebaseRemoteConfig remoteConfig;
 
-  const MyApp({Key? key, required this.themeModePreference, required this.remoteConfig}) : super(key: key);
+  const MyApp({super.key, required this.themeModePreference, required this.remoteConfig});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<ServicesNumeriquesCubit>(
+          create: (context) => ServicesNumeriquesCubit(MockApiService())..loadServices(),
+        ),
+        BlocProvider<PrevisionsCubit>(
+          create: (context) => PrevisionsCubit(MockApiService())..loadPrevisions(),
+        ),
+
+
         BlocProvider(create: (_) => ServicesNumBloc(apiService: ApiService(), useMockData: true)),
         BlocProvider(create: (_) => AppCubit()),
         BlocProvider(create: (_) => PrevisionsBloc(apiService: ApiService(), useMockData: true)),

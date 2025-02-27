@@ -12,11 +12,10 @@ class ApiService {
   final String baseUrl = Config.baseUrl;
 
   Future<List<ActualiteA>> fetchItems() async {
-    print("Config.baseUrl : "+Config.baseUrl);
-    print("Config.urlAttributes : "+Config.urlAttributes);
+    debugPrint("Config.baseUrl : ${Config.baseUrl}");
+    debugPrint("Config.urlAttributes : ${Config.urlAttributes}");
     try {
-      final response =
-          await http.get(Uri.parse(baseUrl + Config.urlAttributes));
+      final response = await http.get(Uri.parse(baseUrl + Config.urlAttributes));
 
       var act = getActu(_processResponse(response.body));
       return act;
@@ -79,7 +78,7 @@ class ApiService {
   //         listprev.add(prev);
   //       // }
   //     }
-  //   }
+  // }
   //   if (listprev.isNotEmpty) {
   //
   //     // TODO test pour affichage de la prévision du jour dans la tab 1
@@ -103,8 +102,7 @@ class ApiService {
   }
 
   //---------------------------------------------------------------------------------------------------
-  Future<List<ServiceNumOld>> fetchItems_v3(
-      {String? category, String? sortBy, String? query}) async {
+  Future<List<ServiceNumOld>> fetchItems_v3({String? category, String? sortBy, String? query}) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/services'));
       return _processResponse_v3(response.body, category, sortBy, query);
@@ -113,28 +111,18 @@ class ApiService {
     }
   }
 
-  List<ServiceNumOld> _processResponse_v3(
-      String data, String? filterBy, String? sortBy, String? query) {
+  List<ServiceNumOld> _processResponse_v3(String data, String? filterBy, String? sortBy, String? query) {
     List<dynamic> jsonData = jsonDecode(data);
-    List<ServiceNumOld> servicesList = jsonData
-        .map((serviceNum) => ServiceNumOld.fromJson(serviceNum))
-        .toList();
+    List<ServiceNumOld> servicesList = jsonData.map((serviceNum) => ServiceNumOld.fromJson(serviceNum)).toList();
 
-    servicesList
-        .sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
+    servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
 
     // filtering
     if (filterBy != null) {
-      if (filterBy.toLowerCase().contains("perturbations") ||
-          filterBy.toLowerCase().contains("fonctionnement")) {
-        servicesList = servicesList
-            .where((serviceNum) =>
-                serviceNum.qualiteDeService.toLowerCase().contains(filterBy))
-            .toList();
+      if (filterBy.toLowerCase().contains("perturbations") || filterBy.toLowerCase().contains("fonctionnement")) {
+        servicesList = servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase().contains(filterBy)).toList();
       } else {
-        servicesList = servicesList
-            .where((serviceNum) => serviceNum.category == filterBy)
-            .toList();
+        servicesList = servicesList.where((serviceNum) => serviceNum.category == filterBy).toList();
       }
     }
 
@@ -151,25 +139,20 @@ class ApiService {
           servicesList.sort((a, b) => a.id.compareTo(b.id));
           break;
         case 'etat':
-          servicesList.sort(
-              (a, b) => b.qualiteDeServiceId.compareTo(b.qualiteDeServiceId));
+          servicesList.sort((a, b) => b.qualiteDeServiceId.compareTo(b.qualiteDeServiceId));
           break;
         case 'qualiteDeService':
-          servicesList
-              .sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
+          servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
           break;
         default:
-          // TODO Gérer le cas où 'sortBy' n'est pas un attribut valide
+        // TODO Gérer le cas où 'sortBy' n'est pas un attribut valide
           break;
       }
     }
 
     // Searching
     if (query != null) {
-      servicesList = servicesList
-          .where((serviceNum) =>
-              serviceNum.libelle.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      servicesList = servicesList.where((serviceNum) => serviceNum.libelle.toLowerCase().contains(query.toLowerCase())).toList();
     }
     return servicesList;
   }
@@ -188,17 +171,71 @@ class ApiService {
     }
   }
 
-  // Future<List<PrevisionA>> fetchMockPrevisions(
-  //     {String? category, String? sortBy, String? query}) async {
-  //   try {
-  //     String data = await rootBundle.loadString('assets/stub.json');
-  //     return getSortedPrev(_processResponse(data));
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //     throw Exception('Failed to load mock previsions: $e');
-  //   }
-  // }
-//---------------------------------------------------------------------------------------------------
+  fetchPrevisionsv5() async {
+    // final url = Uri.parse('$baseUrl/api/service-numeriques?populate[previsions][populate]=*&populate[categorie]=*');
+    // final url = Uri.parse('http://10.249.103.179:1337/api/service-numeriques?populate[previsions]=*&populate=categorie');
+    final url = Uri.parse('https://qt.toutatice.fr/strapi5/api/mdn-service-numeriques?populate=*');
+// todo conf env
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        throw Exception('Erreur lors de la récupération des données : ${response.statusCode}');
+      }
+
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      // Vérification que la réponse contient des données
+      if (jsonResponse['data'] == null) {
+        debugPrint('Aucune donnée trouvée dans la réponse.');
+        return [];
+      }
+
+      final List<dynamic> services = jsonResponse['data'];
+      final List<PrevisionA> allPrevisions = [];
+
+      for (final service in services) {
+        // Extraire les données de la catégorie
+        final String categorieLibelle = service['mdn_categorie']?['libelle'] ?? 'Inconnu';
+        final String categorieCouleur = service['mdn_categorie']?['couleur'] ?? 'Inconnu';
+
+        // Extraire les prévisions
+        final List<dynamic> previsions = service['mdn_previsions'] ?? [];
+
+        allPrevisions.addAll(previsions.map((prevision) {
+          return PrevisionA(
+            id: prevision['id'].toString(),
+            libelle: prevision['libelle'] ?? 'Inconnu',
+            description: prevision['description'] ?? '',
+
+            // description: prevision['description'] != null && prevision['description'] is List<dynamic>
+            //     ? (prevision['description'][0]['children'][0]['text'] ?? '')
+            //     : '',
+            dateDebut: DateTime.parse(prevision['date_debut']),
+            dateFin: DateTime.parse(prevision['date_fin']),
+            categorieLibelle: categorieLibelle,
+            couleur: categorieCouleur,
+          );
+        }));
+      }
+
+      return allPrevisions;
+    } catch (e) {
+      debugPrint('Erreur lors de la récupération des prévisions : $e');
+      return [];
+    }
 }
+// Future<List<PrevisionA>> fetchMockPrevisions(
+//     {String? category, String? sortBy, String? query}) async {
+//   try {
+//     String data = await rootBundle.loadString('assets/stub.json');
+//     return getSortedPrev(_processResponse(data));
+//   } catch (e) {
+//     if (kDebugMode) {
+//       print(e);
+//     }
+//     throw Exception('Failed to load mock previsions: $e');
+//   }
+// }
+//---------------------------------------------------------------------------------------------------
+  }

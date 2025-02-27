@@ -39,9 +39,6 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     if (event.showIndicator) {
       emit(PrevisionsLoading());
     }
-
-    print("log : _onFetchPrevisions bloc 1 triggered");
-
     // TODO : délai pour test
     // await Future.delayed(const Duration(milliseconds: 1500));
 

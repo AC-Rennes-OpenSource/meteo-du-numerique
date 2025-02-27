@@ -1,0 +1,28 @@
+{
+  "previsions": [
+    {
+      "id": "1",
+      "libelle": "Prévision 1",
+      "description": "Description de la prévision 1",
+      "dateDebut": "2025-01-18T10:00:00.000Z",
+      "categorieLibelle": "Météo",
+      "couleur": "rose"
+    },
+    {
+      "id": "2",
+      "libelle": "Prévision 2",
+      "description": "Description de la prévision 2",
+      "dateDebut": "2025-01-20T10:00:00.000Z",
+      "categorieLibelle": "Sport",
+      "couleur": "bleu"
+    },
+    {
+      "id": "3",
+      "libelle": "Prévision 3",
+      "description": "Description de la prévision 3",
+      "dateDebut": "2025-01-22T10:00:00.000Z",
+      "categorieLibelle": "Culture",
+      "couleur": "jaune"
+    }
+  ]
+}

@@ -38,14 +38,16 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
 
     final List<String> categoryOptions = [
       'Collaboration',
-      'Communication',
+      'RH',
       'Finance',
       'Pédagogie',
       'Examens et concours',
-      'RH',
       'Inclusion',
-      'Santé et social',
       'Scolarité',
+      'Communication',
+      'Santé et social',
+
+
     ]; // Exemple de catégories
 
     return Container(
@@ -183,8 +185,8 @@ class _FilterBottomSheetState extends State<FilterPrevisionsBottomSheet> {
       const Color(0xff28619A),
       const Color(0xFFD17010),
       const Color(0xff00B872),
-      Colors.brown,
-      Colors.blue,
+      const Color(0xFF795548),
+      const Color(0xFF2196f3),
     ];
     return colors[index % colors.length];
   }

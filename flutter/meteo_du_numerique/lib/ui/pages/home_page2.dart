@@ -60,7 +60,8 @@ class HomePage2 extends StatelessWidget {
                 appBar: ThemedAppBar(
                   onTitleTap: _handleTap,
                   tabBar:
-                  !remoteConfig.getBool("show_previsions") ? TabBar(
+                  !remoteConfig.getBool("show_previsions") ?
+                  TabBar(
                     overlayColor: WidgetStateColor.resolveWith(
                         (states) => Colors.transparent),
                     splashBorderRadius:
@@ -133,16 +134,16 @@ class HomePage2 extends StatelessWidget {
                                 snap: true,
                                 title: Column(
                                   children: [
-                                    Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 12.0),
-                                        child: Text(
-                                          style: const TextStyle(fontSize: 9),
-                                          displayedLastUpdate != null
-                                              ? Utils.lastUpdateString(
-                                                  displayedLastUpdate!)
-                                              : '',
-                                        )),
+                                    // Padding(
+                                    //     padding:
+                                    //         const EdgeInsets.only(bottom: 12.0),
+                                    //     child: Text(
+                                    //       style: const TextStyle(fontSize: 9),
+                                    //       displayedLastUpdate != null
+                                    //           ? Utils.lastUpdateString(
+                                    //               displayedLastUpdate!)
+                                    //           : '',
+                                    //     )),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,

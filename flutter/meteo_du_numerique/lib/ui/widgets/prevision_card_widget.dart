@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:markdown/markdown.dart' as md;
 
+import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../models/service_num_model.dart';
 import '../../utils.dart';
 
@@ -14,6 +16,15 @@ class PrevisionCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // Accès à l'état du Bloc pour savoir si le mode sombre est activé
+    final themeBloc = BlocProvider.of<ThemeBloc>(context);
+    bool isDarkMode = themeBloc.state.isDarkMode;
+
+    String markdownText = prevision.description;
+
+    String htmlText = md.markdownToHtml(markdownText);
+
     return Container(
       decoration: BoxDecoration(
           borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
@@ -80,12 +91,10 @@ class PrevisionCardWidget extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 4.0, left: 4, right: 4),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: MarkdownBody(
-                  selectable: true,
-                  onTapLink: (text, url, title) {
-                    launchUrl(Uri.parse(url!));
-                  },
-                  data: prevision.description),
+              child: HtmlWidget(
+                htmlText, // HTML converti depuis Markdown
+                textStyle: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+              ),
             ),
           ),
         ],
@@ -128,6 +137,10 @@ class PrevisionCardWidget extends StatelessWidget {
   }
 
   static categoryColor(String color) {
+
+    return Color(int.parse(color));
+
+
     Color orange = const Color(0xFFD17010);
     Color jaune = const Color(0xFFC7A213);
     Color vert = const Color(0xff63BAAB);

@@ -12,8 +12,8 @@ class ApiService {
   final String baseUrl = Config.baseUrl;
 
   Future<List<ActualiteA>> fetchItems() async {
-    print("Config.baseUrl : "+Config.baseUrl);
-    print("Config.urlAttributes : "+Config.urlAttributes);
+    debugPrint("Config.baseUrl : ${Config.baseUrl}");
+    debugPrint("Config.urlAttributes : ${Config.urlAttributes}");
     try {
       final response =
           await http.get(Uri.parse(baseUrl + Config.urlAttributes));
@@ -35,7 +35,6 @@ class ApiService {
       final response =
           await http.get(Uri.parse(baseUrl + Config.urlAttributes));
       var b = _processResponse(response.body);
-      print(b);
       var a = getSortedPrev(b);
       return a;
     } catch (e) {
@@ -69,7 +68,7 @@ class ApiService {
   List<PrevisionA> getSortedPrev(List<ServiceNum> servList) {
     List<PrevisionA> listprev = [];
     for (var element in servList) {
-      for (var prev in element.previsions) {
+      for (var prev in element.groupedPrevisions) {
         prev.categorieLibelle = element.category.libelle;
         // print(prev.categorieLibelle);
         prev.couleur = element.category.color;

@@ -22,7 +22,9 @@ class ExpansionList extends StatelessWidget {
     // context.read<PrevisionsBloc>().add(FetchPrevisionsEvent());
 
     return BlocBuilder<PrevisionsBloc, PrevisionsState>(
+
       builder: (context, state) {
+
         if (state is PrevisionsLoading) {
           return SliverFillRemaining(
             child: Platform.isIOS

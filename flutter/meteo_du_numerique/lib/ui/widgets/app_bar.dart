@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/items_bloc/services_num_bloc.dart';
 import '../../bloc/items_bloc/services_num_event.dart';
 import '../../bloc/items_bloc/services_num_state.dart';
+import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
+import '../../bloc/previsions_bloc/previsions_event.dart';
 import '../../bloc/search_bar_bloc/search_bar_bloc.dart';
 import '../../bloc/search_bar_bloc/search_bar_event.dart';
 import '../../cubit/app_cubit.dart';
@@ -76,15 +78,16 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                               child: tabBar!,
                             ),
                             IconButton(
-                              icon: Icon(Icons.replay),
+                              icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSecondaryContainer),
                               onPressed: () {
                                 BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
                                 BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'desc'));
 
                                 //TODO
-                                // BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
+                                BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
 
                                 CustomSearchBar.closeKeyboard(context);
+                                tabBar?.controller?.animateTo(0);
                                 context.read<AppCubit>().changeTab(0);
                                 context.read<SearchBarBloc>().add(ClearAllEvent());
                                 // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
@@ -108,11 +111,20 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
               )
-            : null,
+            : PreferredSize(
+              preferredSize: preferredSize,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                          style: const TextStyle(fontSize: 9),
+                          Utils.lastUpdateString(displayedLastUpdate),
+                        ),
+              ),
+            ),
       );
     });
   }
 
   @override
-  Size get preferredSize => tabBar != null ? const Size.fromHeight(150) : const Size.fromHeight(70);
+  Size get preferredSize => tabBar != null ? const Size.fromHeight(150) : const Size.fromHeight(80);
 }

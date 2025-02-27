@@ -1,1 +1,1 @@
-enum ThemeEvent { toggleLight, toggleDark, toggleSystem }
+enum ThemeEvent { showPrevision, toggleLight, toggleDark, toggleSystem }

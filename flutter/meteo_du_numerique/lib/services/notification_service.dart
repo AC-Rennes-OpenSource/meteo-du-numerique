@@ -7,7 +7,8 @@ class NotificationService {
 
   static Future<void> initialize() async {
     await _initLocalNotifications();
-    _configureFirebaseListeners();
+    await _configureFirebaseListeners();
+    await subscribeToTopic('general');
   }
 
   static Future<void> _initLocalNotifications() async {
@@ -24,7 +25,7 @@ class NotificationService {
     await _localNotificationsPlugin.initialize(initializationSettings);
   }
 
-  static void _configureFirebaseListeners() {
+  static Future<void> _configureFirebaseListeners() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -71,5 +72,23 @@ class NotificationService {
       );
     }
     return null;
+  }
+
+  static Future<void> subscribeToTopic(String topic) async {
+    try {
+      await FirebaseMessaging.instance.subscribeToTopic(topic);
+      debugPrint('Abonné au topic: $topic');
+    } catch (e) {
+      debugPrint('Erreur lors de l\'abonnement au topic $topic: $e');
+    }
+  }
+
+  static Future<void> unsubscribeFromTopic(String topic) async {
+    try {
+      await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
+      debugPrint('Désabonné du topic: $topic');
+    } catch (e) {
+      debugPrint('Erreur lors du désabonnement du topic $topic: $e');
+    }
   }
 }

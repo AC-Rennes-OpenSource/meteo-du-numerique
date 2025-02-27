@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 
-import '../../models/service_num_model.dart';
-import '../../services/api_service.dart';
+import '../models/service_num_model.dart';
+import '../services/api_service.dart';
 import 'actualite_state.dart';
 
 class ActualiteCubit extends Cubit<ActualiteState> {

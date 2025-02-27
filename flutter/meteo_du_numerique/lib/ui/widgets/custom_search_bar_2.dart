@@ -8,6 +8,7 @@ import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_state.dart';
 
 import '../../bloc/items_bloc/services_num_event.dart';
 import '../../bloc/previsions_bloc/previsions_event.dart';
+import '../../cubit/app_cubit.dart';
 
 class CustomSearchBar extends StatefulWidget {
   final TabController tabController;
@@ -34,34 +35,52 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
     // widget.tabIndexNotifier.addListener(_onTabIndexChange);
     _tabController = widget.tabController;
     _tabController.addListener(_onTabChange);
+    _tabController.animation!.addListener(_onTabChangeScroll);
   }
 
   @override
   void dispose() {
     // widget.tabIndexNotifier.removeListener(_onTabIndexChange);
     _tabController.removeListener(_onTabChange);
+    _tabController.animation!.removeListener(_onTabChangeScroll);
     _focusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
   void _onTabChange() {
+    print('_onTabChange');
     if (_tabController.indexIsChanging) {
       if (context.read<SearchBarBloc>().state is ClearedAll) {
-        print("--------------------------------------- _onTabChange ----------------------------------------");
-        print("--------------------------------------------------------------------------------------------");
         searchQueries[0] = '';
         searchQueries[1] = '';
         _searchController.clear();
         _focusNode.unfocus();
-        _triggerSearchUpdate('');
+        // _triggerSearchUpdate('');
       }
       _updateSearchBar(_tabController.index);
     }
   }
 
+  void _onTabChangeScroll() {
+    final int newIndex = _tabController.index;
+    if (newIndex != context.read<AppCubit>().state.tabIndex) {
+      print('_onTabChangeScroll');
+      // if (_tabController.indexIsChanging) {
+      if (context.read<SearchBarBloc>().state is ClearedAll) {
+        searchQueries[0] = '';
+        searchQueries[1] = '';
+        _searchController.clear();
+        _focusNode.unfocus();
+        _triggerSearchUpdate('', newIndex);
+      }
+      _updateSearchBar(newIndex);
+    }
+  }
+
   void _updateSearchBar(int tabIndex) {
     String? currentQuery = searchQueries[tabIndex];
+    print(currentQuery);
     if (currentQuery != null && currentQuery.isNotEmpty) {
       context.read<SearchBarBloc>().add(OpenSearchBar());
       _searchController.text = currentQuery;
@@ -71,16 +90,18 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
       _searchController.clear();
       _focusNode.unfocus();
     }
-    _triggerSearchUpdate(currentQuery ?? '');
+    // _triggerSearchUpdate(currentQuery ?? '', tabIndex);
   }
 
-  void _triggerSearchUpdate(String query) {
-    int currentTabIndex = _tabController.index;
+  void _triggerSearchUpdate(String query, int currentTabIndex) {
+    print('trigger search update ${query}');
+    // int currentTabIndex = _tabController.index;
     searchQueries[currentTabIndex] = query;
 
     if (currentTabIndex == 0) {
       context.read<ServicesNumBloc>().add(SearchItemsEvent(query));
-    } else {
+    }
+    if (currentTabIndex == 1) {
       context.read<PrevisionsBloc>().add(SearchPrevisionsEvent(query));
     }
   }
@@ -93,7 +114,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
         searchQueries[1] = '';
         _searchController.clear();
         _focusNode.unfocus();
-        _triggerSearchUpdate('');
+        _triggerSearchUpdate('', _tabController.index);
       }
 
       if (state is SearchBarQueryUpdated) {
@@ -133,6 +154,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               children: [
                 Expanded(
                   child: TextField(
+                    // textInputAction: TextInputAction.search,
                     focusNode: _focusNode,
                     controller: _searchController,
                     decoration: const InputDecoration(
@@ -140,7 +162,10 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(left: 16),
                     ),
-                    onChanged: _triggerSearchUpdate,
+                    onChanged: (value) {
+                      print('on changed ${value}');
+                      _triggerSearchUpdate(value, _tabController.index);
+                    },
                   ),
                 ),
                 IconButton(
@@ -148,7 +173,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                   onPressed: () {
                     if (_searchController.text.isNotEmpty && isSearchOpen) {
                       _searchController.clear();
-                      _triggerSearchUpdate('');
+                      _triggerSearchUpdate('', _tabController.index);
                       context.read<SearchBarBloc>().add(CloseSearchBar());
                       _focusNode.unfocus(); // Ferme le clavier
                     } else if (_searchController.text.isEmpty && isSearchOpen) {

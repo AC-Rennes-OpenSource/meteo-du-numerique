@@ -30,21 +30,49 @@ class ThemeSwitch extends StatelessWidget {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return const Column(
+          return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 25),
-                child: Text(
+                padding: const EdgeInsets.only(top: 25),
+                child:
+                    // todo titre + icone pour fermer la bottomsheet (mais pb de darkmode quand on switch)
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    //   child:
+                    //   Row(
+                    //     children: [
+                    //       const SizedBox(width: 48),
+                    //       Expanded(
+                    //         child: Center(
+                    //           child: Text(
+                    //             'Préférences',
+                    //             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    //             textAlign: TextAlign.center,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //
+                    //       Padding(
+                    //         padding: const EdgeInsets.only(left: 8.0),
+                    //         child: IconButton(
+                    //           icon: const Icon(Icons.close),
+                    //           onPressed: () => Navigator.of(context).pop(),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    Text(
                   "Préférences",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 5),
                 child: Divider(),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(top: 10.0, bottom: 50),
                 child: SettingsBottomSheet(),
               ),

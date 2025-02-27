@@ -2,26 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:meteo_du_numerique/models/service_num_model.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:markdown/markdown.dart' as md;
+
 
 import '../../bloc/theme_bloc/theme_bloc.dart';
 
-class ServiceCardWidget extends StatefulWidget {
+class ServiceCardWidget extends StatelessWidget {
   final ActualiteA service;
 
   const ServiceCardWidget({super.key, required this.service});
 
   @override
-  State<StatefulWidget> createState() => _ServiceCardWidgetState();
-}
-
-class _ServiceCardWidgetState extends State<ServiceCardWidget> {
-  @override
   Widget build(BuildContext context) {
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
+    String markdownText = service.description;
 
+    // Transformation du markdown en HTML
+    String htmlText = md.markdownToHtml(markdownText);
+
+    // Accès à l'état du Bloc pour savoir si le mode sombre est activé
+    final themeBloc = BlocProvider.of<ThemeBloc>(context);
     bool isDarkMode = themeBloc.state.isDarkMode;
 
     return Container(
@@ -34,9 +35,9 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
           border: Border.all(
               color: isDarkMode
                   ? serviceColor(
-                      widget.service.qualiteDeService!.niveauQos, isDarkMode)
+                      service.qualiteDeService!.niveauQos, isDarkMode)
                   : serviceTextColor(
-                      widget.service.qualiteDeService!.niveauQos, isDarkMode))),
+                      service.qualiteDeService!.niveauQos, isDarkMode))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -50,7 +51,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Center(
                             child: getIcon(
-                                widget.service.qualiteDeService!.niveauQos,
+                                service.qualiteDeService!.niveauQos,
                                 isDarkMode)),
                       ),
                       const SizedBox(height: kIsWeb ? 8 : 0),
@@ -59,12 +60,12 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                           textAlign: TextAlign.center,
-                          widget.service.libelle,
+                          service.libelle,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: kIsWeb ? 26.0 : 22,
                             color: serviceTextColor(
-                                widget.service.qualiteDeService!.niveauQos,
+                                service.qualiteDeService!.niveauQos,
                                 isDarkMode),
                           ),
                         ),
@@ -78,12 +79,12 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
                           child: Text(
-                            widget.service.libelle,
+                            service.libelle,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: kIsWeb ? 26.0 : 22,
                               color: serviceTextColor(
-                                  widget.service.qualiteDeService!.niveauQos,
+                                  service.qualiteDeService!.niveauQos,
                                   isDarkMode),
                             ),
                           ),
@@ -94,7 +95,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
                         top: 0,
                         bottom: 0,
                         child: getIcon(
-                                widget.service.qualiteDeService!.niveauQos,
+                                service.qualiteDeService!.niveauQos,
                                 isDarkMode) ??
                             const SizedBox(),
                       ),
@@ -103,7 +104,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
           ),
           Container(
             color: serviceColor(
-                widget.service.qualiteDeService!.niveauQos, isDarkMode),
+                service.qualiteDeService!.niveauQos, isDarkMode),
             height: 35,
             width: double.infinity,
             child: Row(
@@ -111,7 +112,7 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  widget.service.qualiteDeService!.libelle,
+                  service.qualiteDeService!.libelle,
                   style: const TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ],
@@ -121,25 +122,11 @@ class _ServiceCardWidgetState extends State<ServiceCardWidget> {
             padding: const EdgeInsets.only(bottom: 4.0, left: 4, right: 4),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: MarkdownBody(
-                selectable: true,
-                onTapLink: (text, url, title) {
-                  launchUrl(Uri.parse(url!));
-                },
-                data: widget.service.description,
-                styleSheet: MarkdownStyleSheet(
-                    // h1: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
-                    // h2: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
-                    // p: TextStyle(fontSize: 16),
-                    // blockquote: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-                    horizontalRuleDecoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                )),
+              child: HtmlWidget(
+                textStyle: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.black, // Couleur selon le mode
+                ),
+                htmlText, // HTML converti depuis Markdown
               ),
             ),
           ),
