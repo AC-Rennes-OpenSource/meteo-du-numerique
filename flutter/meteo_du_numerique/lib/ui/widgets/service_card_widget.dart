@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:meteo_du_numerique/models/service_num_model.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
-
+import 'package:meteo_du_numerique/models/service_num_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/theme_bloc/theme_bloc.dart';
 
@@ -27,17 +27,12 @@ class ServiceCardWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-          borderRadius:
-              kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.surface
-              : Theme.of(context).colorScheme.surface,
+          borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
+          color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.surface,
           border: Border.all(
               color: isDarkMode
-                  ? serviceColor(
-                      service.qualiteDeService!.niveauQos, isDarkMode)
-                  : serviceTextColor(
-                      service.qualiteDeService!.niveauQos, isDarkMode))),
+                  ? serviceColor(service.qualiteDeService!.niveauQos, isDarkMode)
+                  : serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
@@ -49,10 +44,7 @@ class ServiceCardWidget extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: Center(
-                            child: getIcon(
-                                service.qualiteDeService!.niveauQos,
-                                isDarkMode)),
+                        child: Center(child: getIcon(service.qualiteDeService!.niveauQos, isDarkMode)),
                       ),
                       const SizedBox(height: kIsWeb ? 8 : 0),
                       // Espace entre l'icône et le texte
@@ -64,9 +56,7 @@ class ServiceCardWidget extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: kIsWeb ? 26.0 : 22,
-                            color: serviceTextColor(
-                                service.qualiteDeService!.niveauQos,
-                                isDarkMode),
+                            color: serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode),
                           ),
                         ),
                       ),
@@ -83,9 +73,7 @@ class ServiceCardWidget extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: kIsWeb ? 26.0 : 22,
-                              color: serviceTextColor(
-                                  service.qualiteDeService!.niveauQos,
-                                  isDarkMode),
+                              color: serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode),
                             ),
                           ),
                         ),
@@ -94,17 +82,13 @@ class ServiceCardWidget extends StatelessWidget {
                         right: 10,
                         top: 0,
                         bottom: 0,
-                        child: getIcon(
-                                service.qualiteDeService!.niveauQos,
-                                isDarkMode) ??
-                            const SizedBox(),
+                        child: getIcon(service.qualiteDeService!.niveauQos, isDarkMode) ?? const SizedBox(),
                       ),
                     ],
                   ),
           ),
           Container(
-            color: serviceColor(
-                service.qualiteDeService!.niveauQos, isDarkMode),
+            color: serviceColor(service.qualiteDeService!.niveauQos, isDarkMode),
             height: 35,
             width: double.infinity,
             child: Row(
@@ -122,12 +106,34 @@ class ServiceCardWidget extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 4.0, left: 4, right: 4),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: HtmlWidget(
-                textStyle: TextStyle(
-                  color: isDarkMode ? Colors.white : Colors.black, // Couleur selon le mode
-                ),
-                htmlText, // HTML converti depuis Markdown
+              child: MarkdownBody(
+                inlineSyntaxes: [
+                  UnderlineSyntax(), // Ajoute la syntaxe de soulignement personnalisée
+                ],
+                selectable: true,
+                onTapLink: (text, url, title) {
+                  launchUrl(Uri.parse(url!));
+                },
+                data: service.description,
+                styleSheet: MarkdownStyleSheet(
+                    del: const TextStyle(
+                        decoration: TextDecoration.underline), // Souligne tous les balises del
+
+                    horizontalRuleDecoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                )),
               ),
+              // child: HtmlWidget(
+              //   textStyle: TextStyle(
+              //     color: isDarkMode ? Colors.white : Colors.black, // Couleur selon le mode
+              //   ),
+              //   htmlText, // HTML converti depuis Markdown
+              // ),
             ),
           ),
         ],
@@ -179,5 +185,20 @@ class ServiceCardWidget extends StatelessWidget {
       case 3:
         return isDarkTheme ? const Color(0xffdb2c66) : const Color(0xff94114e);
     }
+  }
+}
+
+/// Workaround: permet de remplacer les balises <u> provenant des textes soulignés de Strapi
+/// par des balises <del> qui sont formatables via la lib flutter_markdown.
+/// On peut ainsi appliquer le style de soulignement au texte voulu.
+/// NB : la norme markdown ne prévoit pas de syntaxe de soulignement, d'où cette absence dans flutter_markdown
+class UnderlineSyntax extends md.InlineSyntax {
+  UnderlineSyntax() : super(r'<u>(.*?)<\/u>');
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final String text = match.group(1)!;
+    parser.addNode(md.Element.text('del', text));
+    return true;
   }
 }
