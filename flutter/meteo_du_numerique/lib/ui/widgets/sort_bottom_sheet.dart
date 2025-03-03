@@ -16,7 +16,8 @@ class SortBottomSheet extends StatefulWidget {
 }
 
 class _SortBottomSheetState extends State<SortBottomSheet> {
-  final int _groupValue = 0;
+  // Variable non utilisée
+  // final int _groupValue = 0;
   String? _selectedSortCriteria;
   String? _selectedSortOrder;
 

@@ -44,4 +44,12 @@ class Utils {
     return removeDiacritics(text.toLowerCase());
   }
 
+  // Méthodes manquantes mais référencées dans le code
+  static String formatDateFr(DateTime date) {
+    return DateFormat("dd/MM/yyyy", "fr_FR").format(date);
+  }
+
+  static String formatDateFrHuman(DateTime date) {
+    return DateFormat("d MMMM yyyy", "fr_FR").format(date);
+  }
 }

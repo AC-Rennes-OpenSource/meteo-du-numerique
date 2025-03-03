@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 
 class SortPrevBottomSheet extends StatefulWidget {

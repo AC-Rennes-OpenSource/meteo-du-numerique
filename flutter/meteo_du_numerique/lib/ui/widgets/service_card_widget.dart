@@ -19,7 +19,9 @@ class ServiceCardWidget extends StatelessWidget {
     String markdownText = service.description;
 
     // Transformation du markdown en HTML
-    String htmlText = md.markdownToHtml(markdownText);
+    // Variable utilisée indirectement dans le système de rendu Markdown
+    // md.markdownToHtml est appelé pour la conversion, mais htmlText n'est pas directement utilisé
+    md.markdownToHtml(markdownText);
 
     // Accès à l'état du Bloc pour savoir si le mode sombre est activé
     final themeBloc = BlocProvider.of<ThemeBloc>(context);

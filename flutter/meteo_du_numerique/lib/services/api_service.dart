@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:meteo_du_numerique/config.dart';
 
 import '../models/service_num_model.dart';
-import '../models/service_num_model_old.dart';
 
 class ApiService {
   final String baseUrl = Config.baseUrl;
@@ -102,60 +101,7 @@ class ApiService {
   }
 
   //---------------------------------------------------------------------------------------------------
-  Future<List<ServiceNumOld>> fetchItems_v3({String? category, String? sortBy, String? query}) async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/services'));
-      return _processResponse_v3(response.body, category, sortBy, query);
-    } catch (e) {
-      throw Exception('Error: $e');
-    }
-  }
-
-  List<ServiceNumOld> _processResponse_v3(String data, String? filterBy, String? sortBy, String? query) {
-    List<dynamic> jsonData = jsonDecode(data);
-    List<ServiceNumOld> servicesList = jsonData.map((serviceNum) => ServiceNumOld.fromJson(serviceNum)).toList();
-
-    servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
-
-    // filtering
-    if (filterBy != null) {
-      if (filterBy.toLowerCase().contains("perturbations") || filterBy.toLowerCase().contains("fonctionnement")) {
-        servicesList = servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase().contains(filterBy)).toList();
-      } else {
-        servicesList = servicesList.where((serviceNum) => serviceNum.category == filterBy).toList();
-      }
-    }
-
-    // sorting
-    if (sortBy != null) {
-      switch (sortBy) {
-        case 'libelle':
-          servicesList.sort((a, b) => a.libelle.compareTo(b.libelle));
-          break;
-        case 'category':
-          servicesList.sort((a, b) => a.category.compareTo(b.category));
-          break;
-        case 'id':
-          servicesList.sort((a, b) => a.id.compareTo(b.id));
-          break;
-        case 'etat':
-          servicesList.sort((a, b) => b.qualiteDeServiceId.compareTo(b.qualiteDeServiceId));
-          break;
-        case 'qualiteDeService':
-          servicesList.sort((a, b) => b.qualiteDeService.compareTo(a.qualiteDeService));
-          break;
-        default:
-        // TODO Gérer le cas où 'sortBy' n'est pas un attribut valide
-          break;
-      }
-    }
-
-    // Searching
-    if (query != null) {
-      servicesList = servicesList.where((serviceNum) => serviceNum.libelle.toLowerCase().contains(query.toLowerCase())).toList();
-    }
-    return servicesList;
-  }
+  // Ces méthodes ont été supprimées car elles dépendaient du modèle ServiceNumOld qui n'existe plus
 
   Future<List<ActualiteA>> fetchMockItems() async {
     try {

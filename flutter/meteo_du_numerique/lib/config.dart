@@ -1,5 +1,5 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Config {
@@ -45,14 +45,8 @@ class Config {
 
     switch (environment) {
       case 'development':
-        // url = kIsWeb
-        //     ? dotenv.env['BASE_URL_WEB']
-        //     :
-        // Platform.isAndroid
-        //     ? dotenv.env['BASE_URL_ANDROID']
-        //     : dotenv.env['BASE_URL_IOS'];
-      url = remoteConfig.getBool('show_previsions')? dotenv.env['BASE_URL_LOCAL']:dotenv.env['BASE_URL_PROD'];
-      break;
+        url = remoteConfig.getBool('show_previsions')? dotenv.env['BASE_URL_LOCAL']:dotenv.env['BASE_URL_PROD'];
+        break;
       case 'production':
         url = dotenv.env['BASE_URL_PROD'];
         break;

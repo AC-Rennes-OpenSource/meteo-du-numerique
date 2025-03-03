@@ -17,7 +17,7 @@ import '../../bloc/previsions_bloc/previsions_event.dart';
 import '../../bloc/previsions_bloc/previsions_state.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
-import '../../utils.dart';
+// import '../../utils.dart'; // Import non utilisé
 import '../decorations/rounded_rect_tab_indicator.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/filter_bottom_sheet.dart';
@@ -29,7 +29,7 @@ class HomePage2 extends StatelessWidget {
   // Variable statique pour gérer le compteur de taps
   static int _tapCount = 0;
   static DateTime? _lastTapTime;
-  static Timer? _tapTimer;
+  // static Timer? _tapTimer; // Variable non utilisée
 
   const HomePage2({super.key});
 
@@ -40,14 +40,15 @@ class HomePage2 extends StatelessWidget {
     final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
     _refreshAll(context);
-    DateTime? displayedLastUpdate;
+    // DateTime? displayedLastUpdate; // Variable non utilisée
 
     // ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
     return BlocBuilder<ServicesNumBloc, ServicesNumState>(
         builder: (context, servicesState) {
       if (servicesState is ServicesNumLoaded &&
           servicesState.lastUpdate != null) {
-        displayedLastUpdate = servicesState.lastUpdate;
+        // Variable displayedLastUpdate commentée car non utilisée
+        // displayedLastUpdate = servicesState.lastUpdate;
       }
       return BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
@@ -406,7 +407,7 @@ class HomePage2 extends StatelessWidget {
             : FilterPrevisionsBottomSheet(
                 selectedFilter: previsionsBloc.currentPeriode,
                 tab: tab,
-                selectedCategories: previsionsBloc.currentFilterCriteria,
+                selectedCategories: previsionsBloc.currentFilterCriteria ?? [],
               );
       },
     ).then((_) {

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/custom_search_bar.dart';
 import 'package:meteo_du_numerique/ui/widgets/expansion_list.dart';
@@ -32,7 +32,7 @@ class HomePage extends StatelessWidget {
     final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
     // _refreshAll(context);
-    DateTime? displayedLastUpdate;
+    // La variable displayedLastUpdate n'est pas utilisée pour le moment
 
     ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
 
@@ -186,9 +186,8 @@ class HomePage extends StatelessWidget {
                                                                         Theme.of(context).colorScheme.onSurface),
                                                               ),
                                                               // badge sur bouton
-                                                              if (BlocProvider.of<PrevisionsBloc>(context3)
-                                                                      .currentFilterCriteria
-                                                                      .isNotEmpty ||
+                                                              if ((BlocProvider.of<PrevisionsBloc>(context3)
+                                                                      .currentFilterCriteria?.isNotEmpty ?? false) ||
                                                                   BlocProvider.of<PrevisionsBloc>(context3)
                                                                           .currentPeriode !=
                                                                       'all')
@@ -354,7 +353,7 @@ class HomePage extends StatelessWidget {
             : FilterPrevisionsBottomSheet(
                 selectedFilter: previsionsBloc.currentPeriode,
                 tab: tab,
-                selectedCategories: previsionsBloc.currentFilterCriteria,
+                selectedCategories: previsionsBloc.currentFilterCriteria ?? [],
               );
       },
     ).then((_) {

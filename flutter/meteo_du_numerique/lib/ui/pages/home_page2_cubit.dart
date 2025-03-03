@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
+import 'package:meteo_du_numerique/bloc/theme_bloc/theme_event.dart';
 
 import '../../bloc/items_bloc/services_num_bloc.dart';
 import '../../bloc/items_bloc/services_num_event.dart';
@@ -94,15 +95,12 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    _showFeature = context.read<ThemeBloc>().state.showPrevision;
-    print("_showFeature : " + _showFeature.toString());
+    _showFeature = context.watch<ThemeBloc>().state.showPrevision;
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
       appBar: ThemedAppBar(
         onTitleTap: _handleTap,
-        tabBar:
-            // remoteConfig.getBool("show_previsions")
-            _showFeature
+        tabBar: _showFeature
                 ? TabBar(
                     controller: _tabController,
                     overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
@@ -132,17 +130,13 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                   )
                 : null,
       ),
-      body: TabBarView(controller: _tabController, children:
-              // _showFeature
-              //     ?
-              [
-        _buildTabContent(context, isPrevisionsTab: false),
-        _buildTabContent(context, isPrevisionsTab: true),
-      ]
-          //     : [
-          //   _buildTabContent(context, isPrevisionsTab: false),
-          // ],
-          ),
+      body: TabBarView(
+        controller: _tabController, 
+        children: [
+          _buildTabContent(context, isPrevisionsTab: false),
+          _buildTabContent(context, isPrevisionsTab: true),
+        ]
+      ),
       floatingActionButton: CustomSearchBar(tabController: _tabController),
     );
   }
@@ -196,11 +190,11 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                   const SizedBox(width: 6.0),
                   if (!isPrevisionsTab) _buildSortButton(context),
                 ],
-              ),
+                ),
               const ThemeSwitch(),
             ],
-          ),
-        ],
+              ),
+            ],
       ),
     );
   }
@@ -224,7 +218,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                 foregroundColor: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            if (servicesNumBloc.currentFilterCriteria!.isNotEmpty && !isPrevisionsTab)
+            if ((servicesNumBloc.currentFilterCriteria?.isNotEmpty ?? false) && !isPrevisionsTab)
               Positioned(
                 right: 0,
                 top: 5,
@@ -245,7 +239,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                   ),
                 ),
               ),
-            if (previsionsBloc.currentFilterCriteria.isNotEmpty && isPrevisionsTab)
+            if ((previsionsBloc.currentFilterCriteria?.isNotEmpty ?? false) && isPrevisionsTab)
               Positioned(
                 right: 0,
                 top: 5,
@@ -315,12 +309,14 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   }
 
   void _showHiddenMenu(BuildContext context) {
+    final themeBloc = context.read<ThemeBloc>();
+    
     showModalBottomSheet(
       context: context,
       isDismissible: false,
       enableDrag: false,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)), // Coins arrondis en haut
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
         return SizedBox(
@@ -328,9 +324,8 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Étire les widgets horizontalement
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Titre
                 Text(
                   'Menu des prévisions',
                   textAlign: TextAlign.center,
@@ -340,53 +335,38 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
                   ),
                 ),
                 SizedBox(height: 10),
-
-                // Séparateur
                 Divider(thickness: 1, color: Colors.grey[300]),
-
-                // Boutons centrés
-                Spacer(), // Ajoute un espace flexible pour centrer verticalement
+                Spacer(),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Espace égal entre les boutons
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     OutlinedButton.icon(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        Icons.close,
-                      ), // Icône pour le bouton "Fermer"
-                      label: Text(
-                        'Fermer',
-                        // style: TextStyle(color: Colors.redAccent), // Couleur du texte
-                      ),
+                      icon: Icon(Icons.close),
+                      label: Text('Fermer'),
                       style: OutlinedButton.styleFrom(
-                        // side: BorderSide(color: Colors.redAccent, width: 2), // Bordure rouge
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
-                        setState(() {
-                          _showFeature = !_showFeature; // Activer ou désactiver la fonctionnalité
-                        });
+                        themeBloc.add(ThemeEvent.showPrevision);
+                        Navigator.pop(context);
                       },
-                      icon: Icon(Icons.check), // Icône pour le bouton "test"
-                      label: Text('Activer'),
+                      icon: Icon(Icons.check),
+                      label: Text(themeBloc.state.showPrevision ? 'Désactiver' : 'Activer'),
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.greenAccent, width: 2), // Bordure rouge
-
-                        // backgroundColor: Colors.greenAccent, // Couleur du bouton
+                        side: BorderSide(color: Colors.greenAccent, width: 2),
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 ),
-                Spacer(), // Ajoute un espace flexible après les boutons
-
-                // Séparateur final
+                Spacer(),
                 Divider(thickness: 1, color: Colors.grey[300]),
               ],
             ),
@@ -397,9 +377,10 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
   }
 }
 
-void _updateTabIndex(int index) {
-  debugPrint(index as String?);
-}
+// Méthode non utilisée - supprimée
+// void _updateTabIndex(int index) {
+//   debugPrint(index.toString());
+// }
 
 void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {
   FocusScope.of(context).unfocus();
@@ -435,7 +416,7 @@ void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc, Pre
           : FilterPrevisionsBottomSheet(
               selectedFilter: previsionsBloc.currentPeriode,
               tab: tab,
-              selectedCategories: previsionsBloc.currentFilterCriteria,
+              selectedCategories: previsionsBloc.currentFilterCriteria ?? [],
             );
     },
   ).then((_) {

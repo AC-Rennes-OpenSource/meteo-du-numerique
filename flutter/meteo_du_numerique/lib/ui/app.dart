@@ -4,7 +4,7 @@ import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page2.dart';
 
 import '../bloc/items_bloc/services_num_bloc.dart';
-import '../bloc/previsions_bloc/previsions_bloc.dart';
+import '../bloc/previsions_bloc/previsions_bloc_2.dart';
 import '../bloc/search_bar_bloc/search_bar_bloc.dart';
 import '../bloc/theme_bloc/theme_state.dart';
 import '../services/api_service.dart';

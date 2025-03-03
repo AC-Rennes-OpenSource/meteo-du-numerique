@@ -41,7 +41,9 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         leading: Image.asset(
-          Theme.of(context).brightness == Brightness.dark ? 'assets/logo_academie_dark.png' : 'assets/logo_academie.jpg',
+          Theme.of(context).brightness == Brightness.dark
+              ? 'assets/logo_academie_dark-Photoroom.png'
+              : 'assets/Academie_de_Rennes_Logo_Vector.svg_-removebg-preview.png',
         ),
         actions: [
           IconButton(
@@ -112,15 +114,15 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               )
             : PreferredSize(
-              preferredSize: preferredSize,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                          style: const TextStyle(fontSize: 9),
-                          Utils.lastUpdateString(displayedLastUpdate),
-                        ),
+                preferredSize: preferredSize,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    style: const TextStyle(fontSize: 9),
+                    Utils.lastUpdateString(displayedLastUpdate),
+                  ),
+                ),
               ),
-            ),
       );
     });
   }

@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:diacritic/diacritic.dart';
 import 'package:meteo_du_numerique/models/service_num_model.dart';
 
-import '../../models/service_num_model_old.dart';
 import '../../services/api_service.dart';
 import '../../utils.dart';
 import 'services_num_event.dart';
@@ -97,46 +96,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     add(FetchServicesNumEvent());
   }
 
-  Future<List<ServiceNumOld>> _getItems_v3() async {
-    List<ServiceNumOld> servicesList;
-
-    servicesList = await apiService.fetchItems_v3();
-
-    // search filter
-    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      servicesList = servicesList.where((serviceNum) => serviceNum.libelle.toLowerCase().contains(currentSearchQuery!.toLowerCase())).toList();
-    }
-
-    // category filter
-    if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
-      List<ServiceNumOld> itemupdate = [];
-      currentFilterCriteria?.forEach((element) {
-        itemupdate.addAll(servicesList.where((serviceNum) => serviceNum.qualiteDeService.toLowerCase() == element).toList());
-      });
-      servicesList = itemupdate;
-    }
-
-    // Apply sorting
-    if (currentSortCriteria != null) {
-      if (currentSortCriteria == "qualiteDeServiceId") {
-        if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
-        } else {
-          servicesList.sort((b, a) => a.getField(currentSortCriteria!).compareTo(b.getField(currentSortCriteria!)));
-        }
-      } else {
-        if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
-        } else {
-          servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
-        }
-      }
-    }
-
-    return servicesList;
-  }
+  // Cette méthode a été supprimée car elle dépendait du modèle ServiceNumOld qui n'existe plus
 
   Future<List<ActualiteA>> _getItems() async {
     List<ActualiteA> servicesList;

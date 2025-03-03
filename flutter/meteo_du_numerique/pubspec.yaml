@@ -4,7 +4,7 @@ description: "La météo du numérique de l'Académie de Rennes."
 
 publish_to: 'none'
 
-version: 1.0.4+27
+version: 1.0.5+27
 
 environment:
   sdk: '>=3.2.2 <4.0.0'
@@ -94,6 +94,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/strapi5mock.json
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

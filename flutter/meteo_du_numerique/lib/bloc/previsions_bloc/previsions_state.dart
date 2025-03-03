@@ -1,4 +1,3 @@
-import '../../models/prevision_model.dart';
 import '../../models/service_num_model.dart';
 
 abstract class PrevisionsState {}
@@ -8,18 +7,28 @@ class PrevisionsInitial extends PrevisionsState {}
 class PrevisionsLoading extends PrevisionsState {}
 
 class PrevisionsLoaded extends PrevisionsState {
+  final List<PrevisionA> servicesList;
+  final Map<String, List<PrevisionA>> groupsByDateDebut;
+  final Map<String, List<PrevisionA>> groupsByMonth;
+  
+  // Fields needed by ExpansionList
+  final Map<String, List<PrevisionA>> dayPrevisions;
   final Map<String, List<PrevisionA>> previsionsGroupedByMonth;
-  final List<PrevisionA> dayPrevisions;
+  final bool isDayPanelOpen;
   final Map<String, bool> expandedGroups;
 
-  final bool isDayPanelOpen;
-
   PrevisionsLoaded({
-    required this.previsionsGroupedByMonth,
-    required this.dayPrevisions,
-    required this.isDayPanelOpen,
-    required this.expandedGroups,
-  });
+    required this.servicesList,
+    required this.groupsByDateDebut,
+    required this.groupsByMonth,
+    Map<String, List<PrevisionA>>? dayPrevisions,
+    Map<String, List<PrevisionA>>? previsionsGroupedByMonth,
+    this.isDayPanelOpen = false,
+    Map<String, bool>? expandedGroups,
+  }) : 
+    dayPrevisions = dayPrevisions ?? groupsByDateDebut,
+    previsionsGroupedByMonth = previsionsGroupedByMonth ?? groupsByMonth,
+    expandedGroups = expandedGroups ?? {};
 }
 
 class PrevisionsError extends PrevisionsState {
@@ -30,16 +39,12 @@ class PrevisionsError extends PrevisionsState {
 
 class PrevisionsSorted extends PrevisionsState {
   final String sortBy;
-  final List<Prevision> sortedPrevisions;
 
-  PrevisionsSorted(this.sortBy, this.sortedPrevisions);
+  PrevisionsSorted(this.sortBy);
 }
 
 class PrevisionsFiltered extends PrevisionsState {
-  final String filter;
-  final List<Prevision> filteredPrevisions;
-
-  PrevisionsFiltered(this.filter, this.filteredPrevisions);
+  PrevisionsFiltered();
 }
 
 class DayPrevisionsState extends PrevisionsState {

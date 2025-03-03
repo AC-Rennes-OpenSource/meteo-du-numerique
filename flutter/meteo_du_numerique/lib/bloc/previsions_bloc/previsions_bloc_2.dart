@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:meteo_du_numerique/models/service_num_model.dart';
+import 'package:meteo_du_numerique/services/api_service.dart';
+import 'package:meteo_du_numerique/utils.dart';
 
-import '../../models/service_num_model.dart';
-import '../../services/api_service.dart';
-import '../../utils.dart';
 import 'previsions_event.dart';
 import 'previsions_state.dart';
 
@@ -13,298 +16,238 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   final ApiService apiService;
   final bool useMockData;
 
-  bool isPanelOpen = true;
-
-  String? currentSortCriteria = 'qualiteDeServiceId';
-  String? currentSortOrder = 'desc';
-  List<String> currentFilterCriteria = [];
-  String currentPeriode = 'all';
+  String? currentSortCriteria = 'dateDebut';
+  String? currentSortOrder = 'asc';
+  List<String>? currentFilterCriteria = [];
   String? currentSearchQuery;
-
-  late DateTime? lastUpdate = DateTime.now();
+  Map<int, Map<String, bool>> groupState = {};
+  Map<int, Map<String, bool>> dayGroupState = {};
+  bool enablePrevisionsGroups = true;
+  String currentPeriode = 'all';
 
   List<String> currentFilters = [];
-  Map<String, bool> expandedGroups = {}; // Pour conserver l'état d'expansion des groupes
 
   PrevisionsBloc({required this.apiService, this.useMockData = true}) : super(PrevisionsInitial()) {
-    on<FetchPrevisionsEvent>(_onFetchPrevisions);
-    on<FilterPrevisionsEvent>(_onFilterPrevisions);
-    on<SortPrevisionsEvent>(_onSortPrevisions);
-    on<SearchPrevisionsEvent>(_onSearchPrevisions);
-    on<TogglePrevisionGroupEvent>(_onTogglePrevisionGroup);
-    on<ToggleDayPrevisionGroupEvent>(_onToggleDayPrevisionGroup);
-    on<OpenAllGroupsEvent>(_onOpenAllGroups);
-    on<AddCategoryEvent>(_onAddCategoryEvent);
-    on<RemoveCategoryEvent>(_onRemoveCategoryEvent);
+    _initGroupState();
+
+    on<FetchPrevisionsEvent>(_onFetchItems);
+    on<FilterPrevisionsEvent>(_onFilterItems);
+    on<SortPrevisionsEvent>(_onSortItems);
+    on<SearchPrevisionsEvent>(_onSearchItems);
+    on<TogglePrevisionGroupEvent>(_onToggleGroup);
+    on<ToggleDayPrevisionGroupEvent>(_onToggleDayGroup);
   }
 
-  Future<void> _onFetchPrevisions(FetchPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    print("_onFetchPrevisions__________________________");
+  Future<void> _initGroupState() async {
+    DateTime refDate = DateTime.now();
+    for (var i = 0; i < 12; i++) {
+      DateTime monthDate = DateTime(refDate.year, refDate.month + i, 1);
+      final month = monthDate.month;
+      final year = monthDate.year;
+      groupState[year] ??= {};
+      groupState[year]![month.toString()] = true;
+    }
+    for (var i = 0; i < 7; i++) {
+      DateTime dayDate = DateTime.now().add(Duration(days: i));
+      final day = dayDate.day;
+      final month = dayDate.month;
+      final year = dayDate.year;
+      dayGroupState[year] ??= {};
+      dayGroupState[year]!["$month-$day"] = true;
+    }
+  }
 
+  void _updateGroupState(String month, int year) {
+    groupState[year] ??= {};
+    groupState[year]![month] = !(groupState[year]![month] ?? false);
+  }
+
+  // Note: This method is kept for potential future use
+  // but may be safely removed if no longer needed
+  // void _updateDayGroupState(String dayKey, int year) {
+  //   dayGroupState[year] ??= {};
+  //   dayGroupState[year]![dayKey] = !(dayGroupState[year]![dayKey] ?? false);
+  // }
+
+  void _onToggleGroup(TogglePrevisionGroupEvent event, Emitter<PrevisionsState> emit) {
+    final month = event.month;
+    final year = int.parse(event.year);
+    _updateGroupState(month, year);
+    _fetchPrevisions(emit);
+  }
+
+  void _onToggleDayGroup(ToggleDayPrevisionGroupEvent event, Emitter<PrevisionsState> emit) {
+    enablePrevisionsGroups = !enablePrevisionsGroups;
+    _fetchPrevisions(emit);
+  }
+
+  Future<void> _onFetchItems(FetchPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
     if (event.showIndicator) {
       emit(PrevisionsLoading());
     }
+    await _fetchPrevisions(emit);
+  }
 
-    // TODO : délai pour test
-    // await Future.delayed(const Duration(milliseconds: 1500));
-
+  Future<void> _fetchPrevisions(Emitter<PrevisionsState> emit) async {
     try {
-      final previsions = await _getPrevisions();
-      final dayPrevisions = previsions.where((objet) {
-        return Utils.estMemeJour(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
-      }).toList();
-      final groupedPrevisions = _groupPrevisionsByMonthAndYear(previsions);
-
-      // Initialise tous les groupes comme étant ouverts
-      final expandedGroups = {for (var k in groupedPrevisions.keys) k: true};
-
+      final serviceList = await _getPrevItems();
       emit(PrevisionsLoaded(
-          isDayPanelOpen: isPanelOpen, previsionsGroupedByMonth: groupedPrevisions, expandedGroups: expandedGroups, dayPrevisions: dayPrevisions));
+          servicesList: serviceList,
+          groupsByDateDebut: _getGroupsByDateDebut(serviceList),
+          groupsByMonth: _getGroupsMonths(serviceList)));
     } catch (e) {
       emit(PrevisionsError(message: e.toString()));
     }
   }
 
-  Map<String, List<PrevisionA>> _groupPrevisionsByMonthAndYear(List<PrevisionA> previsions) {
-    Map<String, List<PrevisionA>> grouped = {};
-    for (var prevision in previsions) {
-      DateTime date = prevision.dateDebut;
-      String key = '${date.year}${date.month.toString().padLeft(2, '0')}'; // Format "YYYYMM"
-
-      if (!grouped.containsKey(key)) {
-        grouped[key] = [];
-      }
-      grouped[key]!.add(prevision);
-    }
-    return grouped;
-  }
-
-  void _onAddCategoryEvent(AddCategoryEvent event, Emitter<PrevisionsState> emit) {
-    final currentState = state;
-    if (currentState is PrevisionsLoaded) {
-      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)..updateAll((key, value) => true);
-
-      emit(PrevisionsLoaded(
-          previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
-          expandedGroups: expandedGroups,
-          isDayPanelOpen: currentState.isDayPanelOpen,
-          dayPrevisions: currentState.dayPrevisions));
-    }
-  }
-
-  void _onRemoveCategoryEvent(RemoveCategoryEvent event, Emitter<PrevisionsState> emit) {
-    final currentState = state;
-    if (currentState is PrevisionsLoaded) {
-      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)
-        ..updateAll((key, value) => true); // Mettre à jour tous les états d'expansion sur true
-
-      emit(PrevisionsLoaded(
-          previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
-          expandedGroups: expandedGroups,
-          isDayPanelOpen: currentState.isDayPanelOpen,
-          dayPrevisions: currentState.dayPrevisions));
-    }
-  }
-
-  void _onOpenAllGroups(OpenAllGroupsEvent event, Emitter<PrevisionsState> emit) {
-    final currentState = state;
-    if (currentState is PrevisionsLoaded) {
-      final Map<String, bool> expandedGroups = Map.from(currentState.expandedGroups)..updateAll((key, value) => true);
-      emit(PrevisionsLoaded(
-          previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
-          expandedGroups: expandedGroups,
-          isDayPanelOpen: currentState.isDayPanelOpen,
-          dayPrevisions: currentState.dayPrevisions));
-    }
-  }
-
-  void _onTogglePrevisionGroup(TogglePrevisionGroupEvent event, Emitter<PrevisionsState> emit) {
-    final currentState = state;
-    if (currentState is PrevisionsLoaded) {
-      String yearMonthKey = event.year + event.month.padLeft(2, '0');
-
-      // Clone l'état actuel des groupes expandus
-      final Map<String, bool> expandedGroups = Map<String, bool>.from(currentState.expandedGroups);
-
-      // Bascule l'état d'expansion pour le groupe spécifié
-      expandedGroups[yearMonthKey] = !(expandedGroups[yearMonthKey] ?? false);
-
-      emit(PrevisionsLoaded(
-          previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
-          expandedGroups: expandedGroups,
-          isDayPanelOpen: currentState.isDayPanelOpen,
-          dayPrevisions: currentState.dayPrevisions));
-    }
-  }
-
-  void _onToggleDayPrevisionGroup(ToggleDayPrevisionGroupEvent event, Emitter<PrevisionsState> emit) async {
-    final currentState = state;
-    isPanelOpen = !isPanelOpen; // Basculez l'état de isPanelOpen
-    if (currentState is PrevisionsLoaded) {
-      emit(PrevisionsLoaded(
-          previsionsGroupedByMonth: currentState.previsionsGroupedByMonth,
-          expandedGroups: currentState.expandedGroups,
-          isDayPanelOpen: isPanelOpen,
-          dayPrevisions: currentState.dayPrevisions));
-    }
-  }
-
-  void _onFilterPrevisions(FilterPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    if (event.categories == []) {
+  void _onFilterItems(FilterPrevisionsEvent event, Emitter<PrevisionsState> emit) {
+    if (event.categories.isEmpty && event.periode == 'all') {
       resetCriteria();
       currentFilters = [];
-      currentPeriode = 'all';
+      emit(PrevisionsFiltered());
     } else {
       currentFilterCriteria = event.categories;
-      currentFilters = currentFilterCriteria;
+      currentFilters = currentFilterCriteria!;
       currentPeriode = event.periode;
+      emit(PrevisionsFiltered());
     }
-    add(FetchPrevisionsEvent());
+    _fetchPrevisions(emit);
   }
 
-  void _onSortPrevisions(SortPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    // resetCriteria();
+  void _onSortItems(SortPrevisionsEvent event, Emitter<PrevisionsState> emit) {
     currentSortCriteria = event.sortBy;
     currentSortOrder = event.order;
-    add(FetchPrevisionsEvent());
+    _fetchPrevisions(emit);
   }
 
-  void _onSearchPrevisions(SearchPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    // resetCriteria();
+  void _onSearchItems(SearchPrevisionsEvent event, Emitter<PrevisionsState> emit) {
     currentSearchQuery = event.query;
-    add(FetchPrevisionsEvent());
+    _fetchPrevisions(emit);
+  }
+
+  Future<List<PrevisionA>> _getPrevItems() async {
+    List<PrevisionA> previsionsList;
+
+    previsionsList = await fetchPrevisionsV5();
+
+    // search filter
+    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
+      previsionsList = previsionsList
+          .where((prevision) => Utils.normalizeText(prevision.libelle).contains(Utils.normalizeText(currentSearchQuery!)))
+          .toList();
+    }
+
+    // category filter
+    if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
+      List<PrevisionA> itemupdate = [];
+      currentFilterCriteria?.forEach((element) {
+        itemupdate.addAll(previsionsList.where((prevision) => prevision.categorieLibelle.toLowerCase() == element).toList());
+      });
+
+      previsionsList = itemupdate;
+    }
+
+    // sorting
+    if (currentSortCriteria != null) {
+      if (currentSortCriteria == "dateDebut") {
+        if (currentSortOrder == 'asc') {
+          previsionsList.sort((a, b) => a.dateDebut.compareTo(b.dateDebut));
+        } else {
+          previsionsList.sort((b, a) => a.dateDebut.compareTo(b.dateDebut));
+        }
+      } else {
+        if (currentSortOrder == 'asc') {
+          previsionsList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toString().toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toString().toLowerCase())));
+        } else {
+          previsionsList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toString().toLowerCase())
+              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toString().toLowerCase())));
+        }
+      }
+    }
+    return previsionsList;
+  }
+
+  Map<String, List<PrevisionA>> _getGroupsByDateDebut(List<PrevisionA> prevList) {
+    Map<String, List<PrevisionA>> groupedLists = {};
+
+    // Filter by enabled days
+    if (enablePrevisionsGroups) {
+      for (PrevisionA prev in prevList) {
+        // Find which group this belongs to
+        final dateStr = Utils.formatDateFrHuman(prev.dateDebut);
+        if (groupedLists.containsKey(dateStr)) {
+          groupedLists[dateStr]!.add(prev);
+        } else {
+          groupedLists[dateStr] = [prev];
+        }
+      }
+    } else {
+      // Just one big list
+      groupedLists = {'Toutes les prévisions': prevList};
+    }
+
+    return groupedLists;
+  }
+
+  Map<String, List<PrevisionA>> _getGroupsMonths(List<PrevisionA> prevList) {
+    Map<String, List<PrevisionA>> groupedLists = {};
+
+    // Format for month + year (we'll sort this later)
+    for (PrevisionA prev in prevList) {
+      // Only include if the day group is enabled
+      DateTime date = prev.dateDebut;
+      final String monthYearText = DateFormat.yMMMM('fr').format(date);
+
+      if (groupState[date.year]?[date.month.toString()] == true) {
+        // Include this item
+        if (groupedLists.containsKey(monthYearText)) {
+          groupedLists[monthYearText]!.add(prev);
+        } else {
+          groupedLists[monthYearText] = [prev];
+        }
+      }
+    }
+
+    // Sort the groups by date (need to convert back to date objects)
+    var sortedKeys = groupedLists.keys.toList()
+      ..sort((a, b) {
+        // Extract month/year from string
+        DateTime dateA = DateFormat.yMMMM('fr').parse(a);
+        DateTime dateB = DateFormat.yMMMM('fr').parse(b);
+        return dateA.compareTo(dateB);
+      });
+
+    // Create a new ordered map
+    Map<String, List<PrevisionA>> sortedGroups = {};
+    for (var key in sortedKeys) {
+      sortedGroups[key] = groupedLists[key]!;
+    }
+
+    return sortedGroups;
   }
 
   void resetCriteria() {
     currentSortCriteria = null;
     currentFilterCriteria = [];
-    currentPeriode = 'all';
     currentSearchQuery = null;
-    add(FetchPrevisionsEvent());
-  }
-
-  Future<List<PrevisionA>> _getPrevisions() async {
-
-
-
-    List<PrevisionA> previsionList = await fetchPrevisionsV5();
-
-    // previsionList = await apiService.fetchPrevisions();
-    //
-    //
-    // // TODO mock/stub
-    // previsionList = await apiService.fetchMockPrevisions();
-    //
-
-    // filtre les prévisions passées todo est ce nécessaire?
-    previsionList.removeWhere((prev) => !prev.dateDebut.isAfter(DateTime.now()));
-
-    // // Apply search filter
-    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-      previsionList = previsionList
-      // todo
-          .where((prevision) => Utils.normalizeText(prevision.libelle.toLowerCase())
-              .contains(Utils.normalizeText(currentSearchQuery!.toLowerCase())))
-          .toList();
-    }
-    //
-    // // Apply category filter
-    if (currentFilterCriteria.isNotEmpty) {
-      // print(currentFilterCriteria);
-      List<PrevisionA> previsionsupdate = [];
-      for (var element in currentFilterCriteria) {
-        previsionsupdate.addAll(previsionList
-            .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
-            .toList());
-      }
-      previsionList = previsionsupdate;
-    }
-
-
-
-    // Apply perio filter
-    if (currentPeriode != 'all') {
-      DateTime now = DateTime.now();
-      DateTime today = DateTime(now.year, now.month, now.day - 1);
-
-      if (currentPeriode == 'semaine') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) &&
-              prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
-        }).toList();
-      } else if (currentPeriode == 'mois') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
-        }).toList();
-      } else if (currentPeriode == 'semestre') {
-        previsionList = previsionList.where((prevision) {
-          return prevision.dateDebut.isAfter(today) &&
-              prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
-        }).toList();
-      }
-    }
-
-    return previsionList;
-    // return await fetchMockPrevisions();
-    // return await fetchPrevisionsV5();
-  }
-
-  List<PrevisionA> generateMockPrevisions(int count) {
-    final List<String> categories = ['Météo', 'Sport', 'Culture', 'Éducation'];
-    final List<String> colors = ['rose', 'bleu', 'jaune', 'orange', 'vert'];
-
-    return List.generate(count, (index) {
-      final randomCategory = categories[index % categories.length];
-      final randomColor = colors[index % colors.length];
-
-      return PrevisionA(
-        id: (index + 1).toString(),
-        libelle: 'Prévision $index',
-        description: 'Description de la prévision $index',
-        dateDebut: DateTime.now().add(Duration(days: index * 2)),
-        dateFin: DateTime.now().add(Duration(days: index * 5)),
-        categorieLibelle: randomCategory,
-        couleur: randomColor,
-      );
-    });
+    currentPeriode = 'all';
   }
 
   Future<List<PrevisionA>> fetchMockPrevisions() async {
-    // Charger le fichier JSON depuis les assets
     try {
-      String data = await rootBundle.loadString('assets/strapi5mock.json');
-
-      final Map<String, dynamic> parsedJson = json.decode(data);
-      // Convertir les données en objets PrevisionA
-      return (parsedJson['previsions'] as List<dynamic>).map((previsionJson) {
+      String data = await rootBundle.loadString('assets/stub.json');
+      final List<dynamic> jsonData = json.decode(data);
+      return jsonData.map((previsionJson) {
         return PrevisionA.fromJson1(previsionJson);
       }).toList();
     } catch (e) {
-      print(e);
-
       throw Exception('Failed to load mock services: $e');
     }
   }
 
   Future<List<PrevisionA>> fetchPrevisionsV5() async {
-    print("fetchPrevisionsV5 ______");
     List<PrevisionA> previsionList = await apiService.fetchPrevisionsv5();
-return previsionList;
-    print("log : fetchMockPrevisions triggered");
-    // Charger le fichier JSON depuis les assets
-    try {
-      String data = await rootBundle.loadString('assets/strapi5mock.json');
-
-      final Map<String, dynamic> parsedJson = json.decode(data);
-print("date : $data");
-      // Convertir les données en objets PrevisionA
-      return (parsedJson['previsions'] as List<dynamic>).map((previsionJson) {
-        return PrevisionA.fromJson1(previsionJson);
-      }).toList();
-    } catch (e) {
-      print(e);
-
-      throw Exception('Failed to load mock services: $e');
-    }
+    return previsionList;
   }
 }

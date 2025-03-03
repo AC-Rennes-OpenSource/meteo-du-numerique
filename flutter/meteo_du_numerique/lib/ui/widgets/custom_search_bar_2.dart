@@ -94,7 +94,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _triggerSearchUpdate(String query, int currentTabIndex) {
-    print('trigger search update ${query}');
+    print('trigger search update $query');
     // int currentTabIndex = _tabController.index;
     searchQueries[currentTabIndex] = query;
 
@@ -163,7 +163,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       contentPadding: EdgeInsets.only(left: 16),
                     ),
                     onChanged: (value) {
-                      print('on changed ${value}');
+                      print('on changed $value');
                       _triggerSearchUpdate(value, _tabController.index);
                     },
                   ),

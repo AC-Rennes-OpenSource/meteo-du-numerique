@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,7 +19,6 @@ import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page2_cubit.dart';
-import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
 import 'config.dart';
 
@@ -30,6 +28,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
+// La méthode a été conservée mais commentée car elle pourrait être utile plus tard
+/*
 Future<void> _initLocalNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_notification');
 
@@ -49,12 +49,13 @@ Future<void> _initLocalNotifications() async {
     initializationSettings,
   );
 }
+*/
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env"); // Charge les variables d'environnement
   WidgetsFlutterBinding.ensureInitialized();
 
-  late bool showPrevisions;  // Changé de 'bool' à 'late bool' pour éviter l'erreur de non-initialisation
+  bool showPrevisions = false;  // Valeur par défaut
 
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
@@ -65,12 +66,12 @@ Future<void> main() async {
       FirebaseApp app = Firebase.app();
       print('--- Firebase Configuration ---');
       print('App Name: ${app.name}');
-      print('API Key: ${app.options.apiKey ?? "N/A"}');
-      print('Project ID: ${app.options.projectId ?? "N/A"}');
-      print('App ID: ${app.options.appId ?? "N/A"}');
-      print('Messaging Sender ID: ${app.options.messagingSenderId ?? "N/A"}');
-      print('Database URL: ${app.options.databaseURL ?? "N/A"}');
-      print('Storage Bucket: ${app.options.storageBucket ?? "N/A"}');
+      print('API Key: ${app.options.apiKey}');
+      print('Project ID: ${app.options.projectId}');
+      print('App ID: ${app.options.appId}');
+      print('Messaging Sender ID: ${app.options.messagingSenderId}');
+      print('Database URL: ${app.options.databaseURL}');
+      print('Storage Bucket: ${app.options.storageBucket}');
       print('--------------------------------');
     } catch (e) {
       print('Erreur lors de la récupération des détails Firebase: $e');
@@ -132,10 +133,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      _requestPermissions();
-      _configureFirebaseListeners();
-    }
+    _requestPermissions();
+    _configureFirebaseListeners();
     _loadRemoteConfig();
   }
 
@@ -250,12 +249,9 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,
             themeMode: themeState.themeMode,
-            home: kIsWeb
-                ? const HomePageWeb()
-                : (showPrevisions
-            //TODO
+            home: showPrevisions
                 ? HomePage()
-                : HomePage2()),
+                : HomePage2(),
           );
         },
       ),

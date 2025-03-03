@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../models/service_num_model.dart';
-import '../../models/service_num_model_old.dart';
 
 abstract class ServicesNumState extends ChangeNotifier {}
 
@@ -25,7 +24,7 @@ class ServicesNumError extends ServicesNumState {
 
 class ServicesNumSorted extends ServicesNumState {
   final String sortBy;
-  final List<ServiceNumOld> sortedItems;
+  final List<ActualiteA> sortedItems;
 
   ServicesNumSorted(this.sortBy, this.sortedItems);
 }
@@ -34,7 +33,7 @@ class ServicesNumFiltered extends ServicesNumState {
   final bool showBadge;
 
   // final String? filter;
-  // final List<ServiceNumOld>? filteredItems;
+  // final List<ActualiteA>? filteredItems;
 
   ServicesNumFiltered({this.showBadge = false}
       // this.filter, this.filteredItems

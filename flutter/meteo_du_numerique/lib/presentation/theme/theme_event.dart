@@ -1,0 +1,1 @@
+enum ThemeEvent { toggleForecastsVisibility, toggleLight, toggleDark, toggleSystem }
