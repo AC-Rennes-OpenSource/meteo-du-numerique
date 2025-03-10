@@ -8,11 +8,12 @@ Ce projet a été initié par l'académie de Rennes et vise à répondre aux bes
 * réduire le nombre de tickets auprès de la plateforme d'assistance.
 
 ## Principe général
-Le produit comprend deux développements (web javascript et mobile React Native) clients d'un Headless CMS léger Strapi.
+
+Le produit comprend une application Flutter (iOS, Androïd, Web) cliente d'un Headless CMS léger
+Strapi.
 
 ![Architecture simplifiée](images/meteo-github.png "Architecture simplifiée")
 
 Vous trouverez sur ce repository un répertoire pour chaque brique du produit :
 * strapi : les adaptations faites sur strapi
-* web : la partie javascript pour les accès web
-* mobile : le développement mobile androïd
+* flutter : la partie flutter pour les accès web, et applications mobiles iOS et Androïd
