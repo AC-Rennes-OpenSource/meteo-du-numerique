@@ -29,11 +29,21 @@ class ForecastsRepositoryImpl implements ForecastsRepository {
       
       if (useMock) {
         data = await _apiClient.getMockData('forecasts');
+        return data.map((json) => Forecast.fromJson(json)).toList();
       } else {
-        data = await _apiClient.get('service-numeriques');
+        // Use the dedicated forecasts endpoint
+        final response = await _apiClient.get('api/mdn-previsions?populate[mdn_service_numerique][populate]=*&populate[mdn_qualite_de_service_prevision]=*');
+        
+        // Check if response is in Strapi format with data array
+        if (response is Map<String, dynamic> && response.containsKey('data')) {
+          data = response['data'] as List<dynamic>;
+          
+          // Map data to Forecast objects
+          return data.map((json) => Forecast.fromStrapi5Json(json)).toList();
+        } else {
+          throw Exception('Unexpected API response format');
+        }
       }
-      
-      return data.map((json) => Forecast.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to load forecasts: $e');
     }

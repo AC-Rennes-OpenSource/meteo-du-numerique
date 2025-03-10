@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:diacritic/diacritic.dart';
 
 import '../../../data/models/digital_service.dart';
-import '../../../data/models/service_quality.dart';
 import '../../../data/repositories/digital_services_repository.dart';
 import '../../../data/sources/api_client.dart';
 import 'digital_services_event.dart';
@@ -12,6 +11,7 @@ class DigitalServicesBloc extends Bloc<DigitalServicesEvent, DigitalServicesStat
   String? currentSortCriteria = 'serviceQualityId';
   String? currentSortOrder = 'desc';
   List<String>? currentFilterCriteria = [];
+  List<String>? currentCategoryFilters = [];
   String? currentSearchQuery;
   DateTime lastUpdate = DateTime.now();
 
@@ -48,6 +48,7 @@ class DigitalServicesBloc extends Bloc<DigitalServicesEvent, DigitalServicesStat
 
   void _onFilterItems(FilterDigitalServicesEvent event, Emitter<DigitalServicesState> emit) {
     currentFilterCriteria = event.categories;
+    currentCategoryFilters = event.categoryFilters;
     currentFilters = currentFilterCriteria?.map((e) => e.toString()).toList() ?? [];
     add(FetchDigitalServicesEvent());
   }
@@ -66,6 +67,7 @@ class DigitalServicesBloc extends Bloc<DigitalServicesEvent, DigitalServicesStat
   void resetCriteria() {
     currentSortCriteria = null;
     currentFilterCriteria = [];
+    currentCategoryFilters = [];
     currentSearchQuery = null;
   }
 
@@ -86,7 +88,7 @@ class DigitalServicesBloc extends Bloc<DigitalServicesEvent, DigitalServicesStat
           .toList();
     }
 
-    // Apply category filter
+    // Apply service quality filter
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<DigitalService> filteredServices = [];
       for (var quality in currentFilterCriteria!) {
@@ -97,6 +99,20 @@ class DigitalServicesBloc extends Bloc<DigitalServicesEvent, DigitalServicesStat
         );
       }
       services = filteredServices;
+    }
+    
+    // Apply category filter
+    if (currentCategoryFilters != null && currentCategoryFilters!.isNotEmpty) {
+
+      List<DigitalService> categoryFilteredServices = [];
+      for (var categoryId in currentCategoryFilters!) {
+        categoryFilteredServices.addAll(
+          services.where((service) => 
+            service.category?.id.toString() == categoryId
+          ).toList()
+        );
+      }
+      services = categoryFilteredServices;
     }
 
     // Apply sorting

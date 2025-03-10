@@ -3,11 +3,13 @@ import 'package:diacritic/diacritic.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/models/forecast.dart';
-import '../../../data/models/digital_service.dart';
+import '../../../data/repositories/forecasts_repository.dart';
 import 'forecasts_event.dart';
 import 'forecasts_state.dart';
 
 class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
+  final ForecastsRepository forecastsRepository;
+
   String? currentSortCriteria = 'startDate';
   String? currentSortOrder = 'asc';
   List<String>? currentFilterCriteria = [];
@@ -19,50 +21,7 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
 
   List<String> currentFilters = [];
 
-  // Mock data for demonstration purposes
-  final List<Forecast> _mockForecasts = [
-    Forecast(
-      id: 1,
-      title: "Email Service Maintenance",
-      content: "Scheduled maintenance for email service",
-      date: "2025-03-01T10:00:00.000Z",
-      startDate: "2025-03-01T10:00:00.000Z",
-      endDate: "2025-03-01T12:00:00.000Z",
-      forecastTypeId: 1, // Maintenance
-      service: DigitalService(
-        id: 1, 
-        name: "Email Service",
-      ),
-    ),
-    Forecast(
-      id: 2,
-      title: "Cloud Storage Update",
-      content: "New features coming to cloud storage",
-      date: "2025-03-05T14:00:00.000Z",
-      startDate: "2025-03-05T14:00:00.000Z",
-      endDate: "2025-03-05T18:00:00.000Z",
-      forecastTypeId: 2, // Information
-      service: DigitalService(
-        id: 2, 
-        name: "Cloud Storage",
-      ),
-    ),
-    Forecast(
-      id: 3,
-      title: "Authentication Service Incident",
-      content: "Investigating login issues",
-      date: "2025-03-10T09:00:00.000Z",
-      startDate: "2025-03-10T09:00:00.000Z",
-      endDate: "2025-03-10T16:00:00.000Z",
-      forecastTypeId: 3, // Incident
-      service: DigitalService(
-        id: 3, 
-        name: "Authentication Service",
-      ),
-    ),
-  ];
-
-  ForecastsBloc() : super(ForecastsInitial()) {
+  ForecastsBloc({required this.forecastsRepository}) : super(ForecastsInitial()) {
     _initGroupState();
 
     on<FetchForecastsEvent>(_onFetchForecasts);
@@ -104,10 +63,10 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
 
     try {
       final forecasts = await _getForecasts();
-      
+
       // Group forecasts by start date
       final Map<String, List<Forecast>> groupsByStartDate = _getGroupsByStartDate(forecasts);
-      
+
       // Group forecasts by month
       final Map<String, List<Forecast>> groupsByMonth = _getGroupsByMonth(forecasts);
 
@@ -143,7 +102,7 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
   void _onToggleDayGroup(ToggleDayForecastGroupEvent event, Emitter<ForecastsState> emit) {
     if (state is ForecastsLoaded) {
       final currentState = state as ForecastsLoaded;
-      
+
       emit(ForecastsLoaded(
         forecasts: currentState.forecasts,
         groupsByStartDate: currentState.groupsByStartDate,
@@ -158,12 +117,12 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
     if (state is ForecastsLoaded) {
       final currentState = state as ForecastsLoaded;
       final newExpandedGroups = <String, bool>{};
-      
+
       // Set all groups to expanded
       for (final monthYear in currentState.groupsByMonth.keys) {
         newExpandedGroups[monthYear] = true;
       }
-      
+
       emit(ForecastsLoaded(
         forecasts: currentState.forecasts,
         groupsByStartDate: currentState.groupsByStartDate,
@@ -173,23 +132,19 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
       ));
     }
   }
-  
 
   Future<List<Forecast>> _getForecasts() async {
-    // In a real implementation, this would call a repository
-    List<Forecast> forecasts = [..._mockForecasts];
-    
+    // Get forecasts from repository
+    List<Forecast> forecasts = await forecastsRepository.getForecasts(useMock: false);
+
     // Apply search filter
     if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
       final normalizedQuery = removeDiacritics(currentSearchQuery!.toLowerCase());
       forecasts = forecasts
-          .where((forecast) => 
-              removeDiacritics(forecast.title?.toLowerCase() ?? '')
-                  .contains(normalizedQuery) ||
-              removeDiacritics(forecast.content?.toLowerCase() ?? '')
-                  .contains(normalizedQuery) ||
-              removeDiacritics(forecast.service?.name?.toLowerCase() ?? '')
-                  .contains(normalizedQuery))
+          .where((forecast) =>
+              removeDiacritics(forecast.title?.toLowerCase() ?? '').contains(normalizedQuery) ||
+              removeDiacritics(forecast.content?.toLowerCase() ?? '').contains(normalizedQuery) ||
+              removeDiacritics(forecast.service?.name?.toLowerCase() ?? '').contains(normalizedQuery))
           .toList();
     }
 
@@ -197,11 +152,7 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
     if (currentFilterCriteria != null && currentFilterCriteria!.isNotEmpty) {
       List<Forecast> filteredForecasts = [];
       for (var typeId in currentFilterCriteria!) {
-        filteredForecasts.addAll(
-          forecasts.where((forecast) => 
-            forecast.forecastTypeId.toString() == typeId
-          ).toList()
-        );
+        filteredForecasts.addAll(forecasts.where((forecast) => forecast.service?.category?.id.toString() == typeId).toList());
       }
       forecasts = filteredForecasts;
     }
@@ -209,26 +160,23 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
     // Apply period filter
     if (currentPeriode != 'all') {
       final now = DateTime.now();
-      
+
       if (currentPeriode == 'today') {
         // Only today's forecasts
         forecasts = forecasts.where((forecast) {
           if (forecast.startDate == null) return false;
           final date = DateTime.parse(forecast.startDate!);
-          return date.year == now.year && 
-                 date.month == now.month && 
-                 date.day == now.day;
+          return date.year == now.year && date.month == now.month && date.day == now.day;
         }).toList();
       } else if (currentPeriode == 'week') {
         // This week's forecasts
         final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
         final endOfWeek = startOfWeek.add(const Duration(days: 6));
-        
+
         forecasts = forecasts.where((forecast) {
           if (forecast.startDate == null) return false;
           final date = DateTime.parse(forecast.startDate!);
-          return date.isAfter(startOfWeek.subtract(const Duration(days: 1))) && 
-                 date.isBefore(endOfWeek.add(const Duration(days: 1)));
+          return date.isAfter(startOfWeek.subtract(const Duration(days: 1))) && date.isBefore(endOfWeek.add(const Duration(days: 1)));
         }).toList();
       } else if (currentPeriode == 'month') {
         // This month's forecasts
@@ -250,11 +198,11 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
     if (enableForecastsGroups) {
       for (Forecast forecast in forecasts) {
         if (forecast.startDate == null) continue;
-        
+
         // Find which group this belongs to
         final date = DateTime.parse(forecast.startDate!);
         final dateStr = DateFormat('yyyy-MM-dd').format(date);
-        
+
         if (groupedLists.containsKey(dateStr)) {
           groupedLists[dateStr]!.add(forecast);
         } else {
@@ -275,7 +223,7 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
     // Format for month + year (we'll sort this later)
     for (Forecast forecast in forecasts) {
       if (forecast.startDate == null) continue;
-      
+
       // Only include if the day group is enabled
       final date = DateTime.parse(forecast.startDate!);
       final String monthYearText = DateFormat('MMM yyyy').format(date);

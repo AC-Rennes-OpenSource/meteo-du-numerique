@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter/foundation.dart';
 import 'package:markdown/markdown.dart' as md;
 
 import '../../../../data/models/digital_service.dart';
@@ -9,7 +8,7 @@ import '../../../../data/models/digital_service.dart';
 class ServiceCard extends StatelessWidget {
   final DigitalService service;
 
-  const ServiceCard({Key? key, required this.service}) : super(key: key);
+  const ServiceCard({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +16,9 @@ class ServiceCard extends StatelessWidget {
     final serviceColor = _getServiceColor(isDarkMode);
     
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
       decoration: BoxDecoration(
-        borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(10.0),
         color: Theme.of(context).colorScheme.surface,
         border: Border.all(
           color: isDarkMode 
@@ -28,7 +27,7 @@ class ServiceCard extends StatelessWidget {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
@@ -43,7 +42,7 @@ class ServiceCard extends StatelessWidget {
                       service.name ?? 'Unnamed Service',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: kIsWeb ? 26.0 : 22,
+                        fontSize: 22,
                         color: _getServiceTextColor(isDarkMode),
                       ),
                     ),
@@ -194,7 +193,7 @@ class ServiceCard extends StatelessWidget {
     return Icon(
       icon,
       color: color,
-      size: kIsWeb ? 30 : 20,
+      size: 20,
     );
   }
   

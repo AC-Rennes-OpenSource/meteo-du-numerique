@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Météo&#x2007;du&#x2007;numérique</string>
+	<string>Météo du numérique</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,7 +35,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
-		<string>remote-notification</string> <!-- Permet de gérer les notifications en arrière-plan -->
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -43,7 +43,7 @@
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string> <!-- Orientation par défaut pour iPhone -->
+		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -57,9 +57,9 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 		<key>NSAllowsLocalNetworking</key>
-        <true/>
+		<true/>
 	</dict>
-	<key>NSPushNotificationsUsageDescription</key> <!-- Ajout pour demander l'accès aux notifications -->
-	<string>Nous utilisons les notifications pour vous tenir informé d'éventuels dysfonctionnements ou perturbations sur un service numérique.</string>
+	<key>NSPushNotificationsUsageDescription</key>
+	<string>Nous utilisons les notifications pour vous tenir informé d&apos;éventuels dysfonctionnements ou perturbations sur un service numérique.</string>
 </dict>
 </plist>

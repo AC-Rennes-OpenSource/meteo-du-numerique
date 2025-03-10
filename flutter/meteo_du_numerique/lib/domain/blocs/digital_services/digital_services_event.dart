@@ -27,11 +27,12 @@ class SearchDigitalServicesEvent extends DigitalServicesEvent {
 
 class FilterDigitalServicesEvent extends DigitalServicesEvent {
   final List<String>? categories;
+  final List<String>? categoryFilters;
 
-  const FilterDigitalServicesEvent(this.categories);
+  const FilterDigitalServicesEvent(this.categories, {this.categoryFilters = const []});
 
   @override
-  List<Object?> get props => [categories];
+  List<Object?> get props => [categories, categoryFilters];
 }
 
 class SortDigitalServicesEvent extends DigitalServicesEvent {

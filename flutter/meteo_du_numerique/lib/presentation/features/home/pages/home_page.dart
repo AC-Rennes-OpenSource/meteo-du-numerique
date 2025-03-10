@@ -137,6 +137,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
 
   Widget _buildTabContent(BuildContext context, {required bool isForecasts}) {
     return NestedScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [_buildSliverAppBar(context, isForecasts)];
       },
@@ -169,10 +170,12 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
       toolbarHeight: 50,
       scrolledUnderElevation: 0,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black.withOpacity(0.9) : Colors.white.withOpacity(0.9),
       pinned: false,
       floating: true,
-      snap: true,
+      snap: true, 
+      primary: true,
+      expandedHeight: 0,
       title: Column(
         children: [
           Row(
@@ -212,7 +215,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                 foregroundColor: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            if ((servicesBloc.currentFilterCriteria?.isNotEmpty ?? false) && !isForecasts)
+            if (((servicesBloc.currentFilterCriteria?.isNotEmpty ?? false) || 
+                (servicesBloc.currentCategoryFilters?.isNotEmpty ?? false)) && !isForecasts)
               Positioned(
                 right: 0,
                 top: 5,
@@ -413,6 +417,7 @@ void _showFilterBottomSheet(BuildContext context, DigitalServicesBloc servicesBl
       return tab == 0
           ? FilterBottomSheet(
               selectedFilters: servicesBloc.currentFilters,
+              selectedCategories: servicesBloc.currentCategoryFilters ?? [],
               tab: tab,
             )
           : FilterForecastsBottomSheet(

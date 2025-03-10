@@ -59,7 +59,7 @@ class CustomCheckboxTile extends StatelessWidget {
     return InkWell(
       onTap: () => onChanged(!value),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 25.0),
+        padding: const EdgeInsets.only(top: 35.0, left: 25.0, right: 25.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[

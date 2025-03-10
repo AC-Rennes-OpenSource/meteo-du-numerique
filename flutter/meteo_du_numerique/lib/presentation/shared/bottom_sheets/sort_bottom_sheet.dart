@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../domain/blocs/digital_services/digital_services_bloc.dart';
 import '../../../domain/blocs/digital_services/digital_services_event.dart';
@@ -10,11 +9,11 @@ class SortBottomSheet extends StatefulWidget {
   final String? selectedOrder;
 
   const SortBottomSheet({
-    Key? key,
+    super.key,
     required this.servicesBloc,
     required this.selectedSorting,
     required this.selectedOrder,
-  }) : super(key: key);
+  });
 
   @override
   State<SortBottomSheet> createState() => _SortBottomSheetState();
@@ -41,7 +40,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           RadioListTile<String>(
             title: const Text('État du service décroissant'),
             value: 'serviceQualityId_desc',
-            groupValue: '${_selectedSorting}_${_selectedOrder}',
+            groupValue: '${_selectedSorting}_$_selectedOrder',
             onChanged: (String? value) {
               _onSortChanged('serviceQualityId', 'desc');
             },
@@ -49,7 +48,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           RadioListTile<String>(
             title: const Text('État du service croissant'),
             value: 'serviceQualityId_asc',
-            groupValue: '${_selectedSorting}_${_selectedOrder}',
+            groupValue: '${_selectedSorting}_$_selectedOrder',
             onChanged: (String? value) {
               _onSortChanged('serviceQualityId', 'asc');
             },
@@ -61,7 +60,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           RadioListTile<String>(
             title: const Text('Nom du service (A-Z)'),
             value: 'name_asc',
-            groupValue: '${_selectedSorting}_${_selectedOrder}',
+            groupValue: '${_selectedSorting}_$_selectedOrder',
             onChanged: (String? value) {
               _onSortChanged('name', 'asc');
             },
@@ -69,7 +68,7 @@ class _SortBottomSheetState extends State<SortBottomSheet> {
           RadioListTile<String>(
             title: const Text('Nom du service (Z-A)'),
             value: 'name_desc',
-            groupValue: '${_selectedSorting}_${_selectedOrder}',
+            groupValue: '${_selectedSorting}_$_selectedOrder',
             onChanged: (String? value) {
               _onSortChanged('name', 'desc');
             },

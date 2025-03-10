@@ -11,11 +11,11 @@ class FilterForecastsBottomSheet extends StatefulWidget {
   final int tab;
 
   const FilterForecastsBottomSheet({
-    Key? key,
+    super.key,
     required this.selectedCategories,
     this.selectedFilter,
     required this.tab,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterForecastsBottomSheet> createState() => _FilterForecastsBottomSheetState();
@@ -57,11 +57,11 @@ class _FilterForecastsBottomSheetState extends State<FilterForecastsBottomSheet>
           final categories = [
             {'id': '1', 'name': 'Collaboration', 'icon': Icons.people, 'color': const Color(0xff63BAAB)},
             {'id': '2', 'name': 'RH', 'icon': Icons.person, 'color': const Color(0xFFC7A213)},
-            {'id': '3', 'name': 'Finance', 'icon': Icons.attach_money, 'color': const Color(0xffE197A4)},
-            {'id': '4', 'name': 'Pédagogie', 'icon': Icons.school, 'color': const Color(0xffC25452)},
-            {'id': '5', 'name': 'Examens et concours', 'icon': Icons.assignment, 'color': const Color(0xff28619A)},
+            {'id': '22', 'name': 'Finance', 'icon': Icons.attach_money, 'color': const Color(0xffE197A4)},
+            {'id': '34', 'name': 'Pédagogie', 'icon': Icons.school, 'color': const Color(0xffC25452)},
+            {'id': '35', 'name': 'Examens et concours', 'icon': Icons.assignment, 'color': const Color(0xff28619A)},
             {'id': '6', 'name': 'Inclusion', 'icon': Icons.accessibility, 'color': const Color(0xFFD17010)},
-            {'id': '7', 'name': 'Scolarité', 'icon': Icons.menu_book, 'color': const Color(0xff00B872)},
+            {'id': '27', 'name': 'Scolarité', 'icon': Icons.menu_book, 'color': const Color(0xff00B872)},
             {'id': '8', 'name': 'Communication', 'icon': Icons.message, 'color': const Color(0xFF795548)},
             {'id': '9', 'name': 'Santé et social', 'icon': Icons.favorite, 'color': const Color(0xFF2196f3)},
           ];
@@ -73,18 +73,20 @@ class _FilterForecastsBottomSheetState extends State<FilterForecastsBottomSheet>
           ];
           
           return Container(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
+
                 mainAxisSize: MainAxisSize.min,
                 children: [
                 ListView.builder(
+                  padding: EdgeInsets.zero, // Supprime le padding par défaut
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: periods.length,
                   itemBuilder: (context, index) {
                     final period = periods[index];
-                    
+
                     return RadioListTile<String>(
                       title: Text(period['name'] as String),
                       value: period['id'] as String,
@@ -97,7 +99,12 @@ class _FilterForecastsBottomSheetState extends State<FilterForecastsBottomSheet>
                     );
                   },
                 ),
-                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.only(left: 15, right: 25, bottom: 20.0),
+                  child: Divider(),
+                ),
+
+
                 Wrap(
                   spacing: 8.0,
                   runSpacing: 4.0,
@@ -140,7 +147,7 @@ class _FilterForecastsBottomSheetState extends State<FilterForecastsBottomSheet>
                     .toList(),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 15, right: 25, top: 15.0, bottom: 25.0),
+                  padding: EdgeInsets.only(left: 15, right: 25, bottom: 15.0, top: 15.0),
                   child: Divider(),
                 ),
                 Padding(
@@ -167,6 +174,7 @@ class _FilterForecastsBottomSheetState extends State<FilterForecastsBottomSheet>
                     ),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.onSurface,
                         side: const BorderSide(width: 1.0, color: Colors.grey),
                       ),
                       onPressed: () {

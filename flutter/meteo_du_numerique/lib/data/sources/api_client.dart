@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
@@ -131,44 +130,118 @@ class ApiClient {
         // Fall back to default mock data
       }
     } else if (type == 'forecasts') {
+      try {
+        // Try to load the strapi5-previsions.json file from assets bundle 
+        // or check if it exists in the docker folder
+        final String forecastsJson = await rootBundle.loadString('assets/strapi5mock.json');
+        final Map<String, dynamic> forecastsData = json.decode(forecastsJson);
+        
+        // Return the "data" array from the Strapi5 response
+        if (forecastsData.containsKey('data') && forecastsData['data'] is List) {
+          return forecastsData['data'] as List<dynamic>;
+        }
+      } catch (e) {
+        debugPrint('Error loading Strapi5 forecasts: $e');
+        
+        // Try to load forecast data from services as fallback
+        try {
+          final String servicesJson = await rootBundle.loadString('assets/strapi5mock.json');
+          final Map<String, dynamic> servicesData = json.decode(servicesJson);
+          
+          // Extract services with forecasts from the Strapi response
+          List<dynamic> forecasts = [];
+          if (servicesData.containsKey('data') && servicesData['data'] is List) {
+            final services = servicesData['data'] as List<dynamic>;
+            for (var service in services) {
+              if (service.containsKey('mdn_prevision') && service['mdn_prevision'] != null) {
+                // Create a forecast object with the structure of the dedicated endpoint
+                final forecast = {
+                  "id": service['mdn_prevision']['id'],
+                  "date_debut": service['mdn_prevision']['date_debut'],
+                  "date_fin": service['mdn_prevision']['date_fin'],
+                  "description": service['mdn_prevision']['description'],
+                  "mdn_service_numerique": {
+                    "id": service['id'],
+                    "libelle": service['libelle'],
+                    "mdn_categorie": service['mdn_categorie']
+                  },
+                  "mdn_qualite_de_service_prevision": {
+                    "id": 2,
+                    "libelle": "perturbations",
+                    "key": 2
+                  }
+                };
+                forecasts.add(forecast);
+              }
+            }
+            return forecasts;
+          }
+        } catch (e2) {
+          debugPrint('Error loading service-based forecasts: $e2');
+          // Fall back to default mock data
+        }
+      }
+      
+      // Default mock data if all attempts fail
       return [
         {
           "id": 1,
-          "title": "Email Service Maintenance",
-          "content": "Scheduled maintenance for email service",
-          "date": "2025-03-01T10:00:00.000Z",
-          "startDate": "2025-03-01T10:00:00.000Z",
-          "endDate": "2025-03-01T12:00:00.000Z",
-          "forecastTypeId": 1,
-          "service": {
+          "description": "Scheduled maintenance for email service",
+          "date_debut": "2025-03-01T10:00:00.000Z",
+          "date_fin": "2025-03-01T12:00:00.000Z",
+          "mdn_qualite_de_service_prevision": {
             "id": 1,
-            "name": "Email Service"
+            "libelle": "maintenance",
+            "key": 1
+          },
+          "mdn_service_numerique": {
+            "id": 1,
+            "libelle": "Email Service",
+            "mdn_categorie": {
+              "id": 1,
+              "libelle": "Communication",
+              "couleur": "0xFF795548"
+            }
           }
         },
         {
           "id": 2,
-          "title": "Cloud Storage Update",
-          "content": "New features coming to cloud storage",
-          "date": "2025-03-05T14:00:00.000Z",
-          "startDate": "2025-03-05T14:00:00.000Z",
-          "endDate": "2025-03-05T18:00:00.000Z",
-          "forecastTypeId": 2,
-          "service": {
+          "description": "New features coming to cloud storage",
+          "date_debut": "2025-03-05T14:00:00.000Z",
+          "date_fin": "2025-03-05T18:00:00.000Z",
+          "mdn_qualite_de_service_prevision": {
             "id": 2,
-            "name": "Cloud Storage"
+            "libelle": "perturbations",
+            "key": 2
+          },
+          "mdn_service_numerique": {
+            "id": 2,
+            "libelle": "Cloud Storage",
+            "mdn_categorie": {
+              "id": 2,
+              "libelle": "Collaboration",
+              "couleur": "0xff63BAAB"
+            }
           }
         },
         {
           "id": 3,
-          "title": "Authentication System Incident",
-          "content": "Investigating login issues",
-          "date": "2025-03-10T09:00:00.000Z",
-          "startDate": "2025-03-10T09:00:00.000Z",
-          "endDate": "2025-03-10T16:00:00.000Z",
-          "forecastTypeId": 3,
-          "service": {
+          "description": "Investigating login issues",
+          "date_debut": "2025-03-10T09:00:00.000Z",
+          "date_fin": "2025-03-10T16:00:00.000Z",
+          "mdn_qualite_de_service_prevision": {
             "id": 3,
-            "name": "Authentication System"
+            "libelle": "incident",
+            "key": 3
+          },
+          "mdn_service_numerique": {
+            "id": 3,
+            "libelle": "Authentication System",
+            "mdn_categorie": {
+              "id": 3,
+              "libelle": "Scolarité",
+              "couleur": "0xff00B872"
+            }
           }
         }
       ];

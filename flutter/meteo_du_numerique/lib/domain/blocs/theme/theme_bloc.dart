@@ -4,7 +4,6 @@ import 'package:meteo_du_numerique/presentation/theme/theme_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/theme_preferences.dart';
-import 'theme_event.dart';
 import 'theme_state.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {

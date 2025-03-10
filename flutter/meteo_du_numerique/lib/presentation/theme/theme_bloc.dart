@@ -4,7 +4,7 @@ import 'package:meteo_du_numerique/presentation/theme/theme_event.dart';
 import 'package:meteo_du_numerique/presentation/theme/theme_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../config/theme_preferences.dart';
+import '../../core/config/theme_preferences.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final String themePrefKey = 'selectedTheme';
