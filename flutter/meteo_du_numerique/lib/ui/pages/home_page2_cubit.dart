@@ -102,7 +102,7 @@ class HomePage2State extends State<HomePage2> with SingleTickerProviderStateMixi
         onTitleTap: _handleTap,
         tabBar:
             // remoteConfig.getBool("show_previsions")
-            _showFeature
+            !_showFeature
                 ? TabBar(
                     controller: _tabController,
                     overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
