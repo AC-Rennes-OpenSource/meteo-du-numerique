@@ -147,6 +147,15 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# Firebase configuration files
+**/ios/GoogleService-Info.plist
+**/android/app/google-services.json
+**/lib/firebase_options.dart
+
+# Environment files
+.env
+**/.env.*
+
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
 !**/ios/**/default.mode2v3
