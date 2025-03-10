@@ -1,7 +1,0 @@
-version: '2'
-
-services:
-  meteo-du-numerique-json-server:
-    extends:
-      file: json-server.yml
-      service: meteo-du-numerique-json-server
