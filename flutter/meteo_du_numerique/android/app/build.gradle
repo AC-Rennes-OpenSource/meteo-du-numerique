@@ -8,26 +8,8 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-flavorDimensions "app" productFlavors {
-    prod {
-        dimension "app"
-        applicationId "fr.acrennes.meteo_du_numerique.prod"
-    }
-    qualifProd {
-        dimension "app"
-        applicationId "fr.acrennes.meteo_du_numerique.qualifProd"
-    }
-    test {
-        dimension "app"
-        applicationId "fr.acrennes.meteo_du_numerique.test"
-    }
-    dev {
-        dimension "app"
-        applicationId "fr.acrennes.meteo_du_numerique.dev"
-    }
-}
-
 android {
+
     namespace = "fr.acrennes.meteo_du_numerique"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
@@ -65,8 +47,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
 }
 
 flutter {
     source = "../.."
 }
+
+apply plugin: 'com.google.gms.google-services'
