@@ -19,7 +19,7 @@ class ForecastCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(color: _getCategorySecondaryColor(isDarkMode)),
+        border: Border.all(color: isDarkMode ? forecastTypeColor : forecastTypeColor.withOpacity(0.7)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ class ForecastCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 22,
-                        color:  _getCategorySecondaryColor(isDarkMode),
+                        color: isDarkMode ? forecastTypeColor : forecastTypeColor.withOpacity(0.7),
                       ),
                     ),
                   ),
@@ -163,60 +163,44 @@ class ForecastCard extends StatelessWidget {
 
     switch (type) {
       case 1:
-        return const Color(0xff3db482);
+        return Colors.orange;
       case 2:
-        return const Color(0xffdb8b00);
+        return Colors.blue;
       case 3:
-        return const Color(0xffdb2c66);
+        return Colors.red;
       default:
         return Colors.grey;
     }
   }
-
-  Color _getCategorySecondaryColor(bool isDarkMode) {
-    final type = forecast.forecastTypeId;
-
-    switch (type) {
-      case 1:
-        return isDarkMode ? const Color(0xff3db482) : const Color(0xff247566);
-      case 2:
-        return isDarkMode ? const Color(0xffdb8b00) : const Color(0xff945400);
-      case 3:
-        return isDarkMode ? const Color(0xffdb2c66) : const Color(0xff94114e);
-      default:
-        return Colors.grey;
-    }
-  }
-
 
   String _getForecastTypeLabel() {
     // Use the forecast type name if available
-    // if (forecast.forecastTypeName != null && forecast.forecastTypeName!.isNotEmpty) {
-    //   // Capitalize the first letter
-    //   final typeName = forecast.forecastTypeName!;
-    //   if (typeName.isNotEmpty) {
-    //     return typeName[0].toUpperCase() + typeName.substring(1);
-    //   }
-    //   return typeName;
-    // }
+    if (forecast.forecastTypeName != null && forecast.forecastTypeName!.isNotEmpty) {
+      // Capitalize the first letter
+      final typeName = forecast.forecastTypeName!;
+      if (typeName.isNotEmpty) {
+        return typeName[0].toUpperCase() + typeName.substring(1);
+      }
+      return typeName;
+    }
 
     // Fallback to ID-based mapping if name not available
     final type = forecast.forecastTypeId;
     switch (type) {
       case 1:
-        return 'Maintenance sans perturbations';
+        return 'Informations';
       case 2:
-        return 'Maintenance avec perturbations';
+        return 'Maintenance';
       case 3:
-        return 'Maintenance bloquante';
+        return 'Ralentissements';
       default:
-        return '';
+        return 'Prévision';
     }
   }
 
   Widget _getForecastTypeIcon(bool isDarkMode) {
     final type = forecast.forecastTypeId;
-    final color = _getCategorySecondaryColor(isDarkMode);
+    final color = _getForecastTypeColor();
 
     IconData icon;
 
@@ -228,7 +212,7 @@ class ForecastCard extends StatelessWidget {
         icon = Icons.build;
         break;
       case 3:
-        icon = Icons.warning_amber;
+        icon = Icons.watch_later_outlined;
         break;
       default:
         icon = Icons.help;
@@ -236,7 +220,7 @@ class ForecastCard extends StatelessWidget {
 
     return Icon(
       icon,
-      color: color,
+      color: isDarkMode ? color : color.withOpacity(0.7),
       size: 20,
     );
   }

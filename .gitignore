@@ -1,0 +1,9 @@
+/gitignore-folder/
+/web/bootstrap/
+/.idea/
+
+/flutter/meteo_du_numerique/android/app/upload_certificate.pem
+/flutter/meteo_du_numerique/ios/Runner/GoogleService-Info.plist
+/flutter/meteo_du_numerique/ios/GoogleService-Info.plist
+/flutter/meteo_du_numerique/lib/firebase_options.dart
+/flutter/meteo_du_numerique/android/app/google-services.json

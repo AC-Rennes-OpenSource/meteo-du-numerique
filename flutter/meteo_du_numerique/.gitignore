@@ -147,15 +147,6 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
-# Firebase configuration files
-**/ios/GoogleService-Info.plist
-**/android/app/google-services.json
-**/lib/firebase_options.dart
-
-# Environment files
-.env
-**/.env.*
-
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
 !**/ios/**/default.mode2v3
@@ -165,58 +156,7 @@ coverage/
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
 
+/conf-utils/
+/build_output/
+/docker/
 
-
-
-# Fichiers système
-.DS_Store
-
-# Fichiers liés à l'IDE
-.idea/
-.idea/caches/
-.idea/libraries/
-.idea/meteo-du-numerique-acrennes.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-
-# Configs locales et exports
-conf-utils/
-exportlocalv4.json
-exportqtv4.json
-
-# Android
-android/app/README.md
-android/app/src/main/res/drawable-hdpi/
-android/app/src/main/res/drawable-mdpi/
-android/app/src/main/res/drawable-xhdpi/
-android/app/src/main/res/drawable-xxhdpi/
-android/app/src/main/res/drawable-xxxhdpi/
-android/app/src/main/res/mipmap-hdpi/ic_launcher.png
-android/app/src/main/res/mipmap-mdpi/ic_launcher.png
-android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
-android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-android/app/src/main/res/values/colors.xml
-android/app/upload_certificate.pem
-
-# Build & Docker
-build_output/
-docker/
-
-# Fastlane
-fastlane/
-
-# iOS
-ios/.ruby-version
-ios/Podfile.lock
-ios/Runner/GoogleService-Info.plist
-
-# Anciens fichiers et captures d'écran
-lib_old/
-screenshots/
-tuto.md
-
-# Autres répertoires à ignorer
-out/
-web/
