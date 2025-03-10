@@ -1,2 +1,0 @@
-json_key_file("") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("fr.acrennes.meteo_du_numerique") # e.g. com.krausefx.app
