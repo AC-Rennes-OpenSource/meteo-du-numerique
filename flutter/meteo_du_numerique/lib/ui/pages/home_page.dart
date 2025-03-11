@@ -14,7 +14,7 @@ import '../../bloc/previsions_bloc/previsions_event.dart';
 import '../../cubit/app_cubit.dart';
 import '../decorations/rounded_rect_tab_indicator.dart';
 import '../widgets/app_bar.dart';
-import '../widgets/custom_search_bar_2.dart';
+import '../widgets/custom_search_bar.dart';
 import '../widgets/expansion_list.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_previsions_bottom_sheet.dart';
@@ -106,29 +106,29 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
             ? TabBar(
                 controller: _tabController,
                 overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
-                    splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
-                    unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
-                    labelColor: Theme.of(context).colorScheme.onSecondary,
-                    enableFeedback: true,
-                    indicatorPadding: const EdgeInsets.all(3),
-                    indicator: RoundedRectTabIndicator(
+                splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
+                unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
+                labelColor: Theme.of(context).colorScheme.onSecondary,
+                enableFeedback: true,
+                indicatorPadding: const EdgeInsets.all(3),
+                indicator: RoundedRectTabIndicator(
                     color: Theme.of(context).colorScheme.primary, radius: 40, borderColor: Colors.transparent, borderWidth: 1),
                 indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    tabs: [
-                      Tab(
-                        child: Text(
-                          'Météo du jour',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      Tab(
-                        child: Text(
-                          'Prévisions',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    ],
+                dividerColor: Colors.transparent,
+                tabs: [
+                  Tab(
+                    child: Text(
+                      'Météo du jour',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Prévisions',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               )
             : null,
       ),

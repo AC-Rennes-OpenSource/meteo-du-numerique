@@ -10,7 +10,7 @@ import '../../bloc/search_bar_bloc/search_bar_bloc.dart';
 import '../../bloc/search_bar_bloc/search_bar_event.dart';
 import '../../cubit/app_cubit.dart';
 import '../../utils.dart';
-import 'custom_search_bar_2.dart';
+import 'custom_search_bar.dart';
 
 class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ThemedAppBar({super.key, this.tabBar, required this.onTitleTap});
