@@ -28,7 +28,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         final themePreferences = ThemePreferences();
         themePreferences.setShowBetaFeatures(showPrevision);
         prefs.setBool(prevPrefKey, showPrevision);
-        print("prefs.getBool(prevPrefKey) : "+prefs.getBool(prevPrefKey).toString());
         emit(ThemeState(themeData: state.themeData, themeMode: state.themeMode, currentTheme: state.currentTheme,
             showPrevision: showPrevision
         ));

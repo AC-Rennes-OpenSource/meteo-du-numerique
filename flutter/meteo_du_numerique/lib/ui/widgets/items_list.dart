@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/ui/widgets/service_card_widget.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_state.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_state.dart';
 
 class ItemsList extends StatelessWidget {
   const ItemsList({super.key});
@@ -19,9 +19,7 @@ class ItemsList extends StatelessWidget {
       builder: (context, state) {
         if (state is ServicesNumLoading) {
           return SliverFillRemaining(
-            child: Platform.isIOS
-                ? const Center(child: CupertinoActivityIndicator(radius: 15))
-                : const Center(child: CircularProgressIndicator()),
+            child: Platform.isIOS ? const Center(child: CupertinoActivityIndicator(radius: 15)) : const Center(child: CircularProgressIndicator()),
           );
         } else if (state is ServicesNumLoaded) {
           if (state.servicesList.isEmpty) {
@@ -33,7 +31,7 @@ class ItemsList extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8.0, bottom: 100),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                      (context, index) {
+                  (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                       child: ServiceCardWidget(

@@ -45,12 +45,6 @@ class Config {
 
     switch (environment) {
       case 'development':
-        // url = kIsWeb
-        //     ? dotenv.env['BASE_URL_WEB']
-        //     :
-        // Platform.isAndroid
-        //     ? dotenv.env['BASE_URL_ANDROID']
-        //     : dotenv.env['BASE_URL_IOS'];
       url = remoteConfig.getBool('show_previsions')? dotenv.env['BASE_URL_LOCAL']:dotenv.env['BASE_URL_PROD'];
       break;
       case 'production':

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_event.dart';
-import '../../bloc/items_bloc/services_num_state.dart';
-import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
-import '../../bloc/previsions_bloc/previsions_event.dart';
 import '../../bloc/search_bar_bloc/search_bar_bloc.dart';
 import '../../bloc/search_bar_bloc/search_bar_event.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_event.dart';
+import '../../bloc/services_num_bloc/services_num_state.dart';
 import '../../cubit/app_cubit.dart';
 import '../../utils.dart';
-import 'custom_search_bar_2.dart';
+import 'custom_search_bar.dart';
 
 class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ThemedAppBar({super.key, this.tabBar, required this.onTitleTap});
@@ -82,19 +80,10 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                               onPressed: () {
                                 BlocProvider.of<ServicesNumBloc>(context).add(FilterServicesNumEvent([]));
                                 BlocProvider.of<ServicesNumBloc>(context).add(SortServicesNumEvent('qualiteDeServiceId', 'desc'));
-
-                                //TODO
-                                BlocProvider.of<PrevisionsBloc>(context).add(FilterPrevisionsEvent([], 'all'));
-
                                 CustomSearchBar.closeKeyboard(context);
                                 tabBar?.controller?.animateTo(0);
                                 context.read<AppCubit>().changeTab(0);
                                 context.read<SearchBarBloc>().add(ClearAllEvent());
-                                // BlocProvider.of<ServicesNumBloc>(context).add(SearchItemsEvent(''));
-                                // BlocProvider.of<SearchBarBloc>(context).add(CloseSearchBar());
-                                // BlocProvider.of<SearchBarBloc>(context).add(UpdateSearchQuery(''));
-
-                                // BlocProvider.of<PrevisionsBloc>(context).add(SearchPrevisionsEvent(''));
                               },
                             ),
                           ],
@@ -112,15 +101,15 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               )
             : PreferredSize(
-              preferredSize: preferredSize,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                          style: const TextStyle(fontSize: 9),
-                          Utils.lastUpdateString(displayedLastUpdate),
-                        ),
+                preferredSize: preferredSize,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    style: const TextStyle(fontSize: 9),
+                    Utils.lastUpdateString(displayedLastUpdate),
+                  ),
+                ),
               ),
-            ),
       );
     });
   }

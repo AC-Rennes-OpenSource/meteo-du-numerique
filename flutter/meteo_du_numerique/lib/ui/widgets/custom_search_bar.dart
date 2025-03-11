@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/items_bloc/services_num_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_event.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_state.dart';
 
-import '../../bloc/items_bloc/services_num_event.dart';
-import '../../bloc/previsions_bloc/previsions_event.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_event.dart';
+import '../../cubit/app_cubit.dart';
 
 class CustomSearchBar extends StatefulWidget {
-  final ValueNotifier<int> tabIndexNotifier;
+  final TabController tabController;
 
-  const CustomSearchBar({super.key, required this.tabIndexNotifier});
+  static void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).unfocus();
+  }
+
+  const CustomSearchBar({super.key, required this.tabController});
 
   @override
   State<CustomSearchBar> createState() => _CustomSearchBarState();
 }
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
+  late final TabController _tabController;
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
   Map<int, String> searchQueries = {}; // Mémorisation des requêtes de recherche
@@ -26,55 +30,95 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   @override
   void initState() {
     super.initState();
-    widget.tabIndexNotifier.addListener(_onTabIndexChange);
+    // widget.tabIndexNotifier.addListener(_onTabIndexChange);
+    _tabController = widget.tabController;
+    _tabController.addListener(_onTabChange);
+    _tabController.animation!.addListener(_onTabChangeScroll);
   }
 
   @override
   void dispose() {
-    widget.tabIndexNotifier.removeListener(_onTabIndexChange);
+    // widget.tabIndexNotifier.removeListener(_onTabIndexChange);
+    _tabController.removeListener(_onTabChange);
+    _tabController.animation!.removeListener(_onTabChangeScroll);
     _focusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onTabIndexChange() {
-    String? currentQuery = searchQueries[widget.tabIndexNotifier.value];
-    if (currentQuery != null && currentQuery.isNotEmpty) {
-      // Si une recherche était active sur cet onglet, ouvre la barre de recherche avec la requête
-      context.read<SearchBarBloc>().add(OpenSearchBar());
-      _searchController.text = currentQuery;
-    } else {
-      // Ferme la barre de recherche si aucun texte n'est présent
-      context.read<SearchBarBloc>().add(CloseSearchBar());
-      _searchController.clear();
+  void _onTabChange() {
+    if (_tabController.indexIsChanging) {
+      if (context.read<SearchBarBloc>().state is ClearedAll) {
+        searchQueries[0] = '';
+        searchQueries[1] = '';
+        _searchController.clear();
+        _focusNode.unfocus();
+        // _triggerSearchUpdate('');
+      }
+      _updateSearchBar(_tabController.index);
     }
-
-    // Ferme le clavier lors du changement d'onglet
-    if (_focusNode.hasFocus) {
-      _focusNode.unfocus();
-    }
-
-    _triggerSearchUpdate(currentQuery ?? '');
   }
 
-  void _triggerSearchUpdate(String query) {
-    searchQueries[widget.tabIndexNotifier.value] = query;
-    if (widget.tabIndexNotifier.value == 0 ) {
-      context.read<ServicesNumBloc>().add(SearchItemsEvent(query));
+  void _onTabChangeScroll() {
+    final int newIndex = _tabController.index;
+    if (newIndex != context.read<AppCubit>().state.tabIndex) {
+      if (context.read<SearchBarBloc>().state is ClearedAll) {
+        searchQueries[0] = '';
+        searchQueries[1] = '';
+        _searchController.clear();
+        _focusNode.unfocus();
+        _triggerSearchUpdate('', newIndex);
+      }
+      _updateSearchBar(newIndex);
+    }
+  }
+
+  void _updateSearchBar(int tabIndex) {
+    String? currentQuery = searchQueries[tabIndex];
+    if (currentQuery != null && currentQuery.isNotEmpty) {
+      context.read<SearchBarBloc>().add(OpenSearchBar());
+      _searchController.text = currentQuery;
+      _focusNode.requestFocus();
     } else {
-      context.read<PrevisionsBloc>().add(SearchPrevisionsEvent(query));
+      context.read<SearchBarBloc>().add(CloseSearchBar());
+      _searchController.clear();
+      _focusNode.unfocus();
+    }
+    // _triggerSearchUpdate(currentQuery ?? '', tabIndex);
+  }
+
+  void _triggerSearchUpdate(String query, int currentTabIndex) {
+    searchQueries[currentTabIndex] = query;
+
+    if (currentTabIndex == 0) {
+      context.read<ServicesNumBloc>().add(SearchItemsEvent(query));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBarBloc, SearchBarState>(
+    return BlocListener<SearchBarBloc, SearchBarState>(listener: (context, state) {
+      if (state is ClearedAll) {
+        searchQueries[0] = '';
+        searchQueries[1] = '';
+        _searchController.clear();
+        _focusNode.unfocus();
+        _triggerSearchUpdate('', _tabController.index);
+      }
+
+      if (state is SearchBarQueryUpdated) {
+        _searchController.text = state.query;
+      }
+      if (state is SearchBarClosed) {
+        _searchController.clear();
+      }
+    }, child: BlocBuilder<SearchBarBloc, SearchBarState>(
       builder: (context, state) {
         bool isSearchOpen = state is SearchBarOpened;
         double screenWidth = MediaQuery.of(context).size.width;
         double padding = 16.0;
         double searchWidth = isSearchOpen ? screenWidth - 2 * padding : 52.0;
-
+        // Your UI building logic goes here
         return GestureDetector(
           onTap: () {
             if (!isSearchOpen) {
@@ -82,7 +126,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               _focusNode.requestFocus();
             }
           },
-
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.ease,
@@ -100,6 +143,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               children: [
                 Expanded(
                   child: TextField(
+                    // textInputAction: TextInputAction.search,
                     focusNode: _focusNode,
                     controller: _searchController,
                     decoration: const InputDecoration(
@@ -107,23 +151,23 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.only(left: 16),
                     ),
-                    onChanged: _triggerSearchUpdate,
+                    onChanged: (value) {
+                      _triggerSearchUpdate(value, _tabController.index);
+                    },
                   ),
                 ),
                 IconButton(
-                  icon: Icon(isSearchOpen || _searchController.text.isNotEmpty ? Icons.close : Icons.search),
+                  icon: Icon(state is SearchBarOpened || _searchController.text.isNotEmpty ? Icons.close : Icons.search),
                   onPressed: () {
                     if (_searchController.text.isNotEmpty && isSearchOpen) {
                       _searchController.clear();
-                      _triggerSearchUpdate('');
+                      _triggerSearchUpdate('', _tabController.index);
                       context.read<SearchBarBloc>().add(CloseSearchBar());
                       _focusNode.unfocus(); // Ferme le clavier
-                    }
-                    else if(_searchController.text.isEmpty && isSearchOpen){
+                    } else if (_searchController.text.isEmpty && isSearchOpen) {
                       context.read<SearchBarBloc>().add(CloseSearchBar());
                       _focusNode.unfocus();
-                    }
-                    else {
+                    } else {
                       context.read<SearchBarBloc>().add(OpenSearchBar());
                       _focusNode.requestFocus();
                     }
@@ -134,6 +178,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           ),
         );
       },
-    );
+    ));
   }
 }

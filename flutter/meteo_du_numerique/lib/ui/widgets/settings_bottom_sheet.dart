@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_event.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
-import '../../config/theme_preferences.dart';
 
 class SettingsBottomSheet extends StatefulWidget {
   const SettingsBottomSheet({super.key});
@@ -17,11 +16,9 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final themeBloc = BlocProvider.of<ThemeBloc>(context);
-    final themePreferences = ThemePreferences();
 
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
-        // print("state.showPrevision : ${state.showPrevision}");
         return Container(
           padding: const EdgeInsets.all(10.0),
           child: Column(

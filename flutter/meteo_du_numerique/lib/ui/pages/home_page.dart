@@ -1,65 +1,114 @@
 import 'dart:io';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
-import 'package:meteo_du_numerique/ui/widgets/custom_search_bar.dart';
-import 'package:meteo_du_numerique/ui/widgets/expansion_list.dart';
-import 'package:meteo_du_numerique/ui/widgets/sort_bottom_sheet.dart';
-import 'package:meteo_du_numerique/ui/widgets/theme_switch.dart';
+import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_event.dart';
-import '../../bloc/items_bloc/services_num_state.dart';
-import '../../bloc/previsions_bloc/previsions_state.dart';
-import '../../bloc/theme_bloc/theme_bloc.dart';
-import '../../bloc/theme_bloc/theme_state.dart';
-import '../../utils.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_event.dart';
+import '../../bloc/services_num_bloc/services_num_state.dart';
+import '../../cubit/app_cubit.dart';
 import '../decorations/rounded_rect_tab_indicator.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/custom_search_bar.dart';
 import '../widgets/filter_bottom_sheet.dart';
-import '../widgets/filter_previsions_bottom_sheet.dart';
 import '../widgets/items_list.dart';
+import '../widgets/sort_bottom_sheet.dart';
+import '../widgets/theme_switch.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  late TabController _tabController;
+  bool _isObserverAdded = false;
+  bool _showFeature = true;
+
+  // Variable statique pour gérer le compteur de taps
+  static int _tapCount = 0;
+  static DateTime? _lastTapTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshAll(context);
+    if (!_isObserverAdded) {
+      WidgetsBinding.instance.addObserver(this);
+      debugPrint("Ajout de l'observateur");
+      _isObserverAdded = true;
+    }
+    _tabController = TabController(length: 2, vsync: this);
+
+    _tabController.addListener(() {
+      // Met à jour l'état ou effectue des actions lorsque l'onglet change
+      context.read<AppCubit>().changeTab(_tabController.index);
+    });
+    context.read<AppCubit>().setTabController(_tabController);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+
+    if (_isObserverAdded) {
+      WidgetsBinding.instance.removeObserver(this);
+      debugPrint("Suppression de l'observateur");
+      _isObserverAdded = false;
+    }
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.inactive:
+        debugPrint("App inactive");
+        break;
+      case AppLifecycleState.paused:
+        debugPrint("App en arrière-plan");
+        break;
+      case AppLifecycleState.resumed:
+        _refreshAll(context);
+        debugPrint("App au premier plan");
+        break;
+      case AppLifecycleState.detached:
+        debugPrint("App détachée");
+      case AppLifecycleState.hidden:
+        debugPrint("App hidden");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-    final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
-    final previsionsBloc = BlocProvider.of<PrevisionsBloc>(context);
-    // _refreshAll(context);
-    DateTime? displayedLastUpdate;
-
-    ValueNotifier<int> tabIndexNotifier = ValueNotifier(0);
-
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        return DefaultTabController(
-            initialIndex: 0,
-            length: 2, // Nombre d'onglets
-            child: Scaffold(
-                backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
-                appBar: ThemedAppBar(
-                  onTitleTap: _handleTap,
-                  tabBar: TabBar(
+    _showFeature = context.read<ThemeBloc>().state.showPrevision;
+    debugPrint("_showFeature : $_showFeature");
+    return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
+      appBar: ThemedAppBar(
+        onTitleTap: _handleTap,
+        tabBar:
+            // remoteConfig.getBool("show_previsions")
+            !_showFeature
+                ? TabBar(
+                    controller: _tabController,
                     overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
                     splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
                     unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
                     labelColor: Theme.of(context).colorScheme.onSecondary,
-                    onTap: (index) {
-                      tabIndexNotifier.value = index;
-                    },
                     enableFeedback: true,
                     indicatorPadding: const EdgeInsets.all(3),
                     indicator: RoundedRectTabIndicator(
-                        color: Theme.of(context).colorScheme.primary,
-                        radius: 40,
-                        borderColor: Colors.transparent,
-                        borderWidth: 1),
+                        color: Theme.of(context).colorScheme.primary, radius: 40, borderColor: Colors.transparent, borderWidth: 1),
                     indicatorSize: TabBarIndicatorSize.tab,
                     dividerColor: Colors.transparent,
                     tabs: [
@@ -76,306 +125,281 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ],
+                  )
+                : null,
+      ),
+      body: !_showFeature
+          ? TabBarView(controller: _tabController, children: [
+              _buildTabContent(context, isPrevisionsTab: false),
+              _buildTabContent(context, isPrevisionsTab: true),
+            ])
+          : _buildTabContent(context, isPrevisionsTab: false),
+      floatingActionButton: CustomSearchBar(tabController: _tabController),
+    );
+  }
+
+  Widget _buildTabContent(BuildContext context, {required bool isPrevisionsTab}) {
+    return NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [_buildSliverAppBar(context, isPrevisionsTab)];
+      },
+      body: Platform.isIOS ? _buildIOSContent(context, isPrevisionsTab) : _buildAndroidContent(context, isPrevisionsTab),
+    );
+  }
+
+  Widget _buildIOSContent(BuildContext context, bool isPrevisionsTab) {
+    return CustomScrollView(
+      slivers: [
+        CupertinoSliverRefreshControl(onRefresh: () => _refreshAll(context)),
+        const ItemsList(),
+      ],
+    );
+  }
+
+  Widget _buildAndroidContent(BuildContext context, bool isPrevisionsTab) {
+    return RefreshIndicator(
+      onRefresh: () => _refreshAll(context),
+      child: CustomScrollView(
+        slivers: [
+          const ItemsList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSliverAppBar(BuildContext context, bool isPrevisionsTab) {
+    return SliverAppBar(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
+      toolbarHeight: 50,
+      scrolledUnderElevation: 0,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      pinned: false,
+      floating: true,
+      snap: true,
+      title: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  _buildFilterButton(context, isPrevisionsTab),
+                  const SizedBox(width: 6.0),
+                  if (!isPrevisionsTab) _buildSortButton(context),
+                ],
+              ),
+              const ThemeSwitch(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterButton(BuildContext context, bool isPrevisionsTab) {
+    var servicesNumBloc = context.read<ServicesNumBloc>();
+    return BlocBuilder<ServicesNumBloc, ServicesNumState>(
+      builder: (context, state) {
+        return Stack(
+          children: [
+            OutlinedButton.icon(
+              icon: const Icon(Icons.filter_list),
+              label: const Text('Filtres'),
+              onPressed: () => _showFilterBottomSheet(context, servicesNumBloc, _tabController.index),
+              style: OutlinedButton.styleFrom(
+                iconColor: Theme.of(context).colorScheme.onSurface,
+                side: const BorderSide(width: 1.0, color: Colors.grey),
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                minimumSize: const Size(110, 30),
+                foregroundColor: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            if (servicesNumBloc.currentFilterCriteria!.isNotEmpty && !isPrevisionsTab)
+              Positioned(
+                right: 0,
+                top: 5,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 15,
+                    minHeight: 15,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    size: 10,
+                    color: Colors.white,
                   ),
                 ),
-                body: ValueListenableBuilder<int>(
-                    valueListenable: tabIndexNotifier,
-                    builder: (context, tabIndex, child) {
-                      return NestedScrollView(
-                        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-                          return [
-                            BlocBuilder<ThemeBloc, ThemeState>(
-                              builder: (context, state) {
-                                DefaultTabController.of(context).animation?.addListener(() {
-                                  if (tabIndexNotifier.value !=
-                                      DefaultTabController.of(context).animation!.value.round()) {
-                                    tabIndexNotifier.value = DefaultTabController.of(context).index.round();
-                                  }
-                                });
-
-                                return SliverAppBar(
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
-                                  toolbarHeight: 72,
-                                  scrolledUnderElevation: 0,
-                                  backgroundColor:
-                                      Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
-                                  pinned: false,
-                                  floating: true,
-                                  snap: true,
-                                  title: Column(
-                                    children: [
-                                      Padding(
-                                          padding: const EdgeInsets.only(bottom: 5.0),
-                                          child: Text(
-                                            style: const TextStyle(fontSize: 9),
-                                            Utils.lastUpdateString(servicesNumBloc.lastUpdate),
-                                          )),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Padding(
-                                                  padding: const EdgeInsets.only(left: 8.0),
-                                                  child: tabIndex == 0
-                                                      ? BlocBuilder<ServicesNumBloc, ServicesNumState>(
-                                                          builder: (context2, state) {
-                                                            return Stack(children: [
-                                                              OutlinedButton.icon(
-                                                                icon: const Icon(Icons.filter_list),
-                                                                label: const Text('Filtres'),
-                                                                onPressed: () => _showFilterBottomSheet(
-                                                                    context,
-                                                                    servicesNumBloc,
-                                                                    previsionsBloc,
-                                                                    tabIndexNotifier.value),
-                                                                style: OutlinedButton.styleFrom(
-                                                                    side: const BorderSide(
-                                                                        width: 1.0, color: Colors.grey),
-                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                                                    minimumSize: const Size(110, 30),
-                                                                    foregroundColor:
-                                                                        Theme.of(context).colorScheme.onSurface),
-                                                              ),
-                                                              // badge sur bouton
-                                                              if (BlocProvider.of<ServicesNumBloc>(context2)
-                                                                  .currentFilterCriteria!
-                                                                  .isNotEmpty)
-                                                                Positioned(
-                                                                  right: 0,
-                                                                  top: 5,
-                                                                  child: Container(
-                                                                    padding: const EdgeInsets.all(2),
-                                                                    decoration: BoxDecoration(
-                                                                      color: Colors.redAccent,
-                                                                      borderRadius: BorderRadius.circular(20),
-                                                                    ),
-                                                                    constraints: const BoxConstraints(
-                                                                      minWidth: 15,
-                                                                      minHeight: 15,
-                                                                    ),
-                                                                    child: const Icon(
-                                                                      Icons.check,
-                                                                      size: 10,
-                                                                      color: Colors.white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                            ]);
-                                                          },
-                                                        )
-                                                      : BlocBuilder<PrevisionsBloc, PrevisionsState>(
-                                                          builder: (context3, state) {
-                                                            return Stack(children: [
-                                                              OutlinedButton.icon(
-                                                                icon: const Icon(Icons.filter_list),
-                                                                label: const Text('Filtres'),
-                                                                onPressed: () => _showFilterBottomSheet(
-                                                                    context,
-                                                                    servicesNumBloc,
-                                                                    previsionsBloc,
-                                                                    tabIndexNotifier.value),
-                                                                style: OutlinedButton.styleFrom(
-                                                                    side: const BorderSide(
-                                                                        width: 1.0, color: Colors.grey),
-                                                                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                                                    minimumSize: const Size(110, 30),
-                                                                    foregroundColor:
-                                                                        Theme.of(context).colorScheme.onSurface),
-                                                              ),
-                                                              // badge sur bouton
-                                                              if (BlocProvider.of<PrevisionsBloc>(context3)
-                                                                      .currentFilterCriteria
-                                                                      .isNotEmpty ||
-                                                                  BlocProvider.of<PrevisionsBloc>(context3)
-                                                                          .currentPeriode !=
-                                                                      'all')
-                                                                Positioned(
-                                                                  right: 0,
-                                                                  top: 5,
-                                                                  child: Container(
-                                                                    padding: const EdgeInsets.all(2),
-                                                                    decoration: BoxDecoration(
-                                                                      color: Colors.redAccent,
-                                                                      borderRadius: BorderRadius.circular(6),
-                                                                    ),
-                                                                    constraints: const BoxConstraints(
-                                                                      minWidth: 15,
-                                                                      minHeight: 15,
-                                                                    ),
-                                                                    child: const Icon(
-                                                                      Icons.check,
-                                                                      size: 10,
-                                                                      color: Colors.white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                            ]);
-                                                          },
-                                                        )),
-                                              const SizedBox(
-                                                width: 6.0,
-                                              ),
-                                              tabIndex == 0
-                                                  ? OutlinedButton.icon(
-                                                      icon: const Icon(Icons.sort),
-                                                      label: const Text('Tri'),
-                                                      onPressed: () => _showSortBottomSheet(context, servicesNumBloc),
-                                                      style: OutlinedButton.styleFrom(
-                                                          side: const BorderSide(width: 1.0, color: Colors.grey),
-                                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
-                                                          minimumSize: const Size(90, 30),
-                                                          foregroundColor: Theme.of(context).colorScheme.onSurface),
-                                                    )
-                                                  : const SizedBox(
-                                                      width: 90,
-                                                    ),
-                                            ],
-                                          ),
-                                          const ThemeSwitch(),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ];
-                        },
-                        body: TabBarView(
-                          children: [
-                            Platform.isIOS
-                                ? CustomScrollView(
-                                    slivers: [
-                                      CupertinoSliverRefreshControl(
-                                        onRefresh: () async {
-                                          _refreshAll(context);
-                                          // previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
-                                          // servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                        },
-                                      ),
-                                      // FIXME bug refresh affichage
-                                      const ExpansionList(dayPrevison: true),
-                                      const ItemsList(),
-                                    ],
-                                  )
-                                : RefreshIndicator(
-                                    onRefresh: () async {
-                                      _refreshAll(context);
-                                      // previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
-                                      // servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-                                    },
-                                    child: CustomScrollView(
-                                      slivers: [
-                                        const ExpansionList(dayPrevison: true),
-                                        const ItemsList(),
-                                      ],
-                                    ),
-                                  ),
-                            Platform.isIOS
-                                ? CustomScrollView(
-                                    slivers: [
-                                      CupertinoSliverRefreshControl(
-                                        onRefresh: () async {
-                                          // TODO ouvrir l'accordéon à chaque refresh?
-                                          previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
-                                          previsionsBloc.add(OpenAllGroupsEvent());
-                                        },
-                                      ),
-                                      const ExpansionList(
-                                        dayPrevison: false,
-                                      ),
-                                    ],
-                                  )
-                                : RefreshIndicator(
-                                    onRefresh: () async {
-                                      previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
-                                      previsionsBloc.add(OpenAllGroupsEvent());
-                                    },
-                                    child: const CustomScrollView(
-                                      slivers: [
-                                        ExpansionList(
-                                          dayPrevison: false,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                          ],
-                        ),
-                      );
-                    }),
-                floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-                floatingActionButton: ValueListenableBuilder<int>(
-                    valueListenable: tabIndexNotifier,
-                    builder: (context, tabIndex, child) {
-                      return CustomSearchBar(
-                        tabIndexNotifier: tabIndexNotifier,
-                      );
-                    })
-            )
+              ),
+          ],
         );
       },
     );
   }
 
-  void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {
-    FocusScope.of(context).unfocus();
-    String? currentSorting = itemsBloc.currentSortCriteria;
-    String? currentOrder = itemsBloc.currentSortOrder;
-
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext bc) {
-        return SortBottomSheet(
-          itemsBloc: itemsBloc,
-          selectedSorting: currentSorting,
-          selectedOrder: currentOrder,
-        );
-      },
-    ).then((_) {
-      // context.read<SearchBarBloc>().add(CloseSearchBar());
-    });
+  Widget _buildSortButton(BuildContext context) {
+    var servicesNumBloc = context.read<ServicesNumBloc>();
+    return OutlinedButton.icon(
+      icon: const Icon(Icons.sort),
+      label: const Text('Tri'),
+      onPressed: () => _showSortBottomSheet(context, servicesNumBloc),
+      style: OutlinedButton.styleFrom(
+        iconColor: Theme.of(context).colorScheme.onSurface,
+        side: const BorderSide(width: 1.0, color: Colors.grey),
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        minimumSize: const Size(90, 30),
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
+      ),
+    );
   }
-
-  void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
-    FocusScope.of(context).unfocus();
-
-    showModalBottomSheet(
-      scrollControlDisabledMaxHeightRatio: 0.75,
-      context: context,
-      builder: (BuildContext bc) {
-        return tab == 0
-            ? FilterBottomSheet(
-                selectedFilters: itemsBloc.currentFilters,
-                tab: tab,
-              )
-            : FilterPrevisionsBottomSheet(
-                selectedFilter: previsionsBloc.currentPeriode,
-                tab: tab,
-                selectedCategories: previsionsBloc.currentFilterCriteria,
-              );
-      },
-    ).then((_) {
-      // context.read<SearchBarBloc>().add(CloseSearchBar());
-    });
-  }
-
-  void _handleTap(BuildContext context) {}
 
   Future<void> _refreshAll(BuildContext context) async {
-    final previsionsBloc = context.read<PrevisionsBloc>();
-    final servicesNumBloc = context.read<ServicesNumBloc>();
-
-    // Déclenche les événements de mise à jour
-    previsionsBloc.add(FetchPrevisionsEvent(showIndicator: false));
+    final servicesNumBloc = BlocProvider.of<ServicesNumBloc>(context);
     servicesNumBloc.add(FetchServicesNumEvent(showIndicator: false));
-
-    // On attend que les deux blocs aient fini de traiter leurs états
-    await Future.wait([
-      previsionsBloc.stream.firstWhere((state) => state is PrevisionsLoaded || state is PrevisionsError),
-      servicesNumBloc.stream.firstWhere((state) => state is ServicesNumLoaded || state is ServicesNumError),
-    ]);
   }
+
+  void _handleTap(BuildContext context) {
+    final now = DateTime.now();
+
+    // Vérifie si le tap précédent a eu lieu récemment (moins de 500ms)
+    if (_lastTapTime != null && now.difference(_lastTapTime!) < Duration(milliseconds: 300)) {
+      _tapCount++;
+    } else {
+      _tapCount = 1; // Réinitialise le compteur si un tap est effectué après un délai plus long
+    }
+
+    // Met à jour le temps du dernier tap
+    _lastTapTime = now;
+
+    if (_tapCount == 10) {
+      _showHiddenMenu(context);
+      _tapCount = 0; // Réinitialise le compteur après avoir montré le menu
+    }
+  }
+
+  void _showHiddenMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)), // Coins arrondis en haut
+      ),
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 250,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // Étire les widgets horizontalement
+              children: [
+                // Titre
+                Text(
+                  'Menu des prévisions',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+
+                // Séparateur
+                Divider(thickness: 1, color: Colors.grey[300]),
+
+                // Boutons centrés
+                Spacer(), // Ajoute un espace flexible pour centrer verticalement
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Espace égal entre les boutons
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.close,
+                      ), // Icône pour le bouton "Fermer"
+                      label: Text(
+                        'Fermer',
+                        // style: TextStyle(color: Colors.redAccent), // Couleur du texte
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        // side: BorderSide(color: Colors.redAccent, width: 2), // Bordure rouge
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFeature = !_showFeature; // Activer ou désactiver la fonctionnalité
+                        });
+                      },
+                      icon: Icon(Icons.check), // Icône pour le bouton "test"
+                      label: Text('Activer'),
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(color: Colors.greenAccent, width: 2), // Bordure rouge
+
+                        // backgroundColor: Colors.greenAccent, // Couleur du bouton
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(), // Ajoute un espace flexible après les boutons
+
+                // Séparateur final
+                Divider(thickness: 1, color: Colors.grey[300]),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+void _updateTabIndex(int index) {
+  debugPrint(index as String?);
+}
+
+void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {
+  FocusScope.of(context).unfocus();
+  String? currentSorting = itemsBloc.currentSortCriteria;
+  String? currentOrder = itemsBloc.currentSortOrder;
+
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext bc) {
+      return SortBottomSheet(
+        itemsBloc: itemsBloc,
+        selectedSorting: currentSorting,
+        selectedOrder: currentOrder,
+      );
+    },
+  ).then((_) {
+    // context.read<SearchBarBloc>().add(CloseSearchBar());
+  });
+}
+
+void _showFilterBottomSheet(BuildContext context, ServicesNumBloc servicesNumBloc, int tab) {
+  FocusScope.of(context).unfocus();
+
+  showModalBottomSheet(
+    scrollControlDisabledMaxHeightRatio: 0.75,
+    context: context,
+    builder: (BuildContext bc) {
+      return FilterBottomSheet(
+        selectedFilters: servicesNumBloc.currentFilters,
+        tab: tab,
+      );
+    },
+  ).then((_) {
+    // context.read<SearchBarBloc>().add(CloseSearchBar());
+  });
 }

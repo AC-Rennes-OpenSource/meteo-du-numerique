@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -10,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../bloc/theme_bloc/theme_bloc.dart';
 
 class ServiceCardWidget extends StatelessWidget {
-  final ActualiteA service;
+  final Actualite service;
 
   const ServiceCardWidget({super.key, required this.service});
 
@@ -27,7 +26,7 @@ class ServiceCardWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-          borderRadius: kIsWeb ? BorderRadius.circular(2) : BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(10.0),
           color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.surface,
           border: Border.all(
               color: isDarkMode
@@ -39,53 +38,30 @@ class ServiceCardWidget extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 0, left: 3, right: 3),
-            child: kIsWeb
-                ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Center(child: getIcon(service.qualiteDeService!.niveauQos, isDarkMode)),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
+                    child: Text(
+                      service.libelle,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode),
                       ),
-                      const SizedBox(height: kIsWeb ? 8 : 0),
-                      // Espace entre l'icône et le texte
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          service.libelle,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: kIsWeb ? 26.0 : 22,
-                            color: serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 6.0, top: 6.0),
-                          child: Text(
-                            service.libelle,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: kIsWeb ? 26.0 : 22,
-                              color: serviceTextColor(service.qualiteDeService!.niveauQos, isDarkMode),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 10,
-                        top: 0,
-                        bottom: 0,
-                        child: getIcon(service.qualiteDeService!.niveauQos, isDarkMode) ?? const SizedBox(),
-                      ),
-                    ],
+                    ),
                   ),
+                ),
+                Positioned(
+                  right: 10,
+                  top: 0,
+                  bottom: 0,
+                  child: getIcon(service.qualiteDeService!.niveauQos, isDarkMode) ?? const SizedBox(),
+                ),
+              ],
+            ),
           ),
           Container(
             color: serviceColor(service.qualiteDeService!.niveauQos, isDarkMode),
@@ -116,17 +92,16 @@ class ServiceCardWidget extends StatelessWidget {
                 },
                 data: service.description,
                 styleSheet: MarkdownStyleSheet(
-                    del: const TextStyle(
-                        decoration: TextDecoration.underline), // Souligne tous les balises del
+                    del: const TextStyle(decoration: TextDecoration.underline), // Souligne tous les balises del
 
                     horizontalRuleDecoration: BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                )),
+                      border: Border(
+                        top: BorderSide(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                    )),
               ),
               // child: HtmlWidget(
               //   textStyle: TextStyle(
@@ -147,19 +122,19 @@ class ServiceCardWidget extends StatelessWidget {
         return Icon(
           Icons.sunny,
           color: isDarkMode ? const Color(0xff3db482) : const Color(0xff247566),
-          size: kIsWeb ? 30 : 20,
+          size: 20,
         );
       case 2:
         return Icon(
           CupertinoIcons.umbrella_fill,
           color: isDarkMode ? const Color(0xffdb8b00) : const Color(0xff945400),
-          size: kIsWeb ? 30 : 20,
+          size: 20,
         );
       case 3:
         return Icon(
           Icons.flash_on,
           color: isDarkMode ? const Color(0xffdb2c66) : const Color(0xff94114e),
-          size: kIsWeb ? 30 : 20,
+          size: 20,
         );
     }
     return null;

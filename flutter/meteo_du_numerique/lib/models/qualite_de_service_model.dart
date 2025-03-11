@@ -1,12 +1,10 @@
 class QualiteDeService {
   late int id;
-  // late String couleur;
   late String libelle;
   late int niveauQos;
 
   QualiteDeService({
     required this.id,
-    // required this.couleur,
     required this.libelle,
     required this.niveauQos,
   });
@@ -22,7 +20,6 @@ class QualiteDeService {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      // 'couleur': couleur,
       'libelle': libelle,
       'niveau_qos': niveauQos,
     };
@@ -30,8 +27,6 @@ class QualiteDeService {
 
   dynamic getField(String field) {
     switch (field) {
-      // case 'couleur':
-      //   return couleur;
       case 'libelle':
         return libelle;
       case 'niveau_qos':
@@ -43,8 +38,6 @@ class QualiteDeService {
 
   @override
   String toString() {
-    return 'QualiteDeService{'
-        // 'couleur: $couleur, '
-        'libelle: $libelle}';
+    return 'QualiteDeService{libelle: $libelle}';
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_event.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_event.dart';
 
 class SortBottomSheet extends StatefulWidget {
   final ServicesNumBloc itemsBloc;

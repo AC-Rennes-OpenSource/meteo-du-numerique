@@ -22,22 +22,14 @@ class Utils {
     return capitalizeFirstLetter(df.format(date));
   }
 
-  static bool estMemeJour(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
-
   static String lastUpdateString(DateTime? lastUpdate) {
     if(lastUpdate!=null){
       String form = DateFormat("dd MMMM yyyy", "fr_FR").format(lastUpdate);
-      String hour =
-          "${DateFormat("H").format(lastUpdate
-        // .add(const Duration(hours: 2))
-      )}h${DateFormat("mm").format(lastUpdate)}";
+      String hour = "${DateFormat("H").format(lastUpdate)}h${DateFormat("mm").format(lastUpdate)}";
       return "Dernière mise à jour le $form à $hour";
     } else {
       return '';
     }
-
   }
 
   static String normalizeText(String text) {
