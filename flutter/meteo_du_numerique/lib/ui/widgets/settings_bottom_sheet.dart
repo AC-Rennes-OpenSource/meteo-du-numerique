@@ -5,6 +5,7 @@ import '../../bloc/theme_bloc/theme_bloc.dart';
 import '../../bloc/theme_bloc/theme_event.dart';
 import '../../bloc/theme_bloc/theme_state.dart';
 import '../../config/theme_preferences.dart';
+import '../../cubit/app_cubit.dart';
 
 class SettingsBottomSheet extends StatefulWidget {
   const SettingsBottomSheet({super.key});
@@ -21,7 +22,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
 
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
-        // print("state.showPrevision : ${state.showPrevision}");
+        // debugPrint("state.showPrevision : ${state.showPrevision}");
         return Container(
           padding: const EdgeInsets.all(10.0),
           child: Column(
@@ -48,21 +49,29 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                 icon: Icons.mobile_friendly,
                 themeBloc: themeBloc,
               ),
-              // Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
-              //   child: Divider(),
-              // ),
-              // SwitchListTile(
-              //   title: const Text(
-              //     'Activer les prévisions (Beta)',
-              //     style: TextStyle(fontSize: 15),
-              //   ),
-              //   secondary: const Icon(Icons.warning_amber),
-              //   value: state.showPrevision,
-              //   onChanged: (bool newValue) {
-              //     themeBloc.add(ThemeEvent.showPrevision);
-              //   },
-              // ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+                child: Divider(),
+              ),
+              SwitchListTile(
+                title: const Text(
+                  'Activer les prévisions (Beta)',
+                  style: TextStyle(fontSize: 15),
+                ),
+                secondary: const Icon(Icons.warning_amber),
+                value: state.showPrevision,
+                onChanged: (bool newValue) {
+                  themeBloc.add(ThemeEvent.showPrevision);
+
+                  // Si on désactive les prévisions et qu'on est sur cet onglet, revenir à l'onglet 0
+                  if (!newValue && context.read<AppCubit>().state.tabIndex == 1) {
+                    final tabController = context.read<AppCubit>().tabController;
+                    if (tabController != null) {
+                      tabController.animateTo(0);
+                    }
+                  }
+                },
+              ),
             ],
           ),
         );

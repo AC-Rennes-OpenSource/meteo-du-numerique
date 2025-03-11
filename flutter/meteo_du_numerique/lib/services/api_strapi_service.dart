@@ -16,26 +16,30 @@ class ApiStrapiService {
 
   /// Récupère les prévisions depuis l'API et les mappe en objets `Forecast`
   Future<List<Forecast>> fetchForecasts() async {
-    // todo final response = await http.get(Uri.parse('$baseUrl/forecasts'));
-    final response = await http.get(Uri.parse('https://qt.toutatice.fr/strapi5/api/mdn-service-numeriques?populate=*'));
+    final response = await http.get(Uri.parse('$baseUrl/mdn-service-numeriques?populate=*'));
+    debugPrint('Fetching forecasts from: $baseUrl/mdn-service-numeriques?populate=*');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      debugPrint('Forecast response: ${response.body.substring(0, 200)}...');
       return mapper.parseForecastsFromApiResponse(jsonResponse);
     } else {
+      debugPrint('Error fetching forecasts: ${response.statusCode} - ${response.body}');
       throw Exception('Erreur lors du chargement des prévisions : ${response.statusCode}');
     }
   }
 
   /// Récupère les actualités depuis l'API et les mappe en objets `News`
   Future<List<News>> fetchNews() async {
-    // todo final response = await http.get(Uri.parse('$baseUrl/news'));
-    final response = await http.get(Uri.parse('https://qt.toutatice.fr/strapi5/api/mdn-service-numeriques?populate=*'));
+    final response = await http.get(Uri.parse('$baseUrl/mdn-service-numeriques?populate=*'));
+    debugPrint('Fetching news from: $baseUrl/mdn-service-numeriques?populate=*');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      debugPrint('News response: ${response.body.substring(0, 200)}...');
       return mapper.parseNewsFromApiResponse(jsonResponse);
     } else {
+      debugPrint('Error fetching news: ${response.statusCode} - ${response.body}');
       throw Exception('Erreur lors du chargement des actualités : ${response.statusCode}');
     }
   }

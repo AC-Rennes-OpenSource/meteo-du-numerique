@@ -6,7 +6,6 @@ part 'models.g.dart'; // Contient les méthodes JSON (toJson/fromJson)
 
 @freezed
 class Forecast with _$Forecast implements Updatable {
-  @JsonSerializable(explicitToJson: true)
   const factory Forecast({
     required String libelle,
     required String description,
@@ -23,7 +22,6 @@ class Forecast with _$Forecast implements Updatable {
 
 @freezed
 class News with _$News implements Updatable {
-  @JsonSerializable(explicitToJson: true)
   const factory News({
     required String libelle,
     required String description,

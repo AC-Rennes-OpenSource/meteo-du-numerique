@@ -49,7 +49,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _onTabChange() {
-    print('_onTabChange');
+    debugPrint('_onTabChange');
     if (_tabController.indexIsChanging) {
       if (context.read<SearchBarBloc>().state is ClearedAll) {
         searchQueries[0] = '';
@@ -65,7 +65,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void _onTabChangeScroll() {
     final int newIndex = _tabController.index;
     if (newIndex != context.read<AppCubit>().state.tabIndex) {
-      print('_onTabChangeScroll');
+      debugPrint('_onTabChangeScroll');
       // if (_tabController.indexIsChanging) {
       if (context.read<SearchBarBloc>().state is ClearedAll) {
         searchQueries[0] = '';
@@ -80,7 +80,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   void _updateSearchBar(int tabIndex) {
     String? currentQuery = searchQueries[tabIndex];
-    print(currentQuery);
+    debugPrint(currentQuery);
     if (currentQuery != null && currentQuery.isNotEmpty) {
       context.read<SearchBarBloc>().add(OpenSearchBar());
       _searchController.text = currentQuery;
@@ -94,7 +94,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _triggerSearchUpdate(String query, int currentTabIndex) {
-    print('trigger search update ${query}');
+    debugPrint('trigger search update $query');
     // int currentTabIndex = _tabController.index;
     searchQueries[currentTabIndex] = query;
 
@@ -163,7 +163,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       contentPadding: EdgeInsets.only(left: 16),
                     ),
                     onChanged: (value) {
-                      print('on changed ${value}');
+                      debugPrint('on changed $value');
                       _triggerSearchUpdate(value, _tabController.index);
                     },
                   ),

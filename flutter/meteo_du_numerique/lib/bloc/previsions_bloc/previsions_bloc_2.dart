@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import '../../models/service_num_model.dart';
@@ -39,7 +40,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   }
 
   Future<void> _onFetchPrevisions(FetchPrevisionsEvent event, Emitter<PrevisionsState> emit) async {
-    print("_onFetchPrevisions__________________________");
+    debugPrint("_onFetchPrevisions__________________________");
 
     if (event.showIndicator) {
       emit(PrevisionsLoading());
@@ -210,7 +211,7 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     //
     // // Apply category filter
     if (currentFilterCriteria.isNotEmpty) {
-      // print(currentFilterCriteria);
+      // debugPrint(currentFilterCriteria);
       List<PrevisionA> previsionsupdate = [];
       for (var element in currentFilterCriteria) {
         previsionsupdate.addAll(previsionList
@@ -287,16 +288,16 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
   }
 
   Future<List<PrevisionA>> fetchPrevisionsV5() async {
-    print("fetchPrevisionsV5 ______");
+    debugPrint("fetchPrevisionsV5 ______");
     List<PrevisionA> previsionList = await apiService.fetchPrevisionsv5();
 return previsionList;
-    print("log : fetchMockPrevisions triggered");
+    debugPrint("log : fetchMockPrevisions triggered");
     // Charger le fichier JSON depuis les assets
     try {
       String data = await rootBundle.loadString('assets/strapi5mock.json');
 
       final Map<String, dynamic> parsedJson = json.decode(data);
-print("date : $data");
+      debugPrint("date : $data");
       // Convertir les données en objets PrevisionA
       return (parsedJson['previsions'] as List<dynamic>).map((previsionJson) {
         return PrevisionA.fromJson1(previsionJson);

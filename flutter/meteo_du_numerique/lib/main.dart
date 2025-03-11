@@ -19,15 +19,13 @@ import 'package:meteo_du_numerique/cubit/app_cubit.dart';
 import 'package:meteo_du_numerique/firebase_options.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/ui/pages/home_page.dart';
-import 'package:meteo_du_numerique/ui/pages/home_page2_cubit.dart';
-import 'package:meteo_du_numerique/web-ui/home_page_web.dart';
 
 import 'config.dart';
 
 final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+  debugPrint("Handling a background message: ${message.messageId}");
 }
 
 Future<void> _initLocalNotifications() async {
@@ -54,26 +52,26 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env"); // Charge les variables d'environnement
   WidgetsFlutterBinding.ensureInitialized();
 
-  late bool showPrevisions;  // Changé de 'bool' à 'late bool' pour éviter l'erreur de non-initialisation
+  late bool showPrevisions;
 
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
-      // name: 'meteo-du-numerique-acrennes',
+        // name: 'meteo-du-numerique-acrennes',
         options: DefaultFirebaseOptions.currentPlatform);
 
     try {
       FirebaseApp app = Firebase.app();
-      print('--- Firebase Configuration ---');
-      print('App Name: ${app.name}');
-      print('API Key: ${app.options.apiKey ?? "N/A"}');
-      print('Project ID: ${app.options.projectId ?? "N/A"}');
-      print('App ID: ${app.options.appId ?? "N/A"}');
-      print('Messaging Sender ID: ${app.options.messagingSenderId ?? "N/A"}');
-      print('Database URL: ${app.options.databaseURL ?? "N/A"}');
-      print('Storage Bucket: ${app.options.storageBucket ?? "N/A"}');
-      print('--------------------------------');
+      debugPrint('--- Firebase Configuration ---');
+      debugPrint('App Name: ${app.name}');
+      debugPrint('API Key: ${app.options.apiKey ?? "N/A"}');
+      debugPrint('Project ID: ${app.options.projectId ?? "N/A"}');
+      debugPrint('App ID: ${app.options.appId ?? "N/A"}');
+      debugPrint('Messaging Sender ID: ${app.options.messagingSenderId ?? "N/A"}');
+      debugPrint('Database URL: ${app.options.databaseURL ?? "N/A"}');
+      debugPrint('Storage Bucket: ${app.options.storageBucket ?? "N/A"}');
+      debugPrint('--------------------------------');
     } catch (e) {
-      print('Erreur lors de la récupération des détails Firebase: $e');
+      debugPrint('Erreur lors de la récupération des détails Firebase: $e');
     }
   }
 
@@ -81,7 +79,7 @@ Future<void> main() async {
     showPrevisions = remoteConfig.getBool("show_previsions");
   });
 
-  // await _initLocalNotifications();
+  await _initLocalNotifications();
   initializeDateFormatting('fr_FR', null);
 
   final themePreferences = ThemePreferences();
@@ -89,7 +87,7 @@ Future<void> main() async {
 
   // Get APNS token for iOS
   // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-  // print('APNS Token: $apnsToken');
+  // debugPrint('APNS Token: $apnsToken');
 
   await Config.init(); // Initialiser Remote Config
 
@@ -107,9 +105,9 @@ Future<FirebaseRemoteConfig> _initRemoteConfig() async {
     'strapi_5': false,
   });
   await remoteConfig.fetchAndActivate().then((updated) {
-    print("show_previsions : ${remoteConfig.getBool('show_previsions')}");
-    print("strapi_5 : ${remoteConfig.getBool('strapi_5')}");
-    print("remote config updated? : $updated");
+    debugPrint("show_previsions : ${remoteConfig.getBool('show_previsions')}");
+    debugPrint("strapi_5 : ${remoteConfig.getBool('strapi_5')}");
+    debugPrint("remote config updated? : $updated");
     return remoteConfig;
   });
   return remoteConfig;
@@ -140,7 +138,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _loadRemoteConfig() async {
-    try {  // Ajout d'un bloc try-catch pour une meilleure gestion des erreurs
+    try {
+      // Ajout d'un bloc try-catch pour une meilleure gestion des erreurs
       final remoteConfig = await _initRemoteConfig();
       setState(() {
         showPrevisions = remoteConfig.getBool('show_previsions');
@@ -148,9 +147,9 @@ class _MyAppState extends State<MyApp> {
         isConfigLoaded = true;
       });
     } catch (e) {
-      print('Erreur lors du chargement de la configuration: $e');
+      debugPrint('Erreur lors du chargement de la configuration: $e');
       setState(() {
-        isConfigLoaded = true;  // On considère quand même que c'est chargé pour ne pas bloquer l'app
+        isConfigLoaded = true; // On considère quand même que c'est chargé pour ne pas bloquer l'app
         showPrevisions = false; // Valeur par défaut en cas d'erreur
       });
     }
@@ -166,11 +165,11 @@ class _MyAppState extends State<MyApp> {
         .then((settings) {
       // FirebaseMessaging.instance.subscribeToTopic('notifications_meteo');
       FirebaseMessaging.instance.subscribeToTopic(dotenv.env['FCM_TOPIC_NAME']!);
-      print("User granted permission: ${settings.authorizationStatus}");
+      debugPrint("User granted permission: ${settings.authorizationStatus}");
     });
 
     // FirebaseMessaging.instance.getToken().then((token) {
-    //   print('Jeton FCM : ${token!}');
+    //   debugPrint('Jeton FCM : ${token!}');
     // });
   }
 
@@ -197,8 +196,8 @@ class _MyAppState extends State<MyApp> {
         } else if (ios != null && Platform.isIOS) {
           platformChannelSpecifics = const NotificationDetails(
               iOS: DarwinNotificationDetails(
-                sound: 'default',
-              ));
+            sound: 'default',
+          ));
         } else {
           return;
         }
@@ -213,7 +212,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
+      debugPrint('A new onMessageOpenedApp event was published!');
     });
   }
 
@@ -250,12 +249,7 @@ class _MyAppState extends State<MyApp> {
             theme: ThemeBloc.lightTheme,
             darkTheme: ThemeBloc.darkTheme,
             themeMode: themeState.themeMode,
-            home: kIsWeb
-                ? const HomePageWeb()
-                : (showPrevisions
-            //TODO
-                ? HomePage()
-                : HomePage2()),
+            home: HomePage(),
           );
         },
       ),

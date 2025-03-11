@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meteo_du_numerique/models/service_num_model.dart';
 
 import '../../models/service_num_model_old.dart';
@@ -38,8 +39,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   }
 
   Future<void> _onFetchItems(FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
-    print("_onFetchItems __________________________");
-
+    debugPrint("_onFetchItems __________________________");
 
     if (event.showIndicator) {
       emit(ServicesNumLoading());

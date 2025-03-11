@@ -155,3 +155,11 @@ coverage/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
 !.vscode/settings.json
+
+/conf-utils/
+/build_output/
+/docker/
+/gitignore-folder/
+
+/lib/models/prevision_model_2.dart
+/lib/main_.dart

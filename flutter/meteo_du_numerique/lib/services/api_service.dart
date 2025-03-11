@@ -38,7 +38,7 @@ class ApiService {
   //     return a;
   //   } catch (e) {
   //     if (kDebugMode) {
-  //       print(e);
+  //       debugPrint(e);
   //     }
   //     throw Exception('Failed to load mock previsions: $e');
   //   }
@@ -69,10 +69,10 @@ class ApiService {
   //   for (var element in servList) {
   //     for (var prev in element.previsions) {
   //       prev.categorieLibelle = element.category.libelle;
-  //       // print(prev.categorieLibelle);
+  //       // debugPrint(prev.categorieLibelle);
   //       prev.couleur = element.category.color;
-  //       // print(prev.couleur);
-  //       // print(prev);
+  //       // debugPrint(prev.couleur);
+  //       // debugPrint(prev);
   //       // TODO affiche uniquement si après aujourd'hui (à garder?)
   //       // if (prev.dateDebut.isAfter(DateTime.now())) {
   //         listprev.add(prev);
@@ -232,7 +232,7 @@ class ApiService {
 //     return getSortedPrev(_processResponse(data));
 //   } catch (e) {
 //     if (kDebugMode) {
-//       print(e);
+//       debugPrint(e);
 //     }
 //     throw Exception('Failed to load mock previsions: $e');
 //   }
