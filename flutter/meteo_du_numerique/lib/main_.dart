@@ -1,42 +1,59 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:meteo_du_numerique/bloc/items_bloc/services_num_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
-import 'package:meteo_du_numerique/config/firebase_config.dart';
 import 'package:meteo_du_numerique/config/theme_preferences.dart';
 import 'package:meteo_du_numerique/cubit/app_cubit.dart';
 import 'package:meteo_du_numerique/services/api_service.dart';
 import 'package:meteo_du_numerique/services/data_cubit.dart';
-import 'package:meteo_du_numerique/services/notification_service.dart';
 import 'package:meteo_du_numerique/services/preferences_cubit.dart';
 import 'package:meteo_du_numerique/services/service_locator.dart';
-import 'package:meteo_du_numerique/ui/pages/home_page.dart';
-import 'package:meteo_du_numerique/ui/pages/home_page2_cubit.dart';
 
 import 'bloc/theme_bloc/theme_state.dart';
 import 'config.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'firebase_options.dart';
+
+final FlutterLocalNotificationsPlugin localNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
+  setupLocator();
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  
+
   // Initialisation des services
   await _initializeServices();
-  
+
   // Initialisation des préférences
   final themePreferences = ThemePreferences();
   final themeMode = await themePreferences.getThemeMode();
-  
+
   runApp(MyApp(themeModePreference: themeMode));
+}
+
+Future<void> _initLocalNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('ic_notification');
+
+  // Configuration pour iOS
+  const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await localNotificationsPlugin.initialize(
+    initializationSettings,
+  );
 }
 
 Future<void> _initializeServices() async {
@@ -44,21 +61,22 @@ Future<void> _initializeServices() async {
   if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   }
-  
+
   // Initialisation des autres services
   await Config.init();
   await initializeDateFormatting('fr_FR', null);
-  
-  if (!kIsWeb) {
-    await _initLocalNotifications();
-  }
+
+  await _initLocalNotifications();
 }
 
 class MyApp extends StatelessWidget {
   final ThemeModePreference themeModePreference;
-  final FirebaseRemoteConfig remoteConfig;
 
-  const MyApp({super.key, required this.themeModePreference, required this.remoteConfig});
+  // final FirebaseRemoteConfig remoteConfig;
+
+  const MyApp({super.key, required this.themeModePreference
+      // , required this.remoteConfig
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -88,45 +106,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
 class HomePage_cubit extends StatelessWidget {
+  const HomePage_cubit({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => locator<DataCubit>()..loadForecasts()..loadNews()),
+        BlocProvider(
+            create: (_) => locator<DataCubit>()
+              ..loadForecasts()
+              ..loadNews()),
         BlocProvider(create: (_) => locator<PreferencesCubit>()),
       ],
       child: BlocBuilder<PreferencesCubit, PreferencesState>(
         builder: (context, preferencesState) {
           return MaterialApp(
-            themeMode:
-            preferencesState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            darkTheme:
-            ThemeData.dark().copyWith(primaryColor: Colors.blueGrey),
-            theme:
-            ThemeData.light().copyWith(primaryColor: Colors.lightBlue),
+            themeMode: preferencesState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            darkTheme: ThemeData.dark().copyWith(primaryColor: Colors.blueGrey),
+            theme: ThemeData.light().copyWith(primaryColor: Colors.lightBlue),
             home: DefaultTabController(
               length: 2,
               child: Scaffold(
                   appBar: AppBar(
-                    title:
-                    Text(preferencesState.isDarkMode ? "Mode Sombre" : "Accueil"),
-                    bottom:
-                    TabBar(tabs: [Tab(text: "Prévisions"), Tab(text: "Actualités")]),
+                    title: Text(preferencesState.isDarkMode ? "Mode Sombre" : "Accueil"),
+                    bottom: TabBar(tabs: [Tab(text: "Prévisions"), Tab(text: "Actualités")]),
                     actions: [
                       IconButton(
-                        icon:
-                        Icon(preferencesState.isDarkMode ? Icons.dark_mode : Icons.light_mode),
-                        onPressed:
-                            () => context.read<PreferencesCubit>().toggleDarkMode(),
+                        icon: Icon(preferencesState.isDarkMode ? Icons.dark_mode : Icons.light_mode),
+                        onPressed: () => context.read<PreferencesCubit>().toggleDarkMode(),
                       ),
                     ],
                   ),
-                  body:
-                  TabBarView(children:[ForecastList(), NewsList()])
-              ),
+                  body: TabBarView(children: [ForecastList(), NewsList()])),
             ),
           );
         },
@@ -134,8 +146,6 @@ class HomePage_cubit extends StatelessWidget {
     );
   }
 }
-
-
 
 class ForecastList extends StatelessWidget {
   @override
@@ -220,7 +230,7 @@ class ForecastList extends StatelessWidget {
 
             return SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                (context, index) {
                   final forecast = filteredForecasts[index];
                   return ListTile(
                     title: Text(forecast.libelle),
@@ -236,8 +246,6 @@ class ForecastList extends StatelessWidget {
     );
   }
 }
-
-
 
 class NewsList extends StatelessWidget {
   @override
@@ -322,7 +330,7 @@ class NewsList extends StatelessWidget {
 
             return SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                (context, index) {
                   final newsItem = filteredNews[index];
                   return ListTile(
                     title: Text(newsItem.libelle),
@@ -338,6 +346,3 @@ class NewsList extends StatelessWidget {
     );
   }
 }
-
-
-
