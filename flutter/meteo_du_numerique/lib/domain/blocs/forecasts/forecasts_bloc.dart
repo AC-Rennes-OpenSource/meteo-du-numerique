@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/models/forecast.dart';
@@ -157,10 +157,17 @@ class ForecastsBloc extends Bloc<ForecastsEvent, ForecastsState> {
       forecasts = filteredForecasts;
     }
 
+    final now = DateTime.now();
+
+    // First, remove all forecasts with endDate before today
+    forecasts = forecasts.where((forecast) {
+      if (forecast.endDate == null) return true; // Keep forecasts with no endDate
+      final endDate = DateTime.parse(forecast.endDate!);
+      return endDate.isAfter(now) || endDate.isAtSameMomentAs(now);
+    }).toList();
+
     // Apply period filter
     if (currentPeriode != 'all') {
-      final now = DateTime.now();
-
       if (currentPeriode == 'today') {
         // Only today's forecasts
         forecasts = forecasts.where((forecast) {
