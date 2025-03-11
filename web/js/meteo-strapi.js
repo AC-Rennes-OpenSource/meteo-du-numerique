@@ -1,5 +1,6 @@
 //var meteo = require("./meteo.json")
 //import meteoPromesse from "./meteo-data-strapi.js"
+import * as mark from "./marked.min.js"
 
 ////////////
 // VARIABLES
@@ -35,7 +36,7 @@ function buildSvg(lvl) {
 
 
 function md2html(md) {
-    //console.log(marked(md));
+    // console.log(marked(md));
     var description = ""
     if (null != md) {
         description = md
@@ -44,11 +45,11 @@ function md2html(md) {
 }
 
 function triLibelleASC(a, b) {
-    return a.attributes.libelle.localeCompare(b.attributes.libelle)
+    return a.libelle.localeCompare(b.libelle)
 }
 
 function triQosDESC(a, b) {
-    return (b.attributes.qualiteDeService.data.attributes.key - a.attributes.qualiteDeService.data.attributes.key)
+    return (b.qualiteDeService.key - a.qualiteDeService.key)
 }
 
 
@@ -68,9 +69,9 @@ if (Array.prototype.forEach === undefined) {
 //document.querySelector("#modification").innerHTML+=`${meteo.datemaj}`
 
 
-//////////// 
+////////////
 // METEO
-//////////// 
+////////////
 
     /*
     ${service["description"]}
@@ -81,52 +82,51 @@ if (Array.prototype.forEach === undefined) {
     */
 
 
-    fetch('http://localhost:1337/api/services?populate=*')
+    fetch('https://www.toutatice.fr/strapi/services')
         .then(response => response.json())
-        .then(jsonResponse => {
+        .then(data => {
                 //console.log(data)
-                const tableau = jsonResponse.data
-                const tabdate = jsonResponse.data
+            const tableau = data
+            const tabdate = data
 
                 document.querySelector("#modification").innerHTML += "Dernière mise à jour : "
-                const lastUpdatedDate = new Date(Math.max(...tabdate.map((e) => new Date(e.attributes.updatedAt).getTime())))
+            const lastUpdatedDate = new Date(Math.max(...tabdate.map((e) => new Date(e.updated_at).getTime())))
                 document.querySelector("#modification").innerHTML += lastUpdatedDate.toLocaleString('fr-fr')
 
                 // Tri
-                tableau.sort(triLibelleASC);
-                tableau.sort(triQosDESC);
+            tableau.sort(triLibelleASC);
+            tableau.sort(triQosDESC);
 
                 tableau.forEach((service) => {
-                        const qualiteDeService = service.attributes.qualiteDeService.data.attributes.key
-                        document.querySelector("#meteo-inner").innerHTML += `
+                    document.querySelector("#meteo-inner").innerHTML += `
             <div class="col-lg-3">
               <!-- Tuile -->
-              <div class="tuile tuile-${qualiteDeService} h-100">
+              <div class="tuile tuile-${service["qualiteDeService"].key} h-100">
               
-                <div class="tuile-inner-${qualiteDeService} h-100">
+                <div class="tuile-inner-${service["qualiteDeService"].key} h-100">
 
                   <div class="row">
 
                     <div class="col-md-12 text-center">
-                      ${buildSvg(qualiteDeService)} 
+                      ${buildSvg(service["qualiteDeService"].key)} 
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-12 text-center">
-                      <h3>${service.attributes["libelle"]}</h3>
+                      <h3>${service["libelle"]}</h3>
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-md-12 text-center tuile-qos-${qualiteDeService}">
-                      <span>${service.attributes.qualiteDeService.data.attributes.libelle}</span>
+                    <div class="col-md-12 text-center tuile-qos-${service["qualiteDeService"].key}">
+                      <span>${service["qualiteDeService"].libelle}</span>
                     </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-12">
-                      <div class="card-text">${md2html(service.attributes["description"])}</div>
+                      <div class="card-text">${md2html(service["description"])}</div>
                     </div>
                   </div>
 

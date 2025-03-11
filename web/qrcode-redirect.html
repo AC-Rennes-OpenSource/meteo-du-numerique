@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // URLs des stores
+            const urls = {
+                android: "https://play.google.com/store/apps/details?id=fr.acrennes.meteo_du_numerique",
+                ios: "https://apps.apple.com/fr/app/m%C3%A9t%C3%A9o-du-num%C3%A9rique/id6738698333",
+                fallback: "https://meteo-du-numerique.ac-rennes.fr" // URL pour les non-mobiles
+            };
+
+            // Fonction pour détecter l'appareil via le User-Agent
+            function detectDevice() {
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+                if (/android/i.test(userAgent)) {
+                    return "android";
+                } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                    return "ios";
+                } else {
+                    return "fallback";
+                }
+            }
+
+            // Redirection basée sur l'appareil
+            const deviceType = detectDevice();
+            window.location.href = urls[deviceType];
+        });
+    </script>
+</head>
+<body>
+<!-- Page vide, tout se passe via JS -->
+</body>
+</html>
