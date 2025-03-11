@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="description" content="">
+    <meta name="author" content="DSII - Académie de Rennes">
+    <link rel="icon" href="images/meteo-icon.png" type="image/x-icon">
+    <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="./css/meteo.css" rel="stylesheet">
+    <title>Météo du numérique</title>
+
+    <!-- Matomo -->
+    <script type="text/javascript">
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function () {
+            var u = "https://stats.ac-rennes.fr/";
+            _paq.push(['setTrackerUrl', u + 'matomo.php']);
+            _paq.push(['setSiteId', '2']);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.src = u + 'matomo.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+
+</head>
+<body>
+
+<main role="main">
+
+    <section class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="d-none d-lg-block col-lg-2 align-self-center"><img
+                        src="./images/logo_academie.jpg"></div>
+                <div class="col-lg-8 align-self-center">
+                    <img src="./images/meteo-icon.png" style="width:96px">
+                    <h1 class="">Météo du numérique</h1>
+                    <p class="text-muted">Retrouvez en continu la m&eacute;t&eacute;o des principaux
+                        services num&eacute;riques
+                        de l'acad&eacute;mie.</p>
+                    <p class="text-muted">
+                    <div id="modification"></div>
+                    </p>
+                </div>
+                <div class="col-lg-2 align-self-left text-muted" style="margin-top: 10px">
+                    <p class="text-muted">Application disponible sur Android et iOS<br><img
+                            src="./images/qrcode.png"
+                            style="width:150px"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="meteo">
+        <div id="meteo-inner" class="row"></div>
+    </div>
+
+</main>
+
+<footer class="text-muted">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <a href="https://meteo-du-numerique.ac-rennes.fr/politique-de-confidentialite"
+                   target="_blank"
+                   class="text-left text-secondary">Politique
+                    de confidentialité</a>
+            </div>
+            <div class="col-sm">
+                <p class="text-center">&copy; Acad&eacute;mie de Rennes</p>
+            </div>
+            <div class="col-sm">
+                <p class="text-right">
+                    <a href="#">Retour en haut de page</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="d-lg-none align-self-center"><img src="./images/logo_academie.jpg"></div>
+</footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script>
+    window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+</script>
+<!--script src="../../assets/js/vendor/popper.min.js"></script-->
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+<script type="module" src="./js/meteo-strapi.js"></script>
+</body>
+
+</html>
