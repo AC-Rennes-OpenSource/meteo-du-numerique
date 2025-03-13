@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemePreferences {
+class SavedPreferences {
   static const _themeKey = "themeMode";
   static const _showBetaFeaturesKey = "showBetaFeatures";
 

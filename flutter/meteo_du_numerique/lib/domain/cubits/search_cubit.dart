@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class SearchState extends Equatable {
   const SearchState();
@@ -22,4 +23,26 @@ class SearchQueryUpdated extends SearchState {
 
   @override
   List<Object> get props => [query];
+}
+
+class SearchCubit extends Cubit<SearchState> {
+  SearchCubit() : super(SearchClosed());
+
+  void openSearchBar() {
+    emit(SearchOpened());
+  }
+
+  void closeSearchBar() {
+    emit(SearchClosed());
+  }
+
+  void updateSearchQuery(String query) {
+    emit(SearchQueryUpdated(query));
+  }
+
+  void clearAll() {
+    emit(ClearedAll());
+    updateSearchQuery('');
+    closeSearchBar();
+  }
 }

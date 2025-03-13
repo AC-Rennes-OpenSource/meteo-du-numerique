@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/presentation/theme/theme_event.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../domain/blocs/theme/theme_bloc.dart';
-import '../../../domain/blocs/theme/theme_state.dart';
-
+import '../../../domain/cubits/theme_cubit.dart';
 
 class SettingsBottomSheet extends StatefulWidget {
   const SettingsBottomSheet({super.key});
@@ -39,9 +36,9 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final themeBloc = BlocProvider.of<ThemeBloc>(context);
+    final themeCubit = BlocProvider.of<ThemeCubit>(context);
 
-    return BlocBuilder<ThemeBloc, ThemeState>(
+    return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.all(10.0),
@@ -53,21 +50,21 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                 groupValue: state.currentTheme,
                 title: 'Mode clair',
                 icon: Icons.light_mode,
-                themeBloc: themeBloc,
+                themeCubit: themeCubit,
               ),
               _buildRadioListTile(
                 value: ThemeEvent.toggleDark,
                 groupValue: state.currentTheme,
                 title: 'Mode sombre',
                 icon: Icons.dark_mode,
-                themeBloc: themeBloc,
+                themeCubit: themeCubit,
               ),
               _buildRadioListTile(
                 value: ThemeEvent.toggleSystem,
                 groupValue: state.currentTheme,
                 title: 'Mode de l\'appareil',
                 icon: Icons.mobile_friendly,
-                themeBloc: themeBloc,
+                themeCubit: themeCubit,
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
@@ -81,7 +78,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                 secondary: const Icon(Icons.warning_amber),
                 value: state.showForecasts,
                 onChanged: (bool newValue) {
-                  themeBloc.add(ThemeEvent.toggleForecastsVisibility);
+                  themeCubit.toggleForecastsVisibility();
                 },
               ),
               // Padding(
@@ -109,7 +106,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
     required ThemeEvent groupValue,
     required String title,
     required IconData icon,
-    required ThemeBloc themeBloc,
+    required ThemeCubit themeCubit,
   }) {
     return RadioListTile<ThemeEvent>(
       value: value,
@@ -118,7 +115,20 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
       secondary: Icon(icon),
       onChanged: (ThemeEvent? newValue) {
         if (newValue != null) {
-          themeBloc.add(newValue);
+          switch (newValue) {
+            case ThemeEvent.toggleLight:
+              themeCubit.toggleLightTheme();
+              break;
+            case ThemeEvent.toggleDark:
+              themeCubit.toggleDarkTheme();
+              break;
+            case ThemeEvent.toggleSystem:
+              themeCubit.toggleSystemTheme();
+              break;
+            case ThemeEvent.toggleForecastsVisibility:
+              themeCubit.toggleForecastsVisibility();
+              break;
+          }
         }
       },
     );

@@ -4,15 +4,14 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/presentation/theme/theme_event.dart';
 
 import '../../../../domain/blocs/digital_services/digital_services_bloc.dart';
 import '../../../../domain/blocs/digital_services/digital_services_event.dart';
 import '../../../../domain/blocs/digital_services/digital_services_state.dart';
 import '../../../../domain/blocs/forecasts/forecasts_bloc.dart';
 import '../../../../domain/blocs/forecasts/forecasts_event.dart';
-import '../../../../domain/blocs/theme/theme_bloc.dart';
 import '../../../../domain/cubits/app_cubit.dart';
+import '../../../../domain/cubits/theme_cubit.dart';
 import '../../../common/widgets/app_bar/app_bar.dart';
 import '../../../common/widgets/search_bar/custom_search_bar.dart';
 import '../../../common/widgets/theme_switch/theme_switch.dart';
@@ -77,7 +76,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       _refreshAll(context);
 
       // Vérifier si les prévisions sont désactivées et forcer l'onglet Aujourd'hui si nécessaire
-      final showForecasts = context.read<ThemeBloc>().state.showForecasts;
+      final showForecasts = context.read<ThemeCubit>().state.showForecasts;
       if (!showForecasts && _tabController.index == 1) {
         _tabController.animateTo(0);
       }
@@ -86,7 +85,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
 
   @override
   Widget build(BuildContext context) {
-    _showFeature = context.watch<ThemeBloc>().state.showForecasts;
+    _showFeature = context.watch<ThemeCubit>().state.showForecasts;
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
       appBar: ThemedAppBar(
@@ -126,10 +125,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
               controller: _tabController,
               physics: const ClampingScrollPhysics(), // Pour éviter les rebonds mais permettre le swipe
               children: [
-                _buildTabContent(context, isForecasts: false),
-                _buildTabContent(context, isForecasts: true),
-              ]
-            )
+                  _buildTabContent(context, isForecasts: false),
+                  _buildTabContent(context, isForecasts: true),
+                ])
           : _buildTabContent(context, isForecasts: false), // Si les prévisions sont désactivées, montrer uniquement l'onglet "Aujourd'hui"
       floatingActionButton: CustomSearchBar(tabController: _tabController),
     );
@@ -173,7 +171,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black.withOpacity(0.9) : Colors.white.withOpacity(0.9),
       pinned: false,
       floating: true,
-      snap: true, 
+      snap: true,
       primary: true,
       expandedHeight: 0,
       title: Column(
@@ -215,8 +213,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                 foregroundColor: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            if (((servicesBloc.currentFilterCriteria?.isNotEmpty ?? false) || 
-                (servicesBloc.currentCategoryFilters?.isNotEmpty ?? false)) && !isForecasts)
+            if (((servicesBloc.currentFilterCriteria?.isNotEmpty ?? false) || (servicesBloc.currentCategoryFilters?.isNotEmpty ?? false)) &&
+                !isForecasts)
               Positioned(
                 right: 0,
                 top: 5,
@@ -311,18 +309,17 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
     super.didUpdateWidget(oldWidget);
 
     // Si les prévisions sont désactivées, forcer l'onglet Services
-    final showForecasts = context.read<ThemeBloc>().state.showForecasts;
+    final showForecasts = context.read<ThemeCubit>().state.showForecasts;
     if (!showForecasts && _tabController.index == 1) {
       _tabController.animateTo(0);
 
       // Mise à jour du state pour informer l'AppCubit du changement d'onglet
       context.read<AppCubit>().changeTab(0);
-
     }
   }
 
   void _showHiddenMenu(BuildContext context) {
-    final themeBloc = context.read<ThemeBloc>();
+    final themeCubit = context.read<ThemeCubit>();
 
     showModalBottomSheet(
       context: context,
@@ -366,11 +363,11 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
-                        themeBloc.add(ThemeEvent.toggleForecastsVisibility);
+                        themeCubit.toggleForecastsVisibility();
                         Navigator.pop(context);
                       },
                       icon: Icon(Icons.check),
-                      label: Text(themeBloc.state.showForecasts ? 'Désactiver' : 'Activer'),
+                      label: Text(themeCubit.state.showForecasts ? 'Désactiver' : 'Activer'),
                       style: ElevatedButton.styleFrom(
                         side: BorderSide(color: Colors.greenAccent, width: 2),
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
