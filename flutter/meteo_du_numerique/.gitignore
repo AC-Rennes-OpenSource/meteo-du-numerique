@@ -160,3 +160,5 @@ coverage/
 /build_output/
 /docker/
 
+/lib/models/prevision_model_2.dart
+/lib/main_.dart
