@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -130,10 +130,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    if (!kIsWeb) {
-      _requestPermissions();
-      _configureFirebaseListeners();
-    }
+    _requestPermissions();
+    _configureFirebaseListeners();
     _loadRemoteConfig();
   }
 
@@ -220,9 +218,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // Afficher un écran de chargement pendant la récupération de la configuration
     if (!isConfigLoaded) {
-      return const MaterialApp(
+      return MaterialApp(
         home: Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+          body: Center(
+            child: Platform.isIOS
+                ? Center(child: CupertinoActivityIndicator(radius: 15))
+                : Center(child: CircularProgressIndicator(color: Colors.greenAccent)),
+          ),
         ),
       );
     }
