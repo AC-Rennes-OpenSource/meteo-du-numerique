@@ -59,7 +59,7 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSPushNotificationsUsageDescription</key>
-	<string>Nous utilisons les notifications pour vous tenir informé d&apos;éventuels dysfonctionnements ou perturbations sur un service numérique.</string>
+	<key>NSPushNotificationsUsageDescription</key> <!-- Ajout pour demander l'accès aux notifications -->
+	<string>Nous utilisons les notifications pour vous tenir informé d'éventuels dysfonctionnements ou perturbations sur un service numérique.</string>
 </dict>
 </plist>

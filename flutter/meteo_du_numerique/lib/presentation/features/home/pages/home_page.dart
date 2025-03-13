@@ -76,7 +76,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
     if (state == AppLifecycleState.resumed) {
       _refreshAll(context);
 
-      // Vérifier si les prévisions sont désactivées et forcer l'onglet Services si nécessaire
+      // Vérifier si les prévisions sont désactivées et forcer l'onglet Aujourd'hui si nécessaire
       final showForecasts = context.read<ThemeBloc>().state.showForecasts;
       if (!showForecasts && _tabController.index == 1) {
         _tabController.animateTo(0);
@@ -113,7 +113,7 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                   ),
                   Tab(
                     child: Text(
-                      'Prévisions',
+                      'À venir',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),

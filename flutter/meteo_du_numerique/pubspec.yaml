@@ -63,6 +63,7 @@ dependencies:
   device_info_plus: any
   path_provider: any
   timezone: any
+  package_info_plus: ^8.3.0
 dev_dependencies:
 
   build_runner: ^2.4.14
