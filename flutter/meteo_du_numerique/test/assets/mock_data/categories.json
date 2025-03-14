@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Communication",
+      "description": "Services de communication et d'échange",
+      "color": "#4A6DE5"
+    },
+    {
+      "id": 2,
+      "name": "Infrastructure",
+      "description": "Services d'infrastructure technique",
+      "color": "#FF9800"
+    },
+    {
+      "id": 3,
+      "name": "Pédagogie",
+      "description": "Services pédagogiques",
+      "color": "#9C27B0"
+    },
+    {
+      "id": 4,
+      "name": "Administratif",
+      "description": "Services pour l'administration",
+      "color": "#607D8B"
+    },
+    {
+      "id": 5,
+      "name": "Ressources",
+      "description": "Services de ressources et contenus",
+      "color": "#009688"
+    }
+  ]
+}

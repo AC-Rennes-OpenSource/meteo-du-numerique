@@ -1,0 +1,99 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Maintenance ENT",
+      "description": "Maintenance planifiée de l'Espace Numérique de Travail",
+      "startDate": "2023-04-01T22:00:00.000Z",
+      "endDate": "2023-04-02T04:00:00.000Z",
+      "affectedServices": [
+        3
+      ],
+      "category": {
+        "id": 3,
+        "name": "Pédagogie",
+        "description": "Services pédagogiques",
+        "color": "#9C27B0"
+      },
+      "status": "scheduled",
+      "createdAt": "2023-03-15T08:30:00.000Z",
+      "updatedAt": "2023-03-15T08:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Mise à jour Serveurs Messagerie",
+      "description": "Mise à jour des serveurs de messagerie avec interruption de service minimale",
+      "startDate": "2023-04-08T20:00:00.000Z",
+      "endDate": "2023-04-08T22:00:00.000Z",
+      "affectedServices": [
+        1
+      ],
+      "category": {
+        "id": 1,
+        "name": "Communication",
+        "description": "Services de communication et d'échange",
+        "color": "#4A6DE5"
+      },
+      "status": "scheduled",
+      "createdAt": "2023-03-20T10:15:00.000Z",
+      "updatedAt": "2023-03-20T10:15:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Migration Base de Données",
+      "description": "Migration de la base de données du portail d'applications vers une nouvelle infrastructure",
+      "startDate": "2023-04-15T18:00:00.000Z",
+      "endDate": "2023-04-16T08:00:00.000Z",
+      "affectedServices": [
+        2
+      ],
+      "category": {
+        "id": 2,
+        "name": "Infrastructure",
+        "description": "Services d'infrastructure technique",
+        "color": "#FF9800"
+      },
+      "status": "scheduled",
+      "createdAt": "2023-03-25T14:45:00.000Z",
+      "updatedAt": "2023-03-25T14:45:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Déploiement Nouvelle Version",
+      "description": "Déploiement d'une nouvelle version du service de visioconférence avec de nouvelles fonctionnalités",
+      "startDate": "2023-04-22T20:00:00.000Z",
+      "endDate": "2023-04-22T22:00:00.000Z",
+      "affectedServices": [
+        4
+      ],
+      "category": {
+        "id": 1,
+        "name": "Communication",
+        "description": "Services de communication et d'échange",
+        "color": "#4A6DE5"
+      },
+      "status": "scheduled",
+      "createdAt": "2023-03-30T09:30:00.000Z",
+      "updatedAt": "2023-03-30T09:30:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Maintenance Gestionnaire Documentation",
+      "description": "Maintenance programmée du gestionnaire de documentation pour optimisation de performances",
+      "startDate": "2023-04-29T08:00:00.000Z",
+      "endDate": "2023-04-29T12:00:00.000Z",
+      "affectedServices": [
+        5
+      ],
+      "category": {
+        "id": 4,
+        "name": "Administratif",
+        "description": "Services pour l'administration",
+        "color": "#607D8B"
+      },
+      "status": "scheduled",
+      "createdAt": "2023-04-05T11:20:00.000Z",
+      "updatedAt": "2023-04-05T11:20:00.000Z"
+    }
+  ]
+}

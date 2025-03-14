@@ -1,0 +1,109 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Service de Messagerie Académique",
+      "description": "Service de messagerie pour le personnel académique",
+      "url": "https://messagerie.ac-rennes.fr",
+      "category": {
+        "id": 1,
+        "name": "Communication",
+        "description": "Services de communication et d'échange",
+        "color": "#4A6DE5"
+      },
+      "qualityOfService": {
+        "id": 1,
+        "name": "Nominal",
+        "description": "Tous les systèmes fonctionnent normalement",
+        "color": "#4CAF50"
+      },
+      "isVisible": true,
+      "createdAt": "2023-01-15T08:30:00.000Z",
+      "updatedAt": "2023-01-15T08:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "name": "Portail Applications",
+      "description": "Portail d'accès aux applications académiques",
+      "url": "https://portail.ac-rennes.fr",
+      "category": {
+        "id": 2,
+        "name": "Infrastructure",
+        "description": "Services d'infrastructure technique",
+        "color": "#FF9800"
+      },
+      "qualityOfService": {
+        "id": 2,
+        "name": "Dégradé",
+        "description": "Le service fonctionne mais présente des ralentissements",
+        "color": "#FF9800"
+      },
+      "isVisible": true,
+      "createdAt": "2023-01-15T08:30:00.000Z",
+      "updatedAt": "2023-01-15T08:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Espace Numérique de Travail",
+      "description": "Environnement numérique d'apprentissage",
+      "url": "https://ent.ac-rennes.fr",
+      "category": {
+        "id": 3,
+        "name": "Pédagogie",
+        "description": "Services pédagogiques",
+        "color": "#9C27B0"
+      },
+      "qualityOfService": {
+        "id": 3,
+        "name": "Critique",
+        "description": "Service indisponible ou fortement perturbé",
+        "color": "#F44336"
+      },
+      "isVisible": true,
+      "createdAt": "2023-01-15T08:30:00.000Z",
+      "updatedAt": "2023-01-15T08:30:00.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Service de Visioconférence",
+      "description": "Service de visioconférence pour les réunions et classes virtuelles",
+      "url": "https://visio.ac-rennes.fr",
+      "category": {
+        "id": 1,
+        "name": "Communication",
+        "description": "Services de communication et d'échange",
+        "color": "#4A6DE5"
+      },
+      "qualityOfService": {
+        "id": 1,
+        "name": "Nominal",
+        "description": "Tous les systèmes fonctionnent normalement",
+        "color": "#4CAF50"
+      },
+      "isVisible": true,
+      "createdAt": "2023-01-15T08:30:00.000Z",
+      "updatedAt": "2023-01-15T08:30:00.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Gestionnaire de Documentation",
+      "description": "Service pour le partage et la gestion des documents",
+      "url": "https://docs.ac-rennes.fr",
+      "category": {
+        "id": 4,
+        "name": "Administratif",
+        "description": "Services pour l'administration",
+        "color": "#607D8B"
+      },
+      "qualityOfService": {
+        "id": 4,
+        "name": "Maintenance",
+        "description": "Service en maintenance programmée",
+        "color": "#9E9E9E"
+      },
+      "isVisible": true,
+      "createdAt": "2023-01-15T08:30:00.000Z",
+      "updatedAt": "2023-01-15T08:30:00.000Z"
+    }
+  ]
+}
