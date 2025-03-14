@@ -1,8 +1,6 @@
 import {Service} from "../type/entity/Service.ts";
 import {useQuery} from "@tanstack/react-query";
-import {Header} from "../component/Header.tsx";
 import {ServiceCard} from "../component/ServiceCard.tsx";
-import {Footer} from "../component/Footer.tsx";
 import {API_SERVICES_ENDPOINT} from "../api/Endpoints.ts";
 
 
@@ -21,6 +19,7 @@ export function MainPage() {
         return null //todo
     }
 
+
     const services = (data ?? [])
         .sort((a, b) => a.libelle.localeCompare(b.libelle))
         .sort((a, b) => b.qualiteDeService.key - a.qualiteDeService.key)
@@ -28,13 +27,11 @@ export function MainPage() {
 
     return (
         <>
-            <Header services={services}/>
             <div id="meteo-inner" className="row" style={{margin: "0px"}}>
                 {services.map(service =>
                     <ServiceCard key={service.id} service={service}/>
                 )}
             </div>
-            <Footer/>
         </>
     )
 

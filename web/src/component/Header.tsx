@@ -1,8 +1,4 @@
-import {Service} from "../type/entity/Service.ts";
-
-export function Header({services}: { services: Service [] }) {
-
-    const latestUpdate = new Date(Math.max(...services.map((e) => new Date(e.updated_at).getTime())))
+export function Header({latestUpdate}: { latestUpdate?: Date }) {
 
     return (<>
         <section className="text-center">
@@ -19,9 +15,8 @@ export function Header({services}: { services: Service [] }) {
                             {"Retrouvez en continu la météo des principaux services numériques de l'académie."}
                         </p>
                         <p className="text-muted"></p>
-                        {services && <div id="modification">
+                        {latestUpdate && <div id="modification">
                             {"Dernière mise à jour : " + latestUpdate.toLocaleString('fr-fr')}
-                            {/*    //todo fix latest update */}
                         </div>}
                         <p></p>
                     </div>
