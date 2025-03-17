@@ -1,0 +1,36 @@
+{
+  "configurations": [
+    {
+      "directories": [
+        {
+          "build": ".",
+          "jsonFile": "directory-.-RelWithDebInfo-f5ebdc15457944623624.json",
+          "minimumCMakeVersion": {
+            "string": "3.6.0"
+          },
+          "projectIndex": 0,
+          "source": "."
+        }
+      ],
+      "name": "RelWithDebInfo",
+      "projects": [
+        {
+          "directoryIndexes": [
+            0
+          ],
+          "name": "Project"
+        }
+      ],
+      "targets": []
+    }
+  ],
+  "kind": "codemodel",
+  "paths": {
+    "build": "/Users/lafabrique/StudioProjects/meteo-du-numerique-acrennes/flutter/meteo_du_numerique/android/app/.cxx/RelWithDebInfo/6b6j5i37/x86_64",
+    "source": "/Users/lafabrique/developpement/flutter/packages/flutter_tools/gradle/src/main/groovy"
+  },
+  "version": {
+    "major": 2,
+    "minor": 3
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "buildFiles": [
+    "/Users/lafabrique/developpement/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/lafabrique/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/lafabrique/StudioProjects/meteo-du-numerique-acrennes/flutter/meteo_du_numerique/android/app/.cxx/RelWithDebInfo/6b6j5i37/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/lafabrique/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/lafabrique/StudioProjects/meteo-du-numerique-acrennes/flutter/meteo_du_numerique/android/app/.cxx/RelWithDebInfo/6b6j5i37/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {},
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/lafabrique/Library/Android/sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/Users/lafabrique/Library/Android/sdk/ndk/26.3.11579264/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": []
+}
