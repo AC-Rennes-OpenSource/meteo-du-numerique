@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_event.dart';
+import '../../bloc/service_num_bloc/services_num_bloc.dart';
+import '../../bloc/service_num_bloc/services_num_event.dart';
 import 'custom_checkbox.dart';
 
 // TODO : composant unique pour les deux tabs??

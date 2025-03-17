@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 
-import '../../bloc/items_bloc/services_num_bloc.dart';
-import '../../bloc/items_bloc/services_num_event.dart';
-import '../../bloc/items_bloc/services_num_state.dart';
 import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
 import '../../bloc/previsions_bloc/previsions_event.dart';
+import '../../bloc/service_num_bloc/services_num_bloc.dart';
+import '../../bloc/service_num_bloc/services_num_event.dart';
+import '../../bloc/service_num_bloc/services_num_state.dart';
 import '../../cubit/app_cubit.dart';
 import '../decorations/rounded_rect_tab_indicator.dart';
 import '../widgets/app_bar.dart';
