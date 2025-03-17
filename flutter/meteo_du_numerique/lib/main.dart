@@ -11,7 +11,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
-import 'package:meteo_du_numerique/bloc/service_num_bloc/services_num_bloc.dart';
+import 'package:meteo_du_numerique/bloc/services_num_bloc/services_num_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_state.dart';
 import 'package:meteo_du_numerique/config/theme_preferences.dart';

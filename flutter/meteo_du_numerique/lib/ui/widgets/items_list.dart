@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/ui/widgets/service_card_widget.dart';
 
-import '../../bloc/service_num_bloc/services_num_bloc.dart';
-import '../../bloc/service_num_bloc/services_num_state.dart';
+import '../../bloc/services_num_bloc/services_num_bloc.dart';
+import '../../bloc/services_num_bloc/services_num_state.dart';
 
 class ItemsList extends StatelessWidget {
   const ItemsList({super.key});
