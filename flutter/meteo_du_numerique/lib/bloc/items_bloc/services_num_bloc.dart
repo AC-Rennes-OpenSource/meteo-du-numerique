@@ -39,7 +39,8 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
   }
 
   Future<void> _onFetchItems(FetchServicesNumEvent event, Emitter<ServicesNumState> emit) async {
-    debugPrint("_onFetchItems __________________________");
+    //TODO
+    debugPrint("here _onFetchItems __________________________");
 
     if (event.showIndicator) {
       emit(ServicesNumLoading());
@@ -142,6 +143,7 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
     List<ActualiteA> servicesList;
 
     servicesList = await apiService.fetchItems();
+
     // TODO mock/stub
     // servicesList = await apiService.fetchMockItems();
     // set lastUpdate
@@ -162,19 +164,38 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
       servicesList = itemupdate;
     }
 
+    // tri par ordre alphabetique a --> z
+    servicesList
+        .sort((a, b) => removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase())));
+
     // sorting
     if (currentSortCriteria != null) {
       if (currentSortCriteria == "qualiteDeServiceId") {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((a, b) {
+            // Comparaison par niveauQos (ordre croissant)
+            int result = a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos);
+
+            // Si niveauQos est identique, trier par ordre alphabétique sur le libellé
+            if (result == 0) {
+              return removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase()));
+            }
+            return result;
+          });
         } else {
-          servicesList.sort((b, a) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((a, b) {
+            // Comparaison par niveauQos (ordre croissant)
+            int result = b.qualiteDeService!.niveauQos.compareTo(a.qualiteDeService!.niveauQos);
+
+            // Si niveauQos est identique, trier par ordre alphabétique sur le libellé
+            if (result == 0) {
+              return removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase()));
+            }
+            return result;
+          });
         }
       } else {
-        if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
-        } else {
+        if (currentSortOrder == 'desc') {
           servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
               .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
         }
