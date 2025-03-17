@@ -117,18 +117,40 @@ class ServicesNumBloc extends Bloc<ServicesNumEvent, ServicesNumState> {
       servicesList = itemupdate;
     }
 
+    // tri par défaut par ordre alphabetique a --> z
+    servicesList
+        .sort((a, b) => removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase())));
+
     // sorting
     if (currentSortCriteria != null) {
       if (currentSortCriteria == "qualiteDeServiceId") {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((a, b) {
+            // Comparaison par niveauQos (ordre croissant)
+            int result = a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos);
+
+            // Si niveauQos est identique, trier par ordre alphabétique sur le libellé
+            if (result == 0) {
+              return removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase()));
+            }
+            return result;
+          });
         } else {
-          servicesList.sort((b, a) => a.qualiteDeService!.niveauQos.compareTo(b.qualiteDeService!.niveauQos));
+          servicesList.sort((a, b) {
+            // Comparaison par niveauQos (ordre croissant)
+            int result = b.qualiteDeService!.niveauQos.compareTo(a.qualiteDeService!.niveauQos);
+
+            // Si niveauQos est identique, trier par ordre alphabétique sur le libellé
+            if (result == 0) {
+              return removeDiacritics(a.getField("libelle").toLowerCase()).compareTo(removeDiacritics(b.getField("libelle").toLowerCase()));
+            }
+            return result;
+          });
         }
       } else {
         if (currentSortOrder == 'asc') {
-          servicesList.sort((a, b) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
-              .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
+          servicesList.sort((b, a) => removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())
+              .compareTo(removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())));
         } else {
           servicesList.sort((b, a) => removeDiacritics(a.getField(currentSortCriteria!).toLowerCase())
               .compareTo(removeDiacritics(b.getField(currentSortCriteria!).toLowerCase())));
