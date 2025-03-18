@@ -13,3 +13,4 @@ key.properties
 **/*.jks
 **/upload-certificate.pem
 **/README.md
+**/.cxx
