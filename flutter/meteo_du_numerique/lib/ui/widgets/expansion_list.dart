@@ -6,10 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 import 'package:meteo_du_numerique/ui/widgets/prevision_card_widget.dart';
 
-import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
+import '../../bloc/previsions_bloc/previsions_bloc.dart';
 import '../../bloc/previsions_bloc/previsions_state.dart';
 import '../../models/prevision_model.dart';
-import '../../models/service_num_model.dart';
 import '../../utils.dart';
 
 class ExpansionList extends StatelessWidget {
@@ -19,17 +18,11 @@ class ExpansionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // context.read<PrevisionsBloc>().add(FetchPrevisionsEvent());
-
     return BlocBuilder<PrevisionsBloc, PrevisionsState>(
-
       builder: (context, state) {
-
         if (state is PrevisionsLoading) {
           return SliverFillRemaining(
-            child: Platform.isIOS
-                ? const Center(child: CupertinoActivityIndicator(radius: 15))
-                : const Center(child: CircularProgressIndicator()),
+            child: Platform.isIOS ? const Center(child: CupertinoActivityIndicator(radius: 15)) : const Center(child: CircularProgressIndicator()),
           );
         } else if (state is PrevisionsLoaded) {
           if (dayPrevison) {
@@ -44,7 +37,7 @@ class ExpansionList extends StatelessWidget {
                           ? Border.all(
                               // color: Theme.of(context).colorScheme.onSecondaryContainer,
                               // width: 1,
-                        color: Colors.teal.withOpacity(0.3),
+                              color: Colors.teal.withOpacity(0.3),
                               width: 1,
                             )
                           : null),
@@ -57,8 +50,7 @@ class ExpansionList extends StatelessWidget {
                     expansionCallback: (int index, bool isExpanded) {
                       context.read<PrevisionsBloc>().add(ToggleDayPrevisionGroupEvent());
                     },
-                    children:
-                    state.dayPrevisions.map<ExpansionPanel>((PrevisionA prev) {
+                    children: state.dayPrevisions.map<ExpansionPanel>((Prevision prev) {
                       return ExpansionPanel(
                         canTapOnHeader: true,
                         backgroundColor: Colors.transparent,
@@ -142,27 +134,6 @@ class ExpansionList extends StatelessWidget {
           );
         }
       },
-    );
-  }
-}
-
-// Classe pour représenter un groupe de prévisions
-class PrevisionGroup {
-  final String dateDebut;
-  final List<Prevision> previsions;
-  bool isExpanded;
-
-  PrevisionGroup({
-    required this.dateDebut,
-    required this.previsions,
-    this.isExpanded = false,
-  });
-
-  PrevisionGroup copyWith({bool? isExpanded}) {
-    return PrevisionGroup(
-      dateDebut: dateDebut,
-      previsions: previsions,
-      isExpanded: isExpanded ?? this.isExpanded,
     );
   }
 }

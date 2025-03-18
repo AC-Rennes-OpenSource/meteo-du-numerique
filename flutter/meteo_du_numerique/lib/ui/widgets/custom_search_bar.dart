@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_event.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_state.dart';
@@ -49,7 +49,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _onTabChange() {
-    debugPrint('_onTabChange');
     if (_tabController.indexIsChanging) {
       if (context.read<SearchBarBloc>().state is ClearedAll) {
         searchQueries[0] = '';
@@ -65,8 +64,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   void _onTabChangeScroll() {
     final int newIndex = _tabController.index;
     if (newIndex != context.read<AppCubit>().state.tabIndex) {
-      debugPrint('_onTabChangeScroll');
-      // if (_tabController.indexIsChanging) {
       if (context.read<SearchBarBloc>().state is ClearedAll) {
         searchQueries[0] = '';
         searchQueries[1] = '';
@@ -80,7 +77,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
 
   void _updateSearchBar(int tabIndex) {
     String? currentQuery = searchQueries[tabIndex];
-    debugPrint(currentQuery);
+    // debugPrint(currentQuery);
     if (currentQuery != null && currentQuery.isNotEmpty) {
       context.read<SearchBarBloc>().add(OpenSearchBar());
       _searchController.text = currentQuery;
@@ -94,7 +91,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   void _triggerSearchUpdate(String query, int currentTabIndex) {
-    debugPrint('trigger search update $query');
     // int currentTabIndex = _tabController.index;
     searchQueries[currentTabIndex] = query;
 
@@ -163,7 +159,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
                       contentPadding: EdgeInsets.only(left: 16),
                     ),
                     onChanged: (value) {
-                      debugPrint('on changed $value');
                       _triggerSearchUpdate(value, _tabController.index);
                     },
                   ),

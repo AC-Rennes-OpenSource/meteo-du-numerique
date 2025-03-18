@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import '../../models/service_num_model.dart';
+import '../../models/prevision_model.dart';
 import '../../services/api_service.dart';
 import '../../utils.dart';
 import 'previsions_event.dart';
@@ -39,15 +39,11 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     if (event.showIndicator) {
       emit(PrevisionsLoading());
     }
-    // TODO : délai pour test
-    // await Future.delayed(const Duration(milliseconds: 1500));
 
     try {
-
       final previsions = await _getPrevisions();
-
       final dayPrevisions = previsions.where((objet) {
-        return Utils.estMemeJour(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
+        return Utils.isSameDay(objet.dateDebut, DateTime.now().subtract(const Duration(days: 0)));
       }).toList();
       final groupedPrevisions = _groupPrevisionsByMonthAndYear(previsions);
 
@@ -55,18 +51,14 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
       final expandedGroups = {for (var k in groupedPrevisions.keys) k: true};
 
       emit(PrevisionsLoaded(
-          isDayPanelOpen: isPanelOpen,
-          previsionsGroupedByMonth: groupedPrevisions,
-          expandedGroups: expandedGroups,
-          dayPrevisions: dayPrevisions));
-
+          isDayPanelOpen: isPanelOpen, previsionsGroupedByMonth: groupedPrevisions, expandedGroups: expandedGroups, dayPrevisions: dayPrevisions));
     } catch (e) {
       emit(PrevisionsError(message: e.toString()));
     }
   }
 
-  Map<String, List<PrevisionA>> _groupPrevisionsByMonthAndYear(List<PrevisionA> previsions) {
-    Map<String, List<PrevisionA>> grouped = {};
+  Map<String, List<Prevision>> _groupPrevisionsByMonthAndYear(List<Prevision> previsions) {
+    Map<String, List<Prevision>> grouped = {};
     for (var prevision in previsions) {
       DateTime date = prevision.dateDebut;
       String key = '${date.year}${date.month.toString().padLeft(2, '0')}'; // Format "YYYYMM"
@@ -183,57 +175,53 @@ class PrevisionsBloc extends Bloc<PrevisionsEvent, PrevisionsState> {
     add(FetchPrevisionsEvent());
   }
 
-  Future<List<PrevisionA>> _getPrevisions() async {
-    List<PrevisionA> previsionList;
+  Future<List<Prevision>> _getPrevisions() async {
+    List<Prevision> previsionList = await fetchPrevisionsV5();
 
-    // previsionList = await apiService.fetchPrevisions();
-    //
-    //
-    // // TODO mock/stub
-    // // previsionList = await apiService.fetchMockPrevisions();
-    //
+    // filtre les prévisions passées
+    previsionList.removeWhere((prev) => !prev.dateDebut.isAfter(DateTime.now()));
+
     // // Apply search filter
-    // if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
-    //   previsionList = previsionList
-    //       .where((prevision) => removeDiacritics(prevision.libelle.toLowerCase())
-    //           .contains(removeDiacritics(currentSearchQuery!.toLowerCase())))
-    //       .toList();
-    // }
-    //
-    // // Apply category filter
-    // if (currentFilterCriteria.isNotEmpty) {
-    //   List<PrevisionA> previsionsupdate = [];
-    //   for (var element in currentFilterCriteria) {
-    //     previsionsupdate.addAll(previsionList
-    //         .where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase())
-    //         .toList());
-    //   }
-    //   previsionList = previsionsupdate;
-    // }
-    //
-    // // Apply perio filter
-    // if (currentPeriode != 'all') {
-    //   DateTime now = DateTime.now();
-    //   DateTime today = DateTime(now.year, now.month, now.day - 1);
-    //
-    //   if (currentPeriode == 'semaine') {
-    //     previsionList = previsionList.where((prevision) {
-    //       return prevision.dateDebut.isAfter(today) &&
-    //           prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
-    //     }).toList();
-    //   } else if (currentPeriode == 'mois') {
-    //     previsionList = previsionList.where((prevision) {
-    //       return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
-    //     }).toList();
-    //   } else if (currentPeriode == 'semestre') {
-    //     previsionList = previsionList.where((prevision) {
-    //       return prevision.dateDebut.isAfter(today) &&
-    //           prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
-    //     }).toList();
-    //   }
-    // }
+    if (currentSearchQuery != null && currentSearchQuery!.isNotEmpty) {
+      previsionList = previsionList
+          .where((prevision) => Utils.normalizeText(prevision.libelle.toLowerCase()).contains(Utils.normalizeText(currentSearchQuery!.toLowerCase())))
+          .toList();
+    }
 
-    return [];
+    // Apply category filter
+    if (currentFilterCriteria.isNotEmpty) {
+      List<Prevision> previsionsupdate = [];
+      for (var element in currentFilterCriteria) {
+        previsionsupdate.addAll(previsionList.where((prevision) => prevision.categorieLibelle.toLowerCase() == element.toLowerCase()).toList());
+      }
+      previsionList = previsionsupdate;
+    }
 
+    // Apply perio filter
+    if (currentPeriode != 'all') {
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day - 1);
+
+      if (currentPeriode == 'semaine') {
+        previsionList = previsionList.where((prevision) {
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month, now.day + 7));
+        }).toList();
+      } else if (currentPeriode == 'mois') {
+        previsionList = previsionList.where((prevision) {
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + 2));
+        }).toList();
+      } else if (currentPeriode == 'semestre') {
+        previsionList = previsionList.where((prevision) {
+          return prevision.dateDebut.isAfter(today) && prevision.dateDebut.isBefore(DateTime(now.year, now.month + now.day + 180));
+        }).toList();
+      }
+    }
+
+    return previsionList;
+  }
+
+  Future<List<Prevision>> fetchPrevisionsV5() async {
+    List<Prevision> previsionList = await apiService.fetchPrevisionsv5();
+    return previsionList;
   }
 }

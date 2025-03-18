@@ -6,11 +6,11 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:markdown/markdown.dart' as md;
 
 import '../../bloc/theme_bloc/theme_bloc.dart';
-import '../../models/service_num_model.dart';
+import '../../models/prevision_model.dart';
 import '../../utils.dart';
 
 class PrevisionCardWidget extends StatelessWidget {
-  final PrevisionA prevision;
+  final Prevision prevision;
 
   const PrevisionCardWidget({super.key, required this.prevision});
 

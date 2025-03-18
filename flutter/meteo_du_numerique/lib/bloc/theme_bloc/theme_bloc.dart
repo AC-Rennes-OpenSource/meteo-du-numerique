@@ -21,14 +21,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       ThemeData themeData = state.themeData;
       ThemeMode themeMode = state.themeMode;
       String themePrefValue = prefs.getString(themePrefKey) ?? 'system';
-      bool showPrevision = prefs.getBool(prevPrefKey) ?? true;
+      bool showPrevision = prefs.getBool(prevPrefKey) ?? false;
 
       if (event == ThemeEvent.showPrevision) {
         showPrevision = !state.showPrevision;
         final themePreferences = ThemePreferences();
         themePreferences.setShowBetaFeatures(showPrevision);
         prefs.setBool(prevPrefKey, showPrevision);
-        debugPrint("prefs.getBool(prevPrefKey) : ${prefs.getBool(prevPrefKey)}");
         emit(ThemeState(themeData: state.themeData, themeMode: state.themeMode, currentTheme: state.currentTheme,
             showPrevision: showPrevision
         ));

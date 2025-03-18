@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../models/service_num_model.dart';
-import '../../models/service_num_model_old.dart';
+import '../../models/actualite_model.dart';
 
 abstract class ServicesNumState extends ChangeNotifier {}
 
@@ -10,11 +9,10 @@ class ServicesNumInitial extends ServicesNumState {}
 class ServicesNumLoading extends ServicesNumState {}
 
 class ServicesNumLoaded extends ServicesNumState {
-  final List<ActualiteA> servicesList;
+  final List<Actualite> servicesList;
   final DateTime? lastUpdate;
 
-  ServicesNumLoaded({required this.servicesList,this.lastUpdate});
-
+  ServicesNumLoaded({required this.servicesList, this.lastUpdate});
 }
 
 class ServicesNumError extends ServicesNumState {
@@ -23,22 +21,10 @@ class ServicesNumError extends ServicesNumState {
   ServicesNumError({required this.message});
 }
 
-class ServicesNumSorted extends ServicesNumState {
-  final String sortBy;
-  final List<ServiceNumOld> sortedItems;
-
-  ServicesNumSorted(this.sortBy, this.sortedItems);
-}
-
 class ServicesNumFiltered extends ServicesNumState {
   final bool showBadge;
 
-  // final String? filter;
-  // final List<ServiceNumOld>? filteredItems;
-
-  ServicesNumFiltered({this.showBadge = false}
-      // this.filter, this.filteredItems
-      );
+  ServicesNumFiltered({this.showBadge = false});
 
   ServicesNumState copyWith({bool? showBadge}) {
     return ServicesNumFiltered(

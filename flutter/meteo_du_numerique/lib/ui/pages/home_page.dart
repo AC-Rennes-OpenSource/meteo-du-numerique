@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
 
-import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
+import '../../bloc/previsions_bloc/previsions_bloc.dart';
 import '../../bloc/previsions_bloc/previsions_event.dart';
 import '../../bloc/services_num_bloc/services_num_bloc.dart';
 import '../../bloc/services_num_bloc/services_num_event.dart';
@@ -45,10 +45,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
     _refreshAll(context);
     if (!_isObserverAdded) {
       WidgetsBinding.instance.addObserver(this);
-      debugPrint("Ajout de l'observateur");
       _isObserverAdded = true;
     }
-
     _tabController = TabController(length: 2, vsync: this);
 
     _tabController.addListener(() {
@@ -77,32 +75,30 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
 
     switch (state) {
       case AppLifecycleState.inactive:
-        debugPrint("App inactive");
+        // debugPrint("App inactive");
         break;
       case AppLifecycleState.paused:
-        debugPrint("App en arrière-plan");
+        // debugPrint("App en arrière-plan");
         break;
       case AppLifecycleState.resumed:
         _refreshAll(context);
-        debugPrint("App au premier plan");
+        debugPrint("[Retour au premier plan] : rechargement données");
         break;
       case AppLifecycleState.detached:
-        debugPrint("App détachée");
+      // debugPrint("App détachée");
       case AppLifecycleState.hidden:
-        debugPrint("App hidden");
+      // debugPrint("App hidden");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     _showFeature = context.read<ThemeBloc>().state.showPrevision;
-    debugPrint("_showFeature : $_showFeature");
-
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
       appBar: ThemedAppBar(
         onTitleTap: _handleTap,
-        tabBar: _showFeature
+        tabBar: !_showFeature
             ? TabBar(
                 controller: _tabController,
                 overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
@@ -132,14 +128,12 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
               )
             : null,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        physics: _showFeature ? NeverScrollableScrollPhysics() : null,
-        children: [
-          _buildTabContent(context, isPrevisionsTab: false),
-          _buildTabContent(context, isPrevisionsTab: true),
-        ],
-      ),
+      body: !_showFeature
+          ? TabBarView(controller: _tabController, physics: _showFeature ? NeverScrollableScrollPhysics() : null, children: [
+              _buildTabContent(context, isPrevisionsTab: false),
+              _buildTabContent(context, isPrevisionsTab: true),
+            ])
+          : _buildTabContent(context, isPrevisionsTab: false),
       floatingActionButton: CustomSearchBar(tabController: _tabController),
     );
   }
@@ -392,10 +386,6 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       },
     );
   }
-}
-
-void _updateTabIndex(int index) {
-  debugPrint(index as String?);
 }
 
 void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {

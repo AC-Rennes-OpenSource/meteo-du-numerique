@@ -9,16 +9,21 @@ class Config {
   static Future<void> init() async {
     remoteConfig = FirebaseRemoteConfig.instance;
 
+    final String environment = dotenv.env['ENVIRONMENT'] ?? 'default';
+    debugPrint('[environment] : $environment');
+    debugPrint("[URL] : ${Config.baseUrl}${Config.urlAttributes}");
+
     // Définir les valeurs par défaut
     await remoteConfig.setDefaults(<String, dynamic>{
       'show_previsions': false,
+      'strapi_5': false,
     });
 
     try {
       // Récupérer et activer les valeurs depuis Remote Config
       final bool fetched = await remoteConfig.fetchAndActivate();
       debugPrint(
-          'Remote Config fetched: $fetched | show_previsions: ${remoteConfig.getBool('show_previsions')}');
+          '[Remote Config] fetched: $fetched | show_previsions: ${remoteConfig.getBool('show_previsions')} | strapi_5: ${remoteConfig.getBool('strapi_5')}');
     } catch (e) {
       debugPrint('Remote Config fetch failed: $e');
     }
@@ -26,33 +31,21 @@ class Config {
 
   /// Retourne l'attribut URL en fonction de la configuration actuelle
   static String get urlAttributes {
-
     final bool showPrevisions = remoteConfig.getBool('show_previsions');
-    final String? url = showPrevisions
-        ? dotenv.env['URL_ATTRIBUTES_V5']
-        : dotenv.env['URL_ATTRIBUTES_PROD'];
-
-    debugPrint(
-        'Config.urlAttributes: show_previsions=$showPrevisions | URL=$url');
-
+    final String? url = showPrevisions ? dotenv.env['URL_ATTRIBUTES_V5'] : dotenv.env['URL_ATTRIBUTES_PROD'];
     return url ?? '';
   }
 
   /// Retourne la base URL en fonction de l'environnement
   static String get baseUrl {
     final String environment = dotenv.env['ENVIRONMENT'] ?? 'default';
+
     String? url;
 
     switch (environment) {
       case 'development':
-        // url = kIsWeb
-        //     ? dotenv.env['BASE_URL_WEB']
-        //     :
-        // Platform.isAndroid
-        //     ? dotenv.env['BASE_URL_ANDROID']
-        //     : dotenv.env['BASE_URL_IOS'];
-      url = remoteConfig.getBool('show_previsions')? dotenv.env['BASE_URL_LOCAL']:dotenv.env['BASE_URL_PROD'];
-      break;
+        url = remoteConfig.getBool('show_previsions') ? dotenv.env['BASE_URL_LOCAL'] : dotenv.env['BASE_URL_PROD'];
+        break;
       case 'production':
         url = dotenv.env['BASE_URL_PROD'];
         break;
@@ -62,8 +55,6 @@ class Config {
       default:
         url = 'https://api.default.com';
     }
-
-    debugPrint('Config.baseUrl: environment=$environment | URL=$url');
 
     return url ?? 'baseUrl non trouvée';
   }

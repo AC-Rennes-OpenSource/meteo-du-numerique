@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_event.dart';
 
-import '../../bloc/previsions_bloc/previsions_bloc_2.dart';
+import '../../bloc/previsions_bloc/previsions_bloc.dart';
 
 class FilterPrevisionsBottomSheet extends StatefulWidget {
   final String selectedFilter;

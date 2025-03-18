@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc_2.dart';
+import 'package:meteo_du_numerique/bloc/previsions_bloc/previsions_bloc.dart';
 import 'package:meteo_du_numerique/bloc/search_bar_bloc/search_bar_bloc.dart';
 import 'package:meteo_du_numerique/bloc/services_num_bloc/services_num_bloc.dart';
 import 'package:meteo_du_numerique/bloc/theme_bloc/theme_bloc.dart';
@@ -61,7 +61,7 @@ Future<void> main() async {
 
     try {
       FirebaseApp app = Firebase.app();
-      debugPrint('--- Firebase Configuration ---');
+      debugPrint('------ Firebase Configuration -------');
       debugPrint('App Name: ${app.name}');
       debugPrint('API Key: ${app.options.apiKey ?? "N/A"}');
       debugPrint('Project ID: ${app.options.projectId ?? "N/A"}');
@@ -69,7 +69,7 @@ Future<void> main() async {
       debugPrint('Messaging Sender ID: ${app.options.messagingSenderId ?? "N/A"}');
       debugPrint('Database URL: ${app.options.databaseURL ?? "N/A"}');
       debugPrint('Storage Bucket: ${app.options.storageBucket ?? "N/A"}');
-      debugPrint('--------------------------------');
+      debugPrint('-------------------------------------');
     } catch (e) {
       debugPrint('Erreur lors de la récupération des détails Firebase: $e');
     }
@@ -85,7 +85,7 @@ Future<void> main() async {
   final themePreferences = ThemePreferences();
   final themeMode = await themePreferences.getThemeMode();
 
-  // Get APNS token for iOS
+  // Get APNS token for iOS only
   // String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
   // debugPrint('APNS Token: $apnsToken');
 
@@ -105,9 +105,6 @@ Future<FirebaseRemoteConfig> _initRemoteConfig() async {
     'strapi_5': false,
   });
   await remoteConfig.fetchAndActivate().then((updated) {
-    debugPrint("show_previsions : ${remoteConfig.getBool('show_previsions')}");
-    debugPrint("strapi_5 : ${remoteConfig.getBool('strapi_5')}");
-    debugPrint("remote config updated? : $updated");
     return remoteConfig;
   });
   return remoteConfig;
@@ -163,7 +160,8 @@ class _MyAppState extends State<MyApp> {
         .then((settings) {
       // FirebaseMessaging.instance.subscribeToTopic('notifications_meteo');
       FirebaseMessaging.instance.subscribeToTopic(dotenv.env['FCM_TOPIC_NAME']!);
-      debugPrint("User granted permission: ${settings.authorizationStatus}");
+      debugPrint("[Notifications FCM Topic] : ${dotenv.env['FCM_TOPIC_NAME']!}");
+      debugPrint("[Notifications authorization status] : ${settings.authorizationStatus}");
     });
 
     // FirebaseMessaging.instance.getToken().then((token) {

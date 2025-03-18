@@ -1,5 +1,4 @@
 import '../../models/prevision_model.dart';
-import '../../models/service_num_model.dart';
 
 abstract class PrevisionsState {}
 
@@ -8,8 +7,8 @@ class PrevisionsInitial extends PrevisionsState {}
 class PrevisionsLoading extends PrevisionsState {}
 
 class PrevisionsLoaded extends PrevisionsState {
-  final Map<String, List<PrevisionA>> previsionsGroupedByMonth;
-  final List<PrevisionA> dayPrevisions;
+  final Map<String, List<Prevision>> previsionsGroupedByMonth;
+  final List<Prevision> dayPrevisions;
   final Map<String, bool> expandedGroups;
 
   final bool isDayPanelOpen;

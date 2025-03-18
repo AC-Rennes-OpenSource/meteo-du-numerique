@@ -1,16 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
-
 class AppCubit extends Cubit<AppState> {
   TabController? tabController;
 
   AppCubit([this.tabController]) : super(AppState(tabIndex: 0, isFeatureEnabled: false));
 
   void changeTab(int index) {
-    // todo
     // tabController?.animateTo(index);
-    print(index);
     emit(state.copyWith(tabIndex: index));
   }
 

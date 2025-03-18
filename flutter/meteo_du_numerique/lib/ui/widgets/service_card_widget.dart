@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
-import 'package:meteo_du_numerique/models/service_num_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../bloc/theme_bloc/theme_bloc.dart';
+import '../../models/actualite_model.dart';
 
 class ServiceCardWidget extends StatelessWidget {
-  final ActualiteA service;
+  final Actualite service;
 
   const ServiceCardWidget({super.key, required this.service});
 
