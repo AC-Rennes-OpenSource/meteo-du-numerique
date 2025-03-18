@@ -77,8 +77,10 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                 child: Divider(),
               ),
               SwitchListTile(
-                title: const Text(
-                  'Activer les prévisions (Beta)',
+                title: Text(
+                  context.read<ThemeBloc>().state.showPrevision
+                      ? 'Désactiver les prévisions'
+                      : 'Activer les prévisions (Beta)',
                   style: TextStyle(fontSize: 15),
                 ),
                 secondary: const Icon(Icons.warning_amber),

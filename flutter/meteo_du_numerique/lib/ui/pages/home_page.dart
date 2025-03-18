@@ -29,11 +29,12 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final remoteConfig = FirebaseRemoteConfig.instance;
   late TabController _tabController;
   bool _isObserverAdded = false;
-  bool _showFeature = true;
+  late bool _showFeature;
 
   // Variable statique pour gérer le compteur de taps
   static int _tapCount = 0;
@@ -95,32 +96,37 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
   Widget build(BuildContext context) {
     _showFeature = context.read<ThemeBloc>().state.showPrevision;
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.dark ? null : Colors.grey.shade200,
       appBar: ThemedAppBar(
         onTitleTap: _handleTap,
-        tabBar: !_showFeature
+        tabBar: _showFeature
             ? TabBar(
                 controller: _tabController,
-                overlayColor: WidgetStateColor.resolveWith((states) => Colors.transparent),
+                overlayColor:
+                    WidgetStateColor.resolveWith((states) => Colors.transparent),
                 splashBorderRadius: const BorderRadius.all(Radius.circular(40)),
                 unselectedLabelColor: Theme.of(context).colorScheme.onSurface,
                 labelColor: Theme.of(context).colorScheme.onSecondary,
                 enableFeedback: true,
                 indicatorPadding: const EdgeInsets.all(3),
                 indicator: RoundedRectTabIndicator(
-                    color: Theme.of(context).colorScheme.primary, radius: 40, borderColor: Colors.transparent, borderWidth: 1),
+                    color: Theme.of(context).colorScheme.primary,
+                    radius: 40,
+                    borderColor: Colors.transparent,
+                    borderWidth: 1),
                 indicatorSize: TabBarIndicatorSize.tab,
                 dividerColor: Colors.transparent,
                 tabs: [
                   Tab(
                     child: Text(
-                      'Météo du jour',
+                      'Aujourd\'hui',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
                   Tab(
                     child: Text(
-                      'Prévisions',
+                      'À venir',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -128,8 +134,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
               )
             : null,
       ),
-      body: !_showFeature
-          ? TabBarView(controller: _tabController, physics: _showFeature ? NeverScrollableScrollPhysics() : null, children: [
+      body: _showFeature
+          ? TabBarView(controller: _tabController, children: [
               _buildTabContent(context, isPrevisionsTab: false),
               _buildTabContent(context, isPrevisionsTab: true),
             ])
@@ -143,7 +149,9 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return [_buildSliverAppBar(context, isPrevisionsTab)];
       },
-      body: Platform.isIOS ? _buildIOSContent(context, isPrevisionsTab) : _buildAndroidContent(context, isPrevisionsTab),
+      body: Platform.isIOS
+          ? _buildIOSContent(context, isPrevisionsTab)
+          : _buildAndroidContent(context, isPrevisionsTab),
     );
   }
 
@@ -169,10 +177,13 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
 
   Widget _buildSliverAppBar(BuildContext context, bool isPrevisionsTab) {
     return SliverAppBar(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(35), bottomRight: Radius.circular(35))),
       toolbarHeight: 50,
       scrolledUnderElevation: 0,
-      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+      backgroundColor:
+          Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
       pinned: false,
       floating: true,
       snap: true,
@@ -206,7 +217,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
             OutlinedButton.icon(
               icon: const Icon(Icons.filter_list),
               label: const Text('Filtres'),
-              onPressed: () => _showFilterBottomSheet(context, servicesNumBloc, previsionsBloc, _tabController.index),
+              onPressed: () => _showFilterBottomSheet(
+                  context, servicesNumBloc, previsionsBloc, _tabController.index),
               style: OutlinedButton.styleFrom(
                 iconColor: Theme.of(context).colorScheme.onSurface,
                 side: const BorderSide(width: 1.0, color: Colors.grey),
@@ -290,10 +302,12 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
     final now = DateTime.now();
 
     // Vérifie si le tap précédent a eu lieu récemment (moins de 500ms)
-    if (_lastTapTime != null && now.difference(_lastTapTime!) < Duration(milliseconds: 300)) {
+    if (_lastTapTime != null &&
+        now.difference(_lastTapTime!) < Duration(milliseconds: 300)) {
       _tapCount++;
     } else {
-      _tapCount = 1; // Réinitialise le compteur si un tap est effectué après un délai plus long
+      _tapCount =
+          1; // Réinitialise le compteur si un tap est effectué après un délai plus long
     }
 
     // Met à jour le temps du dernier tap
@@ -311,7 +325,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
       isDismissible: false,
       enableDrag: false,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)), // Coins arrondis en haut
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(20)), // Coins arrondis en haut
       ),
       builder: (BuildContext context) {
         return SizedBox(
@@ -319,7 +334,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Étire les widgets horizontalement
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              // Étire les widgets horizontalement
               children: [
                 // Titre
                 Text(
@@ -338,7 +354,8 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                 // Boutons centrés
                 Spacer(), // Ajoute un espace flexible pour centrer verticalement
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Espace égal entre les boutons
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // Espace égal entre les boutons
                   children: [
                     OutlinedButton.icon(
                       onPressed: () {
@@ -360,17 +377,22 @@ class HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
                     ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          _showFeature = !_showFeature; // Activer ou désactiver la fonctionnalité
+                          _showFeature =
+                              !_showFeature; // Activer ou désactiver la fonctionnalité
                         });
                       },
                       icon: Icon(Icons.check), // Icône pour le bouton "test"
                       label: Text('Activer'),
                       style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.greenAccent, width: 2), // Bordure rouge
+                        side: BorderSide(color: Colors.greenAccent, width: 2),
+                        // Bordure rouge
 
                         // backgroundColor: Colors.greenAccent, // Couleur du bouton
                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                        textStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                     ),
                   ],
@@ -407,7 +429,8 @@ void _showSortBottomSheet(BuildContext context, ServicesNumBloc itemsBloc) {
   });
 }
 
-void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc, PrevisionsBloc previsionsBloc, int tab) {
+void _showFilterBottomSheet(BuildContext context, ServicesNumBloc itemsBloc,
+    PrevisionsBloc previsionsBloc, int tab) {
   FocusScope.of(context).unfocus();
 
   showModalBottomSheet(
