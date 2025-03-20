@@ -1,0 +1,9 @@
+.header-link {
+    display: block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.header-link:hover {
+    background-color: #f6f6f6; /* Fond gris clair au survol (Bootstrap bg-light) */
+}
